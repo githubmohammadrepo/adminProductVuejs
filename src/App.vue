@@ -1,10 +1,15 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+      <router-link to="/">شرکت ها</router-link> |
+      <router-link to="/stores">فروشگاه ها</router-link>
+      |
+      <router-link to="/brands">برند ها</router-link>
     </div>
+    <div class="container">
+      
     <router-view/>
+    </div>
   </div>
 </template>
 
@@ -16,6 +21,9 @@
   text-align: center;
   color: #2c3e50;
 }
+ body {
+    direction:rtl !important;
+  }
 
 #nav {
   padding: 30px;
