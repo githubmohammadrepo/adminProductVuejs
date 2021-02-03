@@ -1,6 +1,8 @@
 <template>
   <div>
+
     <div class="mb-2">
+      <b-icon icon="bell-fill" class="border rounded p-2"></b-icon>
       <b-form-checkbox v-model="stickyHeader" inline>Sticky header</b-form-checkbox>
       <b-form-checkbox v-model="noCollapse" inline>No border collapse</b-form-checkbox>
     </div>
@@ -11,10 +13,14 @@
       :items="items"
       :fields="fields"
     >
+      <template #cell(operation)="data">
+        <b-button pill variant="info" v-html="data.value"></b-button>
+      </template>
       <!-- We are using utility class `text-nowrap` to help illustrate horizontal scrolling -->
       <template #head(id)="scope">
         <div class="text-nowrap">Row ID</div>
       </template>
+
       <template #head()="scope">
         <div class="text-nowrap">
           {{ scope.label }}
@@ -36,44 +42,32 @@ import axios from 'axios';
         fields: [
           { key: 'id', stickyColumn: true, isRowHeader: true, variant: 'primary' },
           { key: 'operation',label:'عملیات', stickyColumn: true, variant: 'warning' },
-          {key:'a',label:'نام شرکت'},
-          {key:'b',label:'نام برند'},
-          {key:'c',label:'مدیر شرکت'},
-          {key:'d',label:'تلفن همراه مدیر شرکت'},
-          {key:'e',label:'تلفن شرکت'},
-          {key:'f',label:'آدرس شرکت'},
+          {key:'companyName',label:'نام شرکت'},
+          {key:'brandName',label:'نام برند'},
+          {key:'managerName',label:'مدیر شرکت'},
+          {key:'mobile',label:'تلفن همراه مدیر شرکت'},
+          {key:'phone',label:'تلفن شرکت'},
+          {key:'address',label:'آدرس شرکت'},
+          {key:'brandImage',label:'لوگوی برند'}
         ],
-        items: [
-          { id: 1,operation:1, a: 0, b: 1, c: 2, d: 3, e: 4, f: 5 },
-          { id: 2,operation:1, a: 0, b: 1, c: 2, d: 3, e: 4, f: 5 },
-          { id: 3,operation:1, a: 0, b: 1, c: 2, d: 3, e: 4, f: 5 },
-          { id: 4,operation:1, a: 0, b: 1, c: 2, d: 3, e: 4, f: 5 },
-          { id: 5,operation:1, a: 0, b: 1, c: 2, d: 3, e: 4, f: 5 },
-          { id: 6,operation:1, a: 0, b: 1, c: 2, d: 3, e: 4, f: 5 },
-          { id: 7,operation:1, a: 0, b: 1, c: 2, d: 3, e: 4, f: 5 },
-          { id: 8,operation:1, a: 0, b: 1, c: 2, d: 3, e: 4, f: 5 },
-          { id: 9,operation:1, a: 0, b: 1, c: 2, d: 3, e: 4, f: 5 },
-          { id: 10,operation:1, a: 0, b: 1, c: 2, d: 3, e: 4, f: 5 }
-        ]
+        
       }
     },
-    created() {
-      let that = this;
-      axios
-                .post("http://fishopping.ir/serverHypernetShowUnion/showBrands.php", {
-                    offset: that.getAllBrandOffset,
-                    typeAction: "select"
-                })
-                .then(function(response) {
-                  console.log('getAllBrandOffset: '+that.getAllBrandOffset)
-                    that.getAllBrandOffset += 10;
-                    console.log(response)
-                    
-                })
-                .catch(function(error) {
-                    console.log(error)
-                })
+    methods: {
+      getAllCompanies(){ 
+        
+      },
+      editOneCompanie(companyId){
 
+      }
+    },
+    computed: {
+      items(){
+        return this.$store.state.companies.items
+      }
+    },
+    mounted() {
+     this.getAllCompanies()
     },
   }
 </script>

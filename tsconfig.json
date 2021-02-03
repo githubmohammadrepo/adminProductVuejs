@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es5",
     "module": "esnext",
-    "strict": true,
+    "strict": false,
     "jsx": "preserve",
     "importHelpers": true,
     "moduleResolution": "node",
@@ -34,7 +34,7 @@
     "src/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx"
-, "src/views/Companies.vue", "src/views/Brands.vue", "src/views/Stores.vue"  ],
+, "src/views/Companies.vue", "src/views/Brands.vue", "src/views/Stores.vue", "src/store/index.js", "src/store/companies.js", "src/store/brands.js"  ],
   "exclude": [
     "node_modules"
   ]

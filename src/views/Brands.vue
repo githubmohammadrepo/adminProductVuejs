@@ -1,19 +1,18 @@
 <template>
   <div class="home">
     <h2>{{msg}}</h2>
-    <ShwoBrands/>
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import ShwoBrands from '@/components/brands/TableShowBrands.vue'; // @ is an alias to /src
+<script>
 
-export default class Brands extends Vue {
+
+export default {
   data(){
     return {
       msg:"message"
     }
   }
+  
 }
 </script>
