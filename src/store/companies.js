@@ -9,6 +9,17 @@ const companies = {
             countPerPage: 10
         },
         items: Array(),
+        companyEditing: false,
+        editDataObject: {
+            id: "",
+            companyName: "",
+            brandName: "",
+            mangerFullName: "",
+            phone: "",
+            mobile: "",
+            address: "",
+            user_id: ""
+        },
     }),
     mutations: {
 
@@ -30,18 +41,24 @@ const companies = {
                         response.data.companies.forEach(function(value, index) {
                             let newObject = {};
                             newObject.id = value.id
-                            newObject.operation = `
-                            <span @click="editOneCompanie(${value.id})">ذخیره</span>
-                            <span @click="editOneCompanie(${value.id})">ویرایش</span>
-                            `
 
-                            newObject.companyName = value.ShopName || 'تعریف نشده'
-                            newObject.brandName = value.category_name || 'تعریف نشده'
-                            newObject.managerName = value.ManagerName || 'تعریف نشده'
-                            newObject.mobile = value.MobilePhon || 'تعریف نشده'
-                            newObject.phone = value.phone || 'تعریف نشده'
-                            newObject.address = value.Address || 'تعریف نشده'
-                            newObject.brandImage = value.file_path || 'تعریف نشده'
+
+                            newObject.companyName = (value.ShopName ? (value.ShopName.toString().length ? (value.ShopName) : ('')) : (''))
+                            newObject.user_id = value.user_id;
+                            newObject.id = value.id;
+
+                            newObject.brandName = (value.category_name ? (value.category_name.toString().length ? (value.category_name) : ('')) : (''))
+
+                            newObject.managerName = (value.ManagerName ? (value.ManagerName.toString().length ? (value.ManagerName) : ('')) : (''))
+
+                            newObject.mobile = (value.MobilePhon ? (value.MobilePhon.toString().length ? (value.MobilePhon) : ('')) : (''))
+
+                            newObject.phone = (value.phone ? (value.phone.toString().length ? (value.phone) : ('')) : (''))
+
+                            newObject.address = (value.Address ? (value.Address.toString().length ? (value.Address) : ('')) : (''))
+
+                            newObject.brandImage = (value.file_path ? (value.file_path.toString().length ? (value.file_path) : ('')) : (''))
+
                             context.state.items.push(newObject)
                         })
 

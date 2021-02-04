@@ -16,7 +16,8 @@ import Vuex from 'vuex'
 export default{
   data(){
     return {
-      msg:"اصلاح اطلاعات شرکت"
+      msg:"اصلاح اطلاعات شرکت",
+
     }
   },
   methods:{
@@ -25,7 +26,7 @@ export default{
   components:{
     ShwoBrands,
     showBrandPagination,
-EditOneCompany
+    EditOneCompany
   },
   created(){
   }

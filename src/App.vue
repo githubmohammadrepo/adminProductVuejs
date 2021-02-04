@@ -10,8 +10,29 @@
       
     <router-view/>
     </div>
+    <Helpers />
   </div>
 </template>
+
+<script>
+import Helpers from '@/components/general/Helpers.vue';
+export default {
+  data(){
+    return {
+      
+    }
+  },
+  methods: {
+    
+  },
+  computed: {
+    
+  },
+  components:{
+    Helpers
+  }
+}
+</script>
 
 <style lang="scss">
 #app {

@@ -7,11 +7,16 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        paginationObject: {
+        errorNotification: {
             show: false,
-            Countpages: 0,
-            currentPageNumber: 0
-        }
+            message: "خطا دراجرای عملیات"
+        },
+        successNotification: {
+            show: true,
+            message: "خطا دراجرای عملیات",
+            bodyContent: ''
+        },
+        shwoConfirmSms: true
     },
     mutations: {},
     actions: {},

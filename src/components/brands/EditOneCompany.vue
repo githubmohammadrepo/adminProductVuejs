@@ -1,8 +1,6 @@
 <template>
   <div>
-    <b-button @click="modalShow = !modalShow">Open Modal</b-button>
-
-    <b-modal v-model="modalShow">
+    <b-modal v-model="modalShow" @ok="updateCompany">
       <!-- company name -->
       <b-form class="form-editCompany" @submit.stop.prevent>
         
@@ -33,20 +31,20 @@
           
           type="text"
         ></b-form-input>
-        <b-form-invalid-feedback :show="!brandNameValidation" >
+        <b-form-invalid-feedback :show="brandNameValidation==false" >
           تعداد کارکتر ها نباید کمتر از 3 کارکتر باشد
         </b-form-invalid-feedback>
-        <b-form-valid-feedback :show="brandNameValidation">
+        <b-form-valid-feedback :show="brandNameValidation==true">
           تایید شد
         </b-form-valid-feedback>
 
         <!-- manager fullName -->
         
-        <label for="mangerFullName">نام و نام خانوادگی مدیر شرکت</label>
+        <label for="managerName">نام و نام خانوادگی مدیر شرکت</label>
         <b-form-input
-          v-model="company.mangerFullName"
+          v-model="company.managerName"
           :state="managerFullNameValidation"
-          id="mangerFullName"
+          id="managerName"
           required
           
           type="text"
@@ -118,59 +116,122 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   data() {
     return {
-      modalShow: true,
+      // modalShow: true,
       company: {
+        address: "",
+        brandImage: "",
+        brandName: "",
         companyName: "",
-        brandName:"",
-        mangerFullName: "",
-        phone:"",
-        mobile:"",
-        address:""
+        id: "",
+        managerName: "",
+        mobile: "",
+        operation: "",
+        phone: "",
       },
     };
   },
+  methods:{
+    updateCompany(){
+      //if validation passed save informations
+      if(this.companyNameValidation && this.managerFullNameValidation && this.phoneValidation && this.mobileValidation && this.addressValidation && this.brandNameValidation){
+
+        console.log('update company')
+      let that= this;
+      console.log(that.company)
+       axios
+          .post("http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/updateCompany.php", {
+              insertFakeUpdateConpany:true,
+              ...that.company
+          })
+          .then(function(response){
+            console.log(response)
+            if(response.data && response.data.status==true){
+              //show success notification
+              that.$store.state.successNotification = {
+                show: true,
+                message: "شرکت با موفقیت اپدیت شد",
+              }
+              that.$store.state.shwoConfirmSms = true;
+              //close edit modal
+              that.$store.state.companiescompanyEditing = false;
+              //open comfirm smsCode
+            }else{
+              that.$store.errorNotification={
+                show: true,
+                message: "خطا، شرکت اپدیت نشد"
+              }
+            }
+          })
+          .catch(function(error){
+            console.log(error)
+          })
+      }else{
+
+      }
+
+    }
+  },
   computed: {
+    
     companyNameValidation() {
       return (
-        this.company.companyName.length > 3 &&
-        this.company.companyName.length < 30
+        this.company.companyName!=null && this.company.companyName.length > 3 && this.company.companyName.length < 30
       );
     },
     managerFullNameValidation() {
       return (
-        this.company.mangerFullName.length > 4 &&
-        this.company.mangerFullName.length < 43
+        this.company.managerName!=null && this.company.managerName.toString().length > 4 &&  this.company.managerName.toString().length < 43
       );
     },
 
     phoneValidation() {
       return (
-        this.company.phone.length > 4 &&
-        this.company.phone.length < 43
+        this.company.phone!=null && this.company.phone.toString().length > 4 && this.company.phone.toString().length < 43
       );
     }, 
     mobileValidation() {
       return (
-        this.company.mobile.length > 4 &&
-        this.company.mobile.length < 43
+        this.company.mobile!=null && this.company.mobile.toString().length > 4 && this.company.mobile.toString().length < 43
       );
     },
     addressValidation() {
       return (
-        this.company.address.length > 4 &&
-        this.company.address.length < 43
+        this.company.address!=null && this.company.address.toString().length > 4 && this.company.address.toString().length < 43
       );
     },
     brandNameValidation() {
       return (
-        this.company.brandName.length > 4 &&
-        this.company.brandName.length < 43
+        this.company.brandName!=null && this.company.brandName.toString().length > 4 && this.company.brandName.toString().length < 43
       );
     },
+    modalShow:{
+      get(){
+        return this.$store.state.companies.companyEditing
+      },
+      set(newValue){
+        this.$store.state.companies.companyEditing=!this.$store.state.companies.companyEditing;
+      }
+      // return false;
+    }
   },
+  created() {
+    let obj = this.$store.state.companies.editDataObject;
+    console.log('created edit object')
+    console.log(obj)
+    this.company = obj
+  },
+  updated() {
+     let obj = this.$store.state.companies.editDataObject;
+    console.log('mounted edit object')
+    this.company = obj
+    console.log(this.company)
+  },
+  components:{
+  }
 };
 </script>
 
