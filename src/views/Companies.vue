@@ -3,14 +3,14 @@
     <h2>{{msg}}</h2>
     <ShwoBrands/>
     <showBrandPagination />
-    <EditOneCompany />
+    <OperationCompanyModal />
   </div>
 </template>
 
 <script lang="ts">
 import ShwoBrands from '@/components/brands/TableShowBrands.vue'; // @ is an alias to /src
 import showBrandPagination from '@/components/brands/ShowbrandsPagination.vue'; // @ is an alias to /src
-import EditOneCompany from '@/components/brands/EditOneCompany.vue'; // @ is an alias to /src
+import OperationCompanyModal from '@/components/brands/operations/OperationCompanyModal'; // @ is an alias to /src
 
 import Vuex from 'vuex'
 export default{
@@ -26,7 +26,7 @@ export default{
   components:{
     ShwoBrands,
     showBrandPagination,
-    EditOneCompany
+    OperationCompanyModal
   },
   created(){
   }

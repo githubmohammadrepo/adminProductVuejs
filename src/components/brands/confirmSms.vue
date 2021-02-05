@@ -66,6 +66,10 @@ import axios from 'axios'
             }
           })
           .catch(function(error){
+            that.$store.errorNotification={
+              show: true,
+              message: "خطا، شرکت اپدیت نشد"
+            }
             console.log(error)
           })
         }

@@ -1,6 +1,5 @@
 <template>
   <div id="errorNofication">
-
     <b-modal v-model="successNoticationShow"  id="bv-modal-successNotification" hide-footer>
       <div class="d-block text-center">
         <h6 class="text-success">{{message}}</h6>

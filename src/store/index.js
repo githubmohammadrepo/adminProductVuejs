@@ -12,11 +12,11 @@ export default new Vuex.Store({
             message: "خطا دراجرای عملیات"
         },
         successNotification: {
-            show: true,
+            show: false,
             message: "خطا دراجرای عملیات",
             bodyContent: ''
         },
-        shwoConfirmSms: true
+        shwoConfirmSms: false
     },
     mutations: {},
     actions: {},

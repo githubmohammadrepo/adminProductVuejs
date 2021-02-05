@@ -1,7 +1,9 @@
 import axios from 'axios';
+import { mixinState, mixinMutations, mixinActions } from '@/assets/mixins/companies/operationMixin.js'
 const companies = {
     namespaced: true,
     state: () => ({
+        ...mixinState(),
         paginationObject: {
             show: false,
             pages: 20,
@@ -20,11 +22,48 @@ const companies = {
             address: "",
             user_id: ""
         },
+        companyOperation: {
+            edit: false,
+            remove: false,
+            add: false,
+            typeOperation: ''
+        }
     }),
     mutations: {
+        ...mixinMutations(),
+        hideAllOperations(state) {
+            console.log('company operation')
+            console.log(state.companyOperation)
+            for (const key in state.companyOperation) {
+                if (Object.hasOwnProperty.call(state.companyOperation, key)) {
+                    state.companyOperation[key] = false;
+                }
+            }
+        },
+        editOperation(state) {
+            return state.companyOperation.edit = !state.companyOperation.edit;
+        },
+        removeOneCompany(state) {
+            return state.companyOperation.remove = !state.companyOperation.remove;
+        },
+        addOneCompany(state) {
+            return state.companyOperation.add = !state.companyOperation.add;
+        },
+        getTypeOperationSave(state) {
+            let typeOperation = '';
+            for (const key in state.companyOperation) {
+                if (Object.hasOwnProperty.call(state.companyOperation, key)) {
+                    if (state.companyOperation[key] == true) {
+                        typeOperation = key;
+                    }
 
+                }
+            }
+            state.companyOperation.typeOperation = typeOperation
+        }
     },
     actions: {
+        ...mixinActions(),
         /**
          * get all companies by offset
          */
@@ -71,6 +110,21 @@ const companies = {
                 .catch(function(error) {
                     console.log(error)
                 })
+        },
+
+        /**
+         * save company operation
+         */
+        saveCompanyOperation({
+            commit,
+            dispatch,
+            getters,
+            rootGetters,
+            rootState,
+            state,
+        }) {
+            commit('getTypeOperationSave')
+            let typeOperation = state.companyOperation.typeOperation;
         }
     },
     getters: {

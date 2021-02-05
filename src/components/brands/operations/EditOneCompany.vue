@@ -1,6 +1,5 @@
 <template>
   <div>
-    <b-modal v-model="modalShow" @ok="updateCompany">
       <!-- company name -->
       <b-form class="form-editCompany" @submit.stop.prevent>
         
@@ -111,7 +110,11 @@
           تایید شد
         </b-form-valid-feedback>
       </b-form>
-    </b-modal>
+
+        <div class="row justify-content-center">
+          <b-button variant="primary m-auto px-4" :disabled="!validationPasseed" @click="updateCompany">ذخیره</b-button>
+        </div>
+
   </div>
 </template>
 
@@ -137,7 +140,7 @@ export default {
   methods:{
     updateCompany(){
       //if validation passed save informations
-      if(this.companyNameValidation && this.managerFullNameValidation && this.phoneValidation && this.mobileValidation && this.addressValidation && this.brandNameValidation){
+      if(this.validationPasseed){
 
         console.log('update company')
       let that= this;
@@ -167,6 +170,10 @@ export default {
             }
           })
           .catch(function(error){
+            that.$store.errorNotification={
+                show: true,
+                message: "خطا، شرکت اپدیت نشد"
+              }
             console.log(error)
           })
       }else{
@@ -176,7 +183,9 @@ export default {
     }
   },
   computed: {
-    
+    validationPasseed(){
+      return (this.companyNameValidation && this.managerFullNameValidation && this.phoneValidation && this.mobileValidation && this.addressValidation && this.brandNameValidation);
+    },
     companyNameValidation() {
       return (
         this.company.companyName!=null && this.company.companyName.length > 3 && this.company.companyName.length < 30
