@@ -19,13 +19,10 @@ export default {
     removebrand(){
       
       let that= this;
-      console.log(that.brand)
-      
        axios
-          .post("http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/removeOnebrand.php", {
-            "removeCompnay":true,
-            "code":"#&#(&#^(#&@%1!$7423974hfiehfe#$@!aife",
-            "user_id":that.$store.state.brands.editDataObject.user_id
+          .post("http://fishopping.ir//serverHypernetShowUnion/adminProduct/webservices/mainBrands/removeOneBrand.php", {
+            "removeBrand":true,
+            "category_id":that.$store.state.brands.editDataObject.category_id,
           })
           .then(function(response){
             console.log(response)
@@ -33,23 +30,25 @@ export default {
               //show success notification
               that.$store.state.successNotification = {
                 show: true,
-                message: "شرکت با موفقیت حذف شد شد",
+                message: "برند با موفقیت حذف شد شد",
               }
-              that.$store.state.shwoConfirmSms = true;
               //close edit modal
-              that.$store.state.brandsbrandEditing = false;
+              that.$store.state.brands.brandEditing = false;
+
+              //remove editing brand or current brand from ui
+              that.$store.commit('brands/removeOneCategory',that.$store.state.brands.editDataObject.category_id)
               //open comfirm smsCode
             }else{
               that.$store.state.errorNotification={
                 show: true,
-                message: "خطا، شرکت حذف نشد"
+                message: "خطا، برند حذف نشد"
               }
             }
           })
           .catch(function(error){
             that.$store.state.errorNotification={
                 show: true,
-                message: "خطا، شرکت حذف نشد"
+                message: "خطا، برند حذف نشد"
               }
             console.log(error)
           })

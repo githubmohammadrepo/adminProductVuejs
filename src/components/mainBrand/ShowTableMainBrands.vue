@@ -1,11 +1,19 @@
 <template>
   <div>
-    <div class="row ml-auto mb-3 col">
+    <div class="row mb-3 ">
+      <div class="col text-right">
         <b-button variant="primary" @click="ButtonClickAddOneBrand">افزودن برند جدید</b-button>
+
+      </div>
+    <div class="col-4 mr-auto text-left">
+    <b-form-select v-model="selectedFilterNumber" @change="getAllBrandWithNewCount" :options="options"></b-form-select>
+
+    </div>
+    </div>
+
 
       <!-- <b-form-checkbox v-model="stickyHeader" inline>Sticky header</b-form-checkbox>
       <b-form-checkbox v-model="noCollapse" inline>No border collapse</b-form-checkbox> -->
-    </div>
     <b-table
       @row-dblclicked="editOneBrand"
       :sticky-header="stickyHeader"
@@ -50,6 +58,14 @@ import OperationBrandModal from '@/components/mainBrand/OperationBrandModal.vue'
   export default {
     data() {
       return {
+        selectedFilterNumber:20,
+         options: [
+          { value: 20, text: '20' },
+          { value: 50, text: '50' },
+          { value: 100, text: '100' },
+          { value: 500, text: '500' },
+          { value: 1000, text: '1000', disabled: true }
+        ],
         getAllBrandOffset:0,
         stickyHeader: true,
         noCollapse: false,
@@ -57,7 +73,6 @@ import OperationBrandModal from '@/components/mainBrand/OperationBrandModal.vue'
           { key: 'operation',label:'عملیات' ,stickyColumn: true, isRowHeader: true, variant: 'primary',class:"px-0 mx-0" },
           { key: 'category_id',label:'ایدی برند'},
           {key:'category_name',label:'نام برند'},
-          {key:'user_name',label:'نام صاحب برند'},
           {key:'category_published',label:'وصعیت انتشار'},
           {key:'brand_logo',label:'لوگوی برند'},
         ],
@@ -65,17 +80,13 @@ import OperationBrandModal from '@/components/mainBrand/OperationBrandModal.vue'
       }
     },
     methods: {
-      change(){
-        alert('chagne')
-      },
-      clickButton(home){
-        console.log(home)
-        alert('clicked button')
-      },
+      getAllBrandWithNewCount(){
+        alert('getAllBrandWithNewCount')
+        this.$store.state.brands.paginationObject.currentPage=0;
+      },      
       getAllbrands(){ 
       },
       editOneBrand(index){
-        console.log(index)
         this.$store.state.brands.editDataObject = index;
         this.$store.state.brands.brandEditing= !this.$store.state.brands.brandEditing;
         //reset addNewCompnay to level one
@@ -96,7 +107,6 @@ import OperationBrandModal from '@/components/mainBrand/OperationBrandModal.vue'
             
           }
         }
-        console.log(index)
         this.$store.state.brands.editDataObject = index;
         this.$store.state.brands.brandEditing= !this.$store.state.brands.brandEditing;
         this.$store.commit('brands/hideAllOperations')
@@ -117,7 +127,6 @@ import OperationBrandModal from '@/components/mainBrand/OperationBrandModal.vue'
             
           }
         }
-        console.log(index)
         this.$store.state.brands.editDataObject = index;
         this.$store.state.brands.brandEditing= !this.$store.state.brands.brandEditing;
         this.$store.commit('brands/hideAllOperations')

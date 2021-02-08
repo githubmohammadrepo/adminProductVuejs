@@ -100,6 +100,15 @@ const brands = {
                 //don othing
             }
             state.AddNewbrand[levelName].show = !state.AddNewbrand[levelName].show;
+        },
+        removeOneCategory(state, category_id) {
+            state.items = state.items.filter(brand => {
+                if (brand.category_id == category_id) {
+                    return false;
+                } else {
+                    return true;
+                }
+            })
         }
 
     },
