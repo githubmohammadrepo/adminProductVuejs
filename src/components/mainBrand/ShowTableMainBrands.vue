@@ -3,12 +3,18 @@
     <div class="row mb-3 ">
       <div class="col text-right">
         <b-button variant="primary" @click="ButtonClickAddOneBrand">افزودن برند جدید</b-button>
-
       </div>
-    <div class="col-4 mr-auto text-left">
-    <b-form-select v-model="selectedFilterNumber" @change="getAllBrandWithNewCount" :options="options"></b-form-select>
 
-    </div>
+      <!-- search brand name -->
+      <div class="col-4 mr-auto text-left">
+        <b-form-input v-model="searchBrandName" @input="searchBrandByInput" type="search" placeholder="نام برند ...."></b-form-input>
+      </div>
+
+      <!-- fileter count per page -->
+      <div class="col-4 mr-auto text-left">
+        {{paginatinCountPerPage}}
+        <b-form-select v-model="paginatinCountPerPage" @change="getAllBrandWithNewCount" :options="options"></b-form-select>
+      </div>
     </div>
 
 
@@ -58,13 +64,13 @@ import OperationBrandModal from '@/components/mainBrand/OperationBrandModal.vue'
   export default {
     data() {
       return {
-        selectedFilterNumber:20,
+        searchBrandName:null,
          options: [
-          { value: 20, text: '20' },
-          { value: 50, text: '50' },
-          { value: 100, text: '100' },
-          { value: 500, text: '500' },
-          { value: 1000, text: '1000', disabled: true }
+          { value: 20, text: 20 },
+          { value: 50, text: 50 },
+          { value: 100, text: 100 },
+          { value: 500, text: 500 },
+          { value: 1000, text: 1000}
         ],
         getAllBrandOffset:0,
         stickyHeader: true,
@@ -80,12 +86,19 @@ import OperationBrandModal from '@/components/mainBrand/OperationBrandModal.vue'
       }
     },
     methods: {
-      getAllBrandWithNewCount(){
-        alert('getAllBrandWithNewCount')
-        this.$store.state.brands.paginationObject.currentPage=0;
-      },      
-      getAllbrands(){ 
+      searchBrandByInput(value){
+        if(value && value.toString().length>0){
+          this.$store.commit('brands/restCuurentPageToOne')
+          this.$store.commit('brands/setSearchValue',value)
+          this.$store.dispatch('brands/getAllBrands')
+        }
       },
+      getAllBrandWithNewCount(value){
+        this.$store.commit('brands/restCuurentPageToOne')
+        this.$store.commit('brands/changeCountPerPage',value)
+        this.$store.dispatch('brands/getAllBrands')
+      },      
+
       editOneBrand(index){
         this.$store.state.brands.editDataObject = index;
         this.$store.state.brands.brandEditing= !this.$store.state.brands.brandEditing;
@@ -149,12 +162,20 @@ import OperationBrandModal from '@/components/mainBrand/OperationBrandModal.vue'
       
     },
     computed: {
+      paginatinCountPerPage:{
+        get(){
+          return this.$store.state.brands.paginationObject.countPerPage;
+        },
+        set(newValue){
+          this.$store.commit('brands/changeCountPerPage',newValue)
+        }
+      },
       items(){
         return this.$store.state.brands.items
-      }
+      },
     },
     created() {
-     this.getAllbrands()
+      this.searchBrandName = this.$store.state.brands.search;
     },
     components:{
       OperationBrandModal

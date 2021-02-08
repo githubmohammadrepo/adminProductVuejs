@@ -3,11 +3,12 @@ const brands = {
     namespaced: true,
     state: () => ({
         brandTest: 'brandTest',
+        search: null,
         paginationObject: {
             show: false,
             pages: 20,
             currentPage: 0,
-            countPerPage: 10
+            countPerPage: 50
         },
         items: Array(),
         brandEditing: false,
@@ -48,9 +49,20 @@ const brands = {
         }
     }),
     mutations: {
+        setSearchValue(state, payload) {
+            state.search = payload;
+        },
+        restCuurentPageToOne(state, payload = null) {
+            if (payload == null) {
+                state.paginationObject.currentPage = 0;
+            } else {
+                state.paginationObject.currentPage = payload;
+            }
+        },
+        changeCountPerPage(state, payload) {
+            state.paginationObject.countPerPage = payload;
+        },
         hideAllOperations(state) {
-            console.log('brand operation')
-            console.log(state.brandOperation)
             for (const key in state.brandOperation) {
                 if (Object.hasOwnProperty.call(state.brandOperation, key)) {
                     state.brandOperation[key] = false;
@@ -73,7 +85,6 @@ const brands = {
                     if (state.brandOperation[key] == true) {
                         typeOperation = key;
                     }
-
                 }
             }
             state.brandOperation.typeOperation = typeOperation
@@ -122,10 +133,11 @@ const brands = {
                 .post("http://fishopping.ir//serverHypernetShowUnion/adminProduct/webservices/mainBrands/showAllBrands.php", {
                     offset: parseInt(context.state.paginationObject.countPerPage) * parseInt(context.state.paginationObject.currentPage),
                     "getAllBrands": true,
+                    count: context.state.paginationObject.countPerPage,
+                    search: context.state.search
                 })
                 .then(function(response) {
-                    console.log('brands info')
-                    console.log(response.data.brands)
+                    console.log(response.data)
                     if (response.data.brands && response.data.brands.length) {
                         response.data.brands.forEach(function(value, index) {
                             let newObject = {};
@@ -145,17 +157,20 @@ const brands = {
 
                     }
                     if (response.data.count) {
-                        context.state.paginationObject.pages = Math.ceil(response.data.count / 10);
+                        context.state.paginationObject.pages = Math.ceil(response.data.count / parseInt(context.state.paginationObject.countPerPage));
                     }
 
                 })
                 .catch(function(error) {
                     console.log(error)
                 })
-        }
+        },
+
     },
     getters: {
-
+        getCountPerPagePagination(state) {
+            return state.paginationObject.countPerPage;
+        }
     }
 }
 
