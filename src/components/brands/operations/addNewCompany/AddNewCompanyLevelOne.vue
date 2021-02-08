@@ -1,6 +1,7 @@
 <template>
   <div>
-        <h5>level One</h5>
+      <h5 class="text-center mt-3">مرحله ی اول ثبت نام شرکت</h5>
+
       <!-- user name -->
       <b-form class="form-editCompany" @submit.stop.prevent>
         
@@ -82,35 +83,43 @@ export default {
       if(this.validationPasseed){
 
       let that= this;
-      console.log(that.company)
        axios
           .post("http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/InsertNewCompany.php", {
-              addNewCompany:true,
-              ...that.company
+               newCompanyLevelOne:true,
+                userName:that.company.userName,
+                password:that.company.password
           })
           .then(function(response){
+            
             console.log(response)
             if(response.data && response.data.status==true){
               //show success notification
               that.$store.state.successNotification = {
                 show: true,
-                message: "شرکت با موفقیت اپدیت شد",
+                message: "مرحله ی اول ثبت نام با موفقیت ذخیره شد",
               }
-              that.$store.state.shwoConfirmSms = true;
-              //close edit modal
-              that.$store.state.companiescompanyEditing = false;
-              //open comfirm smsCode
+              //close addNewCompany LevelOne
+              that.$store.state.companies.AddNewCompany.levelTwo.userId = response.data.user_id
+              that.$store.commit('companies/hideAllCreateNewCompnay')
+              that.$store.commit('companies/showCompanyLevels','levelTwo')
+              
+              // console.log('show Store')
+              // console.log(that.$store.commit)
+
+              // that.$sotre.commit('companies/hellowMohammad')
+              //open addNewCompnay LevelTwo
+              
             }else{
-              that.$store.errorNotification={
+              that.$store.state.errorNotification={
                 show: true,
-                message: "خطا، شرکت اپدیت نشد"
+                message: "خطا !!، اطلاعات شرکت ذخیره نشد"
               }
             }
           })
           .catch(function(error){
-            that.$store.errorNotification={
+            that.$store.state.errorNotification={
                 show: true,
-                message: "خطا، شرکت اپدیت نشد"
+                message: "خطا !!، اطلاعات شرکت ذخیره نشد"
               }
             console.log(error)
           })

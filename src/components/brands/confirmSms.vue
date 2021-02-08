@@ -35,7 +35,6 @@ import axios from 'axios'
     methods: {
        
       sentSmsConfirm(){
-        alert('clicked')
         if(this.smsCodeConfirmValidation==true){
           let that = this;
            axios

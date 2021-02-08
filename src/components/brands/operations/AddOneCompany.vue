@@ -1,8 +1,8 @@
 <template>
   <div>
-      <AddNewCompanyLevelOne />
-      <AddNewCompanyLevelTwo />
-      <AddNewCompanyLevelThree />
+      <AddNewCompanyLevelOne v-if="showLevelOne" />
+      <AddNewCompanyLevelTwo v-if="showLevelTwo" />
+      <AddNewCompanyLevelThree v-if="showLevelThree" />
   </div>
 </template>
 
@@ -20,7 +20,15 @@ export default {
   
   },
   computed: {
-    
+    showLevelOne(){
+      return this.$store.state.companies.AddNewCompany.levelOne.show
+    },
+    showLevelTwo(){
+      return this.$store.state.companies.AddNewCompany.levelTwo.show
+    },
+    showLevelThree(){
+      return this.$store.state.companies.AddNewCompany.levelThree.show
+    }
   },
   components:{
     AddNewCompanyLevelOne,

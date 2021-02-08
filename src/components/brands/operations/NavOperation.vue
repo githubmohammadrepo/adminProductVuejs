@@ -2,7 +2,7 @@
   <div>
   <b-nav tabs align="center">
     <b-nav-item :active="editOperation" @click="showEditOneCompany" :disabled="isCompanyEditable">ویرایش</b-nav-item>
-    <b-nav-item :active="removeOneCompany" @click="showRemoveOneCompany">حذف</b-nav-item>
+    <b-nav-item :active="removeOneCompany" @click="showRemoveOneCompany" :disabled="isCompanyEditable">حذف</b-nav-item>
     <b-nav-item :active="addOneCompany" @click="showAddOneCompany">افزودن شرکت جدید</b-nav-item>
   </b-nav>
 </div>
@@ -53,6 +53,9 @@ export default {
   },
   components:{
     
-  }
+  },
+  created() {
+      this.$store.commit('companies/hideAllOperations');
+  },
 }
 </script>

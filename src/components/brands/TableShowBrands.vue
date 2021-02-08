@@ -1,11 +1,11 @@
 <template>
   <div>
     <div class="mb-2">
-      <b-form-checkbox v-model="stickyHeader" inline>Sticky header</b-form-checkbox>
-      <b-form-checkbox v-model="noCollapse" inline>No border collapse</b-form-checkbox>
+      <!-- <b-form-checkbox v-model="stickyHeader" inline>Sticky header</b-form-checkbox>
+      <b-form-checkbox v-model="noCollapse" inline>No border collapse</b-form-checkbox> -->
     </div>
     <b-table
-    @row-dblclicked="editOneCompanie"
+      @row-dblclicked="editOneCompanie"
       :sticky-header="stickyHeader"
       :no-border-collapse="noCollapse"
       responsive
@@ -58,6 +58,12 @@ import axios from 'axios';
       editOneCompanie(index,event){
         this.$store.state.companies.editDataObject = index;
         this.$store.state.companies.companyEditing= !this.$store.state.companies.companyEditing;
+        //reset addNewCompnay to level one
+        //hide all
+        this.$store.commit('companies/hideAllCreateNewCompnay')
+        //show level three
+        this.$store.commit('companies/showCompanyLevels','levelOne')
+        
       },
       
     },

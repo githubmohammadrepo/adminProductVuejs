@@ -27,7 +27,28 @@ const companies = {
             remove: false,
             add: false,
             typeOperation: ''
+        },
+        AddNewCompany: {
+            levelOne: {
+                show: true,
+                userName: "",
+                password: "",
+            },
+            levelTwo: {
+                show: false,
+                userId: false,
+
+            },
+            levelThree: {
+                show: false,
+                price: null,
+                brand_name: "",
+                brand_id: "",
+                brandSelectedId: null
+
+            }
         }
+
     }),
     mutations: {
         ...mixinMutations(),
@@ -60,7 +81,32 @@ const companies = {
                 }
             }
             state.companyOperation.typeOperation = typeOperation
+        },
+
+        /**
+         * hide all createNewCompany components
+         */
+        hideAllCreateNewCompnay(state) {
+            for (const key in state.AddNewCompany) {
+                if (Object.hasOwnProperty.call(state.AddNewCompany, key)) {
+                    state.AddNewCompany[key].show = false
+                }
+            }
+        },
+        showCompanyLevels(state, payload) {
+            let levelName = '';
+            if (payload.toString() == 'levelOne') {
+                levelName = 'levelOne';
+            } else if (payload.toString() == 'levelTwo') {
+                levelName = 'levelTwo';
+            } else if (payload.toString() == 'levelThree') {
+                levelName = 'levelThree';
+            } else {
+                //don othing
+            }
+            state.AddNewCompany[levelName].show = !state.AddNewCompany[levelName].show;
         }
+
     },
     actions: {
         ...mixinActions(),
@@ -110,26 +156,13 @@ const companies = {
                 .catch(function(error) {
                     console.log(error)
                 })
-        },
-
-        /**
-         * save company operation
-         */
-        saveCompanyOperation({
-            commit,
-            dispatch,
-            getters,
-            rootGetters,
-            rootState,
-            state,
-        }) {
-            commit('getTypeOperationSave')
-            let typeOperation = state.companyOperation.typeOperation;
         }
+
     },
     getters: {
 
     }
 }
+
 
 export default companies;

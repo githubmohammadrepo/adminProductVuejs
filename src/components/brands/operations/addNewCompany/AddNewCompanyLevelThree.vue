@@ -1,64 +1,14 @@
 <template>
   <div>
-    <h5>level Three</h5>
+    <h5 class="text-center mt-3">مرحله ی نهایی فعال کردن شرکت</h5>
       <!-- user name -->
-      <b-form class="form-editCompany" @submit.stop.prevent>
-        <h5>level Two</h5>
-        <label for="userName">نام کاربری</label>
-        <b-form-input
-          v-model="company.userName"
-          :state="userNameValidation"
-          id="userName"
-          required
-          type="text"
-        ></b-form-input>
-        <b-form-invalid-feedback :show="!userNameValidation" >
-          تعداد کارکتر ها نباید کمتر از 3 کارکتر باشد
-        </b-form-invalid-feedback>
-        <b-form-valid-feedback :show="userNameValidation">
-          تایید شد
-        </b-form-valid-feedback>
+      <h6 class="text-center mb-3 mt-3" v-if="!saveCompanyCompleted">برای عضویت شرکت باید مبلغ {{priceRegisterCompany}} تومان را پرداخت نمایید.</h6>
+      <h6 class="text-center mb-3 mt-3 text-success" v-if="saveCompanyCompleted">شرکت با موفقیت ثبت شد</h6>
 
-      <!-- password -->
-        <label for="password">رمز عبور شرکت</label>
-        <b-form-input
-          v-model="company.password"
-          :state="passwordValidation"
-          id="password"
-          required
-          
-          type="text"
-        ></b-form-input>
-        <b-form-invalid-feedback :show="passwordValidation==false" >
-          تعداد کارکتر ها نباید کمتر از 8 کارکتر باشد
-        </b-form-invalid-feedback>
-        <b-form-valid-feedback :show="passwordValidation==true">
-          تایید شد
-        </b-form-valid-feedback>
-
-        <!-- retypePassword -->
-        
-        <label for="retypePassword">تکرار رمز عبور شرکت</label>
-        <b-form-input
-          v-model="company.retypePassword"
-          :state="retypePasswordValidation"
-          id="retypePassword"
-          required
-          
-          type="text"
-        ></b-form-input>
-        <b-form-invalid-feedback :show="!retypePasswordValidation">
-         رمز عبورو تکرار رمز عبور باید با هم برابر باشند
-        </b-form-invalid-feedback>
-        <b-form-valid-feedback :show="retypePasswordValidation">
-          تایید شد
-        </b-form-valid-feedback>
-
-      </b-form>
-
-        <div class="row justify-content-center">
-          <b-button variant="primary m-auto px-4" :disabled="!validationPasseed" @click="saveCompany">مرحله ی بعدی</b-button>
-        </div>
+      <div class="row justify-content-center mt-2">
+        <b-button variant="primary m-auto px-4"  @click="saveCompany" v-if="!saveCompanyCompleted">فعال کردن</b-button>
+        <b-button variant="primary m-auto px-4"  @click="gotToAddNewCompnayLevelOne" v-if="saveCompanyCompleted">افزودن شرکت جدید</b-button>
+      </div>
 
   </div>
 </template>
@@ -69,37 +19,65 @@ export default {
   data() {
     return {
       // modalShow: true,
-      company: {
-        userName: "",
-        password: "",
-        retypePassword: "",
-      },
+      priceRegisterCompany:null,
+      saveCompanyCompleted:false,
     };
   },
   methods:{
     saveCompany(){
+      let that = this;
+      console.log('prepared data from level three')
+      console.log({"verifyCompany":true,
+        "user_id":that.user_id,
+        "code":"#&#(&#^(#&@!$7423974hfiehfe#$@!aife",
+        "price":that.priceRegisterCompany,
+        "brand_name":that.$store.state.companies.AddNewCompany.levelThree.brand_name,
+        "brand_id":isNaN(that.$store.state.companies.AddNewCompany.levelThree.brand_id) ? 0 : that.$store.state.companies.AddNewCompany.levelThree.brand_id
+        })
+        
+      let brandSelectedId = this.$store.state.companies.AddNewCompany.levelThree.brandSelectedId
+      axios
+      .post("http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/verifyAddNewCompany.php",{
+        "verifyCompany":true,
+        "user_id":that.user_id,
+        "code":"#&#(&#^(#&@!$7423974hfiehfe#$@!aife",
+        "price":that.priceRegisterCompany,
+        "brand_name":that.$store.state.companies.AddNewCompany.levelThree.brand_name,
+        "brand_id":isNaN(that.$store.state.companies.AddNewCompany.levelThree.brand_id) ? 0 : that.$store.state.companies.AddNewCompany.levelThree.brand_id
+      }).then(response => {
+        console.log('verify brand')
+        console.log(response.data)
+        if(response.data && response.data.status==true){
+          that.saveCompanyCompleted=true;
+          
+        }else{
+          that.$store.errorNotification={
+            show: true,
+            message: "خطا !!، اطلاعات شرکت ذخیره نشد"
+          }
+        }
+      })
+      .catch(error =>{
+        that.$store.errorNotification={
+          show: true,
+          message: "خطا !!، اطلاعات شرکت ذخیره نشد"
+        }
+        console.log(error)
+      })
+    },
+    getPricePayToVerifyCompany(){
       //if validation passed save informations
-      if(this.validationPasseed){
 
       let that= this;
-      console.log(that.company)
        axios
-          .post("http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/InsertNewCompany.php", {
-              addNewCompany:true,
-              ...that.company
+          .post("http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/InsertNewCompany.php",{
+            getRegisterCompanyPrice:true
           })
           .then(function(response){
+            console.log('get price resposne')
             console.log(response)
             if(response.data && response.data.status==true){
-              //show success notification
-              that.$store.state.successNotification = {
-                show: true,
-                message: "شرکت با موفقیت اپدیت شد",
-              }
-              that.$store.state.shwoConfirmSms = true;
-              //close edit modal
-              that.$store.state.companiescompanyEditing = false;
-              //open comfirm smsCode
+              that.priceRegisterCompany = response.data.price
             }else{
               that.$store.errorNotification={
                 show: true,
@@ -114,37 +92,25 @@ export default {
               }
             console.log(error)
           })
-      }else{
+      
 
-      }
-
+    },
+    gotToAddNewCompnayLevelOne(){
+      //hide all
+      this.$store.commit('companies/hideAllCreateNewCompnay')
+      //show level three
+      this.$store.commit('companies/showCompanyLevels','levelOne')
     }
   },
   computed: {
-    validationPasseed(){
-      return (
-        JSON.parse((this.userNameValidation && this.passwordValidation && this.retypePasswordValidation).toString()) ? true : false
-      );
-    },
-    userNameValidation() {
-      return (
-        JSON.parse((this.company.userName!=null && this.company.userName.length > 3 && this.company.userName.length < 30).toString()) ? true: false
-      );
-    },
-    passwordValidation() {
-      return (
-        JSON.parse((this.company.password!=null && this.company.password.toString().length > 7 &&  this.company.password.toString().length < 43).toString()) ? true : false
-      );
-    },
-
-    retypePasswordValidation() {
-      return (
-        JSON.parse((this.company.retypePassword!=null && this.company.password.toString() ==this.company.retypePassword.toString() ).toString()) ? true : false
-      );
-    },
-
+    user_id(){
+      return this.$store.state.companies.AddNewCompany.levelTwo.userId
+    }
   },
   components:{
+  },
+  created(){
+    this.getPricePayToVerifyCompany()
   }
 };
 </script>

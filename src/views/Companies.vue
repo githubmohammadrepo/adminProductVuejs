@@ -1,6 +1,7 @@
 <template>
   <div class="home">
     <h2>{{msg}}</h2>
+    <hr class="mb-4">
     <ShwoBrands/>
     <showBrandPagination />
     <OperationCompanyModal />
@@ -10,7 +11,7 @@
 <script lang="ts">
 import ShwoBrands from '@/components/brands/TableShowBrands.vue'; // @ is an alias to /src
 import showBrandPagination from '@/components/brands/ShowbrandsPagination.vue'; // @ is an alias to /src
-import OperationCompanyModal from '@/components/brands/operations/OperationCompanyModal'; // @ is an alias to /src
+import OperationCompanyModal from '@/components/brands/operations/OperationCompanyModal.vue'; // @ is an alias to /src
 
 import Vuex from 'vuex'
 export default{
