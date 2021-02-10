@@ -57,7 +57,13 @@ const companies = {
                 formData: {
 
                 },
-                show: true
+                show: false
+            },
+            finalLevel: {
+                formData: {
+
+                },
+                show: true,
             }
         }
 
@@ -69,12 +75,17 @@ const companies = {
             state.addNewStoreShowLevels.levelOne.show = false;
             state.addNewStoreShowLevels.levelTwo.show = false;
             state.addNewStoreShowLevels.levelThree.show = false;
+            state.addNewStoreShowLevels.finalLevel.show = false;
 
             //show level
             state.addNewStoreShowLevels[payload.key].show = payload.value;
 
             //update form data
-            state.addNewStoreShowLevels[payload.key].formData = payload.formData;
+            if (payload.cancelInsert) {
+
+            } else {
+                state.addNewStoreShowLevels[payload.key].formData = payload.formData;
+            }
 
 
         },

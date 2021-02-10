@@ -3,6 +3,7 @@
     <addNewStoreLevelOne v-if="showLevelOne" />
     <addNewStoreLevelTwo v-if="showLevelTwo" />
     <addNewStoreLevelThree v-if="showLevelThree" />
+    <AddNewStoreFinalLevel v-if="showFinalLevel" />
   </div>
 </template>
 
@@ -11,6 +12,7 @@
 import addNewStoreLevelOne from '@/components/stores/operations/addNewStoreLevels/AddNewStoreLevelOne.vue';
 import addNewStoreLevelTwo from '@/components/stores/operations/addNewStoreLevels/AddNewStoreLevelTwo.vue';
 import addNewStoreLevelThree from '@/components/stores/operations/addNewStoreLevels/AddNewStoreLevelThree.vue';
+import AddNewStoreFinalLevel from '@/components/stores/operations/addNewStoreLevels/AddNewStoreFinalLevel.vue';
 
 export default {
   data() {
@@ -47,11 +49,20 @@ export default {
         this.$store.commit('stores/showAddNewStoreLevel',{key:'levelThree',value:true,formData:null})
       }
     },
+    showFinalLevel:{
+      get(){
+        return this.$store.state.stores.addNewStoreShowLevels.finalLevel.show
+      },
+      set(newValue){
+        this.$store.commit('stores/showAddNewStoreLevel',{key:'finalLevel',value:true,formData:null})
+      }
+    },
   },
   components:{
     addNewStoreLevelOne,
     addNewStoreLevelTwo,
     addNewStoreLevelThree,
+    AddNewStoreFinalLevel
   }
 }
 </script>

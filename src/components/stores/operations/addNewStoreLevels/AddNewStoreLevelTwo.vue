@@ -70,7 +70,6 @@
         <b-form-select
           v-model="selectedStore"
           :options="fetchedData.unRegisteredStores"
-          @change="getProvinceCities"
           size="8"
           class=""
           :state="true"
@@ -179,7 +178,7 @@
     <hr class="w-100" />
 
     <div class="row w-100 justify-content-center pt-3">
-      <b-button variant="primary m-auto px-4" :disabled="!validationPasseed"
+      <b-button variant="primary m-auto px-4" @click="saveStore" :disabled="!validationPasseed"
         >مرحله ی بعدی</b-button
       >
     </div>
@@ -191,15 +190,12 @@ import axios from 'axios'
 export default {
   data() {
     return {
-      brand_logo:"",
       // modalShow: true,
       store: {
         title:"",
         ShopName:"",
         phone:"",
         MobilePhone:"",
-        lant:"",
-        lng:"",
         ManagerName:"",
         address:"",
         regions:"",
@@ -226,54 +222,13 @@ export default {
     };
   },
   methods:{
-    saveCompnay(){
+    saveStore(){
       //if validation passed save informations
       if (this.validationPasseed) {
-        console.log("update store");
-        let that = this;
-        console.log(that.store);
-
-        //prepare data
-        let data = new FormData();
-        data.append('insertOneBrand', true);
-        data.append('brand_name', this.store.brandName);
-        data.append('published', this.store.published);
-        data.append('brand_logo', this.brand_logo);
-        axios
-          .post(
-            "http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/mainBrands/insertNewBrand.php",
-            data,
-           {
-              headers: {
-                'Content-Type': 'multipart/form-data'
-              }
-           }
-          )
-          .then(function (response) {
-            console.log(response);
-            if (response.data && response.data.status == true) {
-              //show success notification
-              that.$store.state.successNotification = {
-                show: true,
-                message: "شرکت با موفقیت برند شد",
-              };
-              //close edit modal
-              that.$store.state.stores.brandEditing = false;
-              //open comfirm smsCode
-            } else {
-              that.$store.state.errorNotification = {
-                show: true,
-                message: "خطا، شرکت برند نشد",
-              };
-            }
-          })
-          .catch(function (error) {
-            that.$store.state.errorNotification = {
-              show: true,
-              message: "خطا، شرکت برند نشد",
-            };
-            console.log(error);
-          });
+        //save infos goto level three
+        this.$store.commit('stores/showAddNewStoreLevel',{key:'levelTwo',value:false,formData:{},cancelInsert:true})
+        this.$store.commit('stores/showAddNewStoreLevel',{key:'levelThree',value:true,formData:{...this.selectedValues,selectedStore:this.selectedStore,...this.store}})
+        
       }
     
 
@@ -406,6 +361,8 @@ export default {
           .then(function(response) {
               console.log(response.data)
               if (response.data && response.data.CityRegions && response.data.CityRegions.length) {
+                that.showRegionsSelect = true
+                  
                   that.fetchedData.Regions = response.data.CityRegions
                   
               } else {
@@ -437,6 +394,8 @@ export default {
               console.log('unregisterd stores')
               console.log(response.data)
               if (response.data && response.data.stores.length) {
+                that.showUnregisteredStoreSelectBox= true
+
                   that.fetchedData.unRegisteredStores = response.data.stores.map(store => {
                     return {
                       value:store.id,

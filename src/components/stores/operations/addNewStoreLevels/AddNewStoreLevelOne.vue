@@ -81,43 +81,10 @@ export default {
     saveCompany(){
       //if validation passed save informations
       if(this.validationPasseed){
+        //save info and go to level two
+        this.$store.commit('stores/showAddNewStoreLevel',{key:'levelOne',value:false,formData:{...this.store}})
+        this.$store.commit('stores/showAddNewStoreLevel',{key:'levelTwo',value:true,formData:{}})
 
-      let that= this;
-       axios
-          .post("http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/InsertNewCompany.php", {
-               newCompanyLevelOne:true,
-                userName:that.store.userName,
-                password:that.store.password
-          })
-          .then(function(response){
-            
-            console.log(response)
-            if(response.data && response.data.status==true){
-              //show success notification
-              that.$store.state.successNotification = {
-                show: true,
-                message: "مرحله ی اول ثبت نام با موفقیت ذخیره شد",
-              }
-
-
-              //show level two and save form data
-              this.$store.commit('stores/showAddNewStoreLevel',{key:'levelTwo',value:true,formData:that.company})
-
-              
-            }else{
-              that.$store.state.errorNotification={
-                show: true,
-                message: "خطا !!، اطلاعات شرکت ذخیره نشد"
-              }
-            }
-          })
-          .catch(function(error){
-            that.$store.state.errorNotification={
-                show: true,
-                message: "خطا !!، اطلاعات شرکت ذخیره نشد"
-              }
-            console.log(error)
-          })
       }else{
 
       }

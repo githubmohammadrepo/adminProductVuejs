@@ -1,26 +1,55 @@
 <template>
   <div>
     <h5 class="text-center mb-3">مرحله ی سوم ثبت نام فروشگاه</h5>
+    <b-form style="direction:rtl !important; text-align:right !important;">
+      <!-- store lat -->
+      <label for="latStoreLocation">طول جغرافیایی</label>
+      <b-form-input
+        v-model="Geolocation.lat"
+        required
+        type="text"
+        id="latStoreLocation"
+        :state="latValidation"
+      ></b-form-input>
+      <b-form-invalid-feedback :show="!latValidation">
+        این فیلد الزامی است
+      </b-form-invalid-feedback>
+      <b-form-valid-feedback :show="latValidation">
+        تایید شد
+      </b-form-valid-feedback>
+      <!-- end lat -->
 
+
+      <!-- start lng -->
+      <label for="lngStoreLocation" class="mt-1">عرض جغرافیایی</label>
+      <b-form-input
+        v-model="Geolocation.lat"
+        required
+        type="text"
+        id="lngStoreLocation"
+        :state="lngValidation"
+
+      ></b-form-input>
+       <b-form-invalid-feedback :show="!lngValidation">
+        این فیلد الزامی است
+      </b-form-invalid-feedback>
+      <b-form-valid-feedback :show="lngValidation">
+        تایید شد
+      </b-form-valid-feedback>
+      <!-- end store lat -->
+    </b-form>
+    <div class="mt-2"></div>
     <div class="row justify-content-center">
-      <div class="col-12 text-center">
-        <label for="latStoreLocation">طول جغرافیایی</label>&nbsp;&nbsp;
-        <input type="number" v-model="Geolocation.lat" name="latStoreLocation" id="latStoreLocation"  step="0.00000000001">
-      </div>
 
-      <div class="col-12 text-center">
-        <label for="lngStoreLocation">عرض جغرافیایی</label>&nbsp;&nbsp;
-        <input type="number" v-model="Geolocation.lng" name="lngStoreLocation" id="lngStoreLocation" step="0.00000000000001">
-      </div>
     </div>
-
+    
     <!-- show map -->
     <div id="map" />
 
     <hr class="w-50">
     
     <div class="text-center">
-      <b-button variant="info" class="m-auto">مرحله ی بعدی</b-button>
+      <b-button variant="info" class="m-auto" @click="saveStore">مرحله ی بعدی</b-button>
     </div>
 
 
@@ -40,10 +69,29 @@ export default {
     }
   },
   methods: {
-    
+    saveStore(){
+      this.Geolocation.lat = document.getElementById('latStoreLocation').value
+      this.Geolocation.lng = document.getElementById('lngStoreLocation').value
+      
+      if(this.latValidation && this.lngValidation){  
+        setTimeout(() => {
+          this.$store.commit('stores/showAddNewStoreLevel',{key:'levelThree',value:false,formData:{},cancelInsert:true})
+        this.$store.commit('stores/showAddNewStoreLevel',{key:'finalLevel',value:true,formData:{...this.Geolocation}})
+        }, 2700);
+      }
+
+    },
+    getLatValue(e){
+      alert(e)
+    }
   },
   computed: {
-    
+  latValidation(){
+    return (this.Geolocation && this.Geolocation.lat && this.Geolocation.lat.toString().length) ? true : false
+  },
+  lngValidation(){
+    return (this.Geolocation && this.Geolocation.lng && this.Geolocation.lng.toString().length) ? true : false
+  }
   },
   updated() {
   },
@@ -110,4 +158,6 @@ export default {
         width:100%;
         height:300px;
       }
+
+      
 </style>
