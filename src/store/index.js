@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import companies from './companies'
 import brands from './brands'
+import stores from './store'
 Vue.use(Vuex)
 
 
@@ -22,6 +23,7 @@ export default new Vuex.Store({
     actions: {},
     modules: {
         companies: companies,
-        brands: brands
+        brands: brands,
+        stores: stores
     }
 })

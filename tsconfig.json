@@ -34,7 +34,7 @@
     "src/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx"
-, "src/views/Companies.vue", "src/views/Brands.vue", "src/views/Stores.vue", "src/store/index.js", "src/store/companies.js", "src/store/brands.js", "src/components/brands/OperationCompanyModal.vue", "src/components/brands/operations/EditOneCompany.vue", "src/components/brands/operations/OperationCompanyModal.vue", "src/components/brands/operations/NavOperation.vue", "src/components/mainBrand/operations/EditOneBrand.vue", "src/components/mainBrand/operations/RemoveOneBrand.vue"  ],
+, "src/views/Companies.vue", "src/views/Brands.vue", "src/views/Stores.vue", "src/store/index.js", "src/store/companies.js", "src/store/brands.js", "src/components/brands/OperationCompanyModal.vue", "src/components/brands/operations/EditOneCompany.vue", "src/components/brands/operations/OperationCompanyModal.vue", "src/components/brands/operations/NavOperation.vue", "src/components/mainBrand/operations/EditOneBrand.vue", "src/components/mainBrand/operations/RemoveOneBrand.vue", "src/components/stores/ShowTableStores.vue"  ],
   "exclude": [
     "node_modules"
   ]

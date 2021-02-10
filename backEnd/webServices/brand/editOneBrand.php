@@ -57,7 +57,9 @@ class UpdateBrand
     $vowels = array(".jpg", ".png", ".jpeg");
     $file_name = str_replace($vowels, "", $fullFileName);
     $file_path = $fullFileName;
-
+    if(strlen($fullFileName)==0){
+      return true;
+    }
     $sql = "";
     if($this->brandHasLogoFile==true){
       //update brnad logo
@@ -276,7 +278,7 @@ class UpdateBrand
       }
 
       if (empty($errors) == true) {
-        $s = move_uploaded_file($file_tmp, "./brand_logos/" . $file_name);
+        $s = move_uploaded_file($file_tmp, "./../../../../../images/com_hikashop/upload/thumbnails/200x200f/" . $file_name);
         if($s){
           $result['status'] =true;
           return $result;
