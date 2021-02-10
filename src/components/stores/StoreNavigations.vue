@@ -2,11 +2,12 @@
    <div>
    <b-navbar toggleable="lg" type="light" variant="light">
      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+        <b-nav-item class="btn btn-sm" active @click="addOneStore" href="#">افزودن فروشگاه</b-nav-item>
 
     <b-collapse id="nav-collapse" is-nav>
 
       <b-navbar-nav class="col-sm-4">
-        <b-nav-item class="btn btn-sm" active @click="ShowFileterStore" href="#">فیلتر فروشگاه</b-nav-item>
+        <b-nav-item class="btn btn-sm" @click="ShowFileterStore" href="#">فیلتر فروشگاه</b-nav-item>
         <b-nav-item @click="showFindedStores" class="" href="#" >نمایش همه</b-nav-item>
       </b-navbar-nav>
 
@@ -58,6 +59,10 @@ export default {
     }
   },
   methods:{
+    addOneStore(){
+      //show modal one store
+      this.$store.commit('stores/showModalOperation',{key:'add',editing:true});
+    },
     ShowFileterStore(){
       this.$store.commit('stores/showCompoenetByName','filterSearch')
     },
@@ -66,16 +71,20 @@ export default {
     },
     changeCountPaginationPerPage(value){
       //change store perapge number
+      alert('value: '+value)
       this.$store.commit('stores/changeCountPerPagePagnitionation',value)
 
       //dispatch action StoreSearch a gain
       if(this.searchStore.length){
+        alert('search')
         //dispatch search by input
         this.findStoreBySearchInput(this.searchStore);
       }
       else if(this.filteredSearchValue==true){
+        alert('find byfitler')
         this.$store.dispatch('stores/searchStores')
       }else{
+        alert('getAllStores')
         this.$store.dispatch('stores/getAllStores')
       }
 
@@ -99,14 +108,12 @@ export default {
             .then(response => {
                 console.log(response.data)
                 if (response.data && response.data.stores) {
-                    alert('count' + response.data.count)
                     that.$store.commit('stores/computePagesPaginations', response.data.count)
                         //save info in store
                     that.$store.commit('stores/saveFindedStores', response.data.stores)
                         //close filtered store component
                     that.$store.commit('stores/showCompoenetByName', 'showFindedStores')
                 } else {
-                    alert('status false')
                 }
             })
             .catch(error => {

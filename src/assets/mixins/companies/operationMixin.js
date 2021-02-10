@@ -22,7 +22,6 @@ export const mixinActions = () => {
             rootState,
             state,
         }, field) {
-            alert('update')
         },
         saveRemoveOneCompany({
             commit,
@@ -32,7 +31,6 @@ export const mixinActions = () => {
             rootState,
             state,
         }, field) {
-            alert('remove')
         },
         saveAddOneCompany({
             commit,
@@ -42,7 +40,6 @@ export const mixinActions = () => {
             rootState,
             state,
         }, field) {
-            alert('add')
         }
     };
 }

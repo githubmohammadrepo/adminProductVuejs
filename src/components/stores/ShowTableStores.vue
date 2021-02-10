@@ -19,7 +19,7 @@
     >
       <template #cell(operation)="data">
         <div class="min-width-200px">
-            <b-button variant="info" class="m-0 mx-1" @click="ButtonClickEditOneBrand(data.value)" >ویرایش</b-button>
+            <b-button variant="info" class="m-0 mx-1" @click="ButtonClickEditOneStore(data.value)" >ویرایش</b-button>
             <b-button variant="danger" class="m-0 mx-1" @click="ButtonClickRemoveOneBrand(data.value)" >حذف</b-button>
         </div>
 
@@ -52,7 +52,6 @@
       </template>
     </b-table>
 
-    <OperationBrandModal />
 
     <ShowStorePagination />
 
@@ -61,7 +60,6 @@
 
 <script>
 import axios from "axios";
-import OperationBrandModal from "@/components/mainBrand/OperationBrandModal.vue";
 import ShowStorePagination from '@/components/stores/ShowStorePagination.vue';
 
 export default {
@@ -104,50 +102,44 @@ export default {
   methods: {
     editOneBrand(index) {
       this.$store.state.stores.editDataObject = index;
-      this.$store.state.stores.brandEditing = !this.$store.state.stores
-        .brandEditing;
+      this.$store.state.stores.storeEditing = !this.$store.state.stores
+
       //reset addNewCompnay to level one
       //hide all
-      this.$store.commit("brands/hideAllOperations");
-      //show level three
-      this.$store.commit("brands/editOperation");
+      this.$store.commit('stores/showModalOperation',{key:'edit',editing:true});
+     
     },
-    ButtonClickEditOneBrand(category_id) {
+    ButtonClickEditOneStore(store_id) {
       let index = {};
       for (const key in this.$store.state.stores.items) {
         if (Object.hasOwnProperty.call(this.$store.state.stores.items, key)) {
           const element = this.$store.state.stores.items[key];
-          if (element.category_id == category_id) {
+          if (element.id == store_id) {
+            index = element;
+          }
+        }
+      }
+      this.$store.state.stores.editDataObject = index;
+      this.$store.commit('stores/showModalOperation',{key:'edit',editing:true});
+
+      //reset addNewCompnay to level one
+      //hide all
+      //show level three
+    },
+    ButtonClickRemoveOneBrand(store_id) {
+      let index = {};
+      for (const key in this.$store.state.stores.items) {
+        if (Object.hasOwnProperty.call(this.$store.state.stores.items, key)) {
+          const element = this.$store.state.stores.items[key];
+          if (element.id == store_id) {
             index = element;
           }
         }
       }
       this.$store.state.stores.editDataObject = index;
       this.$store.state.stores.brandEditing = !this.$store.state.stores
-        .brandEditing;
-      this.$store.commit("brands/hideAllOperations");
-      //show level three
-      this.$store.commit("brands/editOperation");
-      //reset addNewCompnay to level one
-      //hide all
-      //show level three
-    },
-    ButtonClickRemoveOneBrand(category_id) {
-      let index = {};
-      for (const key in this.$store.state.stores.items) {
-        if (Object.hasOwnProperty.call(this.$store.state.stores.items, key)) {
-          const element = this.$store.state.stores.items[key];
-          if (element.category_id == category_id) {
-            index = element;
-          }
-        }
-      }
-      this.$store.state.stores.editDataObject = index;
-      this.$store.state.stores.brandEditing = !this.$store.state.stores
-        .brandEditing;
-      this.$store.commit("brands/hideAllOperations");
-      //show level three
-      this.$store.commit("brands/removeOnebrand");
+      
+      this.$store.commit('stores/showModalOperation',{key:'remove',editing:true});
       //reset addNewCompnay to level one
       //hide all
       //show level three
@@ -155,12 +147,16 @@ export default {
   },
   computed: {
     items() {
-      return this.$store.state.stores.items;
+      return this.$store.state.stores.items.map(store =>{
+        return {
+          ...store,
+          operation:store.id
+        }
+      });
     },
   },
   created() {},
   components: {
-    OperationBrandModal,
     ShowStorePagination,
 
   },

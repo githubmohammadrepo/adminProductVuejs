@@ -4,6 +4,7 @@
     <showAllRegions v-if="showAllRegions" />
     <FindStoresByFormFilters v-if="findByFormFilter"/>
     <ShowTableStores v-else />
+    <OperationStoreModal />
 
   </div>
 </template>
@@ -13,6 +14,8 @@ import showAllRegions from '@/components/stores/ShowAllRegions.vue'
 import FindStoresByFormFilters from '@/components/stores/FindStoresByFormFilters.vue'
 import StoreNavigations from '@/components/stores/StoreNavigations.vue';
 import ShowTableStores from '@/components/stores/ShowTableStores.vue'
+import OperationStoreModal from "@/components/stores/OperationStoreModal.vue";
+
 export default {
   data(){
     return {
@@ -37,6 +40,8 @@ export default {
     FindStoresByFormFilters,
     StoreNavigations,
     ShowTableStores,
+    OperationStoreModal,
+    
   },
   created() {
     

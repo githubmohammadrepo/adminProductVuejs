@@ -5,6 +5,8 @@
       <router-link to="/stores">فروشگاه ها</router-link>
       |
       <router-link to="/brands">برند ها</router-link>
+      |&nbsp;
+      <router-link to="/test">تست</router-link>
     </div>
     <div class="container">
       

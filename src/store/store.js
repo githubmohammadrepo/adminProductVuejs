@@ -6,21 +6,14 @@ const companies = {
             show: false,
             pages: 25,
             currentPage: 0,
-            countPerPage: 20,
+            countPerPage: 25,
         },
         items: Array(),
-        companyEditing: false,
+        storeEditing: false,
         editDataObject: {
-            id: "",
-            companyName: "",
-            brandName: "",
-            mangerFullName: "",
-            phone: "",
-            mobile: "",
-            address: "",
-            user_id: ""
+
         },
-        companyOperation: {
+        storeOperation: {
             edit: false,
             remove: false,
             add: false,
@@ -50,7 +43,6 @@ const companies = {
     }),
     mutations: {
         saveFindedStores(state, payload) {
-            alert('saveStore')
             console.log(payload)
             state.items = payload;
         },
@@ -70,17 +62,16 @@ const companies = {
                 state.SearchStore[payLoad.key] = payLoad.value;
             }
         },
-        hideAllOperations(state) {
-            console.log('company operation')
-            console.log(state.companyOperation)
-            for (const key in state.companyOperation) {
-                if (Object.hasOwnProperty.call(state.companyOperation, key)) {
-                    state.companyOperation[key] = false;
-                }
-            }
-        },
-        editOperation(state) {
-            return state.companyOperation.edit = !state.companyOperation.edit;
+        showModalOperation(state, payload) {
+            state.storeOperation.add = false;
+            state.storeOperation.edit = false;
+            state.storeOperation.remove = false;
+
+            //set editing modal to true
+            state.storeEditing = payload.editing;
+            //shwo compoennt addOneStore in modal component
+            state.storeOperation[payload.key] = true;
+
         },
         removeOneCompany(state) {
             return state.companyOperation.remove = !state.companyOperation.remove;
@@ -125,15 +116,12 @@ const companies = {
             state.AddNewCompany[levelName].show = !state.AddNewCompany[levelName].show;
         },
         changeCountPerPagePagnitionation(state, payload) {
-            alert('countPerPage: ' + payload)
             state.paginationObject.countPerPage = payload;
         },
         saveSearchedFilters(state, payload) {
             state.storeShowComponents.SearchStore = payload
         },
         computePagesPaginations(state, payload) {
-            alert('comput pages')
-            alert('countincomput: ' + payload)
             state.paginationObject.pages = Math.ceil(payload / state.paginationObject.countPerPage)
         },
         makeSearchAsFiltered(state, payload) {
@@ -183,6 +171,7 @@ const companies = {
                 })
         },
         getAllStores({ state, commit }) {
+            alert('countPerPage' + state.paginationObject.countPerPage)
             let that = this;
             axios
                 .post("http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/stores/ShowStoreInfos.php", {
@@ -193,7 +182,6 @@ const companies = {
                 .then(response => {
                     console.log(response.data)
                     if (response.data && response.data.stores) {
-                        alert('count' + response.data.count)
                         commit('computePagesPaginations', response.data.count)
                             //save info in store
                         commit('saveFindedStores', response.data.stores)
@@ -206,6 +194,7 @@ const companies = {
                 .catch(error => {
                     console.log(error)
                 })
+            alert('End_countPerPage' + state.paginationObject.countPerPage)
         }
 
     },

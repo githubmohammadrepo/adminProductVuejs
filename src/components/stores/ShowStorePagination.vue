@@ -19,7 +19,6 @@ export default {
     },
     methods: {
       show(newShow){
-        alert('show')
         //dispatch action
         this.$store.dispatch('stores/getAllStores')
       }

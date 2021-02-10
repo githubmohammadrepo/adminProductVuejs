@@ -1,4 +1,10 @@
 <?php
+header("Access-Control-Allow-Origin: *");
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+header('Access-Control-Allow-Headers: *');
+
+
 require_once('./../../../connection.php');
 require_once('./HelperTrait.php');
 error_reporting(E_ALL);
