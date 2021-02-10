@@ -38,10 +38,46 @@ const companies = {
                 region_id: null,
                 filtered: false,
             }
+        },
+        addNewStoreShowLevels: {
+            levelOne: {
+                formData: {
+                    userName: null,
+                    password: null
+                },
+                show: false
+            },
+            levelTwo: {
+                formData: {
+
+                },
+                show: false
+            },
+            levelThree: {
+                formData: {
+
+                },
+                show: true
+            }
         }
 
     }),
     mutations: {
+        //payload format {key:levelName,value:true/false,formData=null}
+        showAddNewStoreLevel(state, payload) {
+            //hide all levels
+            state.addNewStoreShowLevels.levelOne.show = false;
+            state.addNewStoreShowLevels.levelTwo.show = false;
+            state.addNewStoreShowLevels.levelThree.show = false;
+
+            //show level
+            state.addNewStoreShowLevels[payload.key].show = payload.value;
+
+            //update form data
+            state.addNewStoreShowLevels[payload.key].formData = payload.formData;
+
+
+        },
         saveFindedStores(state, payload) {
             console.log(payload)
             state.items = payload;

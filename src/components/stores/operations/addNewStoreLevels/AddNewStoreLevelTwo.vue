@@ -1,24 +1,93 @@
 <template>
   <div>
-    <h5 class="text-center">فرم افزودن فروشگاه جدید</h5>
+    <h5 class="text-center mt-3">مرحله ی دوم ثبت نام فروشگاه</h5>
+
     <hr class="w-50">
     <!-- store title -->
     <b-form class="form-editCompany pb-3" @submit.stop.prevent>
-      <label for="title">عنوان فروشگاه</label>
-      <b-form-input
-        v-model="store.title"
-        :state="titleValidation"
-        id="title"
-        required
-        type="text"
-      ></b-form-input>
-      <b-form-invalid-feedback :show="!titleValidation">
-        تعداد کارکتر ها نباید کمتر از 3 کارکتر باشد
+
+      <!-- start select box select province -->
+      <label for="address">استان فروشگاه</label>
+      <b-form-select
+        v-model="selectedValues.selectedProvince"
+        :options="provinces"
+        @change="getProvinceCities"
+        size="8"
+        class="mb-3"
+        :state="provinceValidation"
+      >
+        <!-- This slot appears above the options from 'options' prop -->
+        <template #first>
+          <b-form-select-option :value="null" disabled
+            >نام استان را انتخاب کنید</b-form-select-option
+          >
+        </template>
+      </b-form-select>
+      <b-form-invalid-feedback :show="!provinceValidation">
+        باید یک استان را انتخاب بکنید
       </b-form-invalid-feedback>
-      <b-form-valid-feedback :show="titleValidation">
+      <b-form-valid-feedback :show="provinceValidation">
         تایید شد
       </b-form-valid-feedback>
-      <!-- end store title -->
+      <!-- end select box select province -->
+
+      <!-- start select box select provinceCities -->
+
+      <label for="city" >شهر فروشگاه</label>
+       <b-form-select  :state="cityProvinceValidation" v-model="selectedValues.selectedCity" :options="cities" @change="getCitySelectedRegions" class="mb-3">
+          <!-- This slot appears above the options from 'options' prop -->
+          <template #first>
+            <b-form-select-option :value="null" disabled
+              >نام شهر را انتخاب کنید</b-form-select-option
+            >
+          </template>
+        </b-form-select>
+      <b-form-invalid-feedback  :show="!cityProvinceValidation">
+        باید یک شهر را انتخاب بکنید
+      </b-form-invalid-feedback>
+      <b-form-valid-feedback  :show="cityProvinceValidation">
+        تایید شد
+      </b-form-valid-feedback>
+      <!-- end select box select provinceCities -->
+
+      <!-- start select box select region -->
+      <div class="w-100" v-if="showRegionsSelect">
+
+      <label for="address">منطقه فروشگاه</label>
+       <b-form-select v-model="selectedValues.selectedRegion" @change="getUnregisteredStores" :options="regions" class="mb-3">
+          <!-- This slot appears above the options from 'options' prop -->
+          <template #first>
+            <b-form-select-option :value="null" disabled
+              >نام منطقه را انتخاب کنید</b-form-select-option
+            >
+          </template>
+        </b-form-select>
+      </div>
+
+        <!-- start select box select province -->
+      <span v-if="showUnregisteredStoreSelectBox">
+        <label for="selectStore">انتخاب از میان فروشگاه های موجود</label>
+        <b-form-select
+          v-model="selectedStore"
+          :options="fetchedData.unRegisteredStores"
+          @change="getProvinceCities"
+          size="8"
+          class=""
+          :state="true"
+          id="selectStore"
+        >
+          <!-- This slot appears above the options from 'options' prop -->
+          <template #first>
+            <b-form-select-option :value="null" disabled
+              >انتخاب از میان فروشگاه های موجود</b-form-select-option >
+          </template>
+        </b-form-select>
+        <b-form-valid-feedback :show="true">
+          در صورت انتخاب، فیلد های زیر اپدیت خواهند شد
+        </b-form-valid-feedback>
+      </span>
+      <!-- end select box select province -->
+
 
       <!-- store ShopName -->
       <label for="ShopName">نام فروشگاه</label>
@@ -54,6 +123,23 @@
       </b-form-valid-feedback>
       <!-- end store phone -->
 
+      <!-- store ManagerName -->
+      <label for="ManagerName">نام مدیر فروشگاه</label>
+      <b-form-input
+        v-model="store.ManagerName"
+        :state="ManagerNameValidation"
+        id="ManagerName"
+        required
+        type="text"
+      ></b-form-input>
+      <b-form-invalid-feedback :show="!ManagerNameValidation">
+        باید بشتر از 3 کارکتر وارد کنید
+      </b-form-invalid-feedback>
+      <b-form-valid-feedback :show="ManagerNameValidation">
+        تایید شد
+      </b-form-valid-feedback>
+      <!-- end store ManagerName -->
+
       <!-- store MobilePhone -->
       <label for="MobilePhone">موبایل صاحب فروشگاه</label>
       <b-form-input
@@ -70,23 +156,6 @@
         تایید شد
       </b-form-valid-feedback>
       <!-- end store MobilePhone -->
-
-      <!-- store ManagerName -->
-      <label for="ManagerName">نام صاحب فروشگاه</label>
-      <b-form-input
-        v-model="store.ManagerName"
-        :state="ManagerNameValidation"
-        id="ManagerName"
-        required
-        type="text"
-      ></b-form-input>
-      <b-form-invalid-feedback :show="!ManagerNameValidation">
-        باید بشتر از 3 کارکتر وارد کنید
-      </b-form-invalid-feedback>
-      <b-form-valid-feedback :show="ManagerNameValidation">
-        تایید شد
-      </b-form-valid-feedback>
-      <!-- end store ManagerName -->
 
       <!-- store address -->
       <label for="address">آدرس فروشگاه</label>
@@ -105,66 +174,13 @@
       </b-form-valid-feedback>
       <!-- end store address -->
 
-      <!-- start select box select province -->
-      <label for="address">استان فروشگاه</label>
-      <b-form-select
-        v-model="selectedValues.selectedProvince"
-        :options="provinces"
-        @change="getProvinceCities"
-        size="8"
-        class="mb-3"
-        :state="provinceValidation"
-      >
-        <!-- This slot appears above the options from 'options' prop -->
-        <template #first>
-          <b-form-select-option :value="null" disabled
-            >نام استان را انتخاب کنید</b-form-select-option
-          >
-        </template>
-      </b-form-select>
-      <b-form-invalid-feedback :show="!provinceValidation">
-        باید یک استان را انتخاب بکنید
-      </b-form-invalid-feedback>
-      <b-form-valid-feedback :show="provinceValidation">
-        تایید شد
-      </b-form-valid-feedback>
-      <!-- end select box select province -->
-
-      <!-- start select box select provinceCities -->
-      <label for="address">شهر فروشگاه</label>
-       <b-form-select :state="cityProvinceValidation" v-model="selectedValues.selectedCity" :options="cities" @change="getCitySelectedRegions" class="mb-3">
-          <!-- This slot appears above the options from 'options' prop -->
-          <template #first>
-            <b-form-select-option :value="null" disabled
-              >نام شهر را انتخاب کنید</b-form-select-option
-            >
-          </template>
-        </b-form-select>
-      <b-form-invalid-feedback :show="!cityProvinceValidation">
-        باید یک شهر را انتخاب بکنید
-      </b-form-invalid-feedback>
-      <b-form-valid-feedback :show="cityProvinceValidation">
-        تایید شد
-      </b-form-valid-feedback>
-      <!-- end select box select provinceCities -->
-
-      <!-- start select box select region -->
-      <label for="address">شهر فروشگاه</label>
-       <b-form-select v-model="selectedValues.selectedRegion" :options="regions" class="mb-3">
-          <!-- This slot appears above the options from 'options' prop -->
-          <template #first>
-            <b-form-select-option :value="null" disabled
-              >نام منطقه را انتخاب کنید</b-form-select-option
-            >
-          </template>
-        </b-form-select>
-      <!-- end select box select province -->
+      
     </b-form>
     <hr class="w-100" />
 
     <div class="row w-100 justify-content-center pt-3">
       <b-button variant="primary m-auto px-4" :disabled="!validationPasseed"
-        >ذخیره</b-button
+        >مرحله ی بعدی</b-button
       >
     </div>
   </div>
@@ -190,7 +206,8 @@ export default {
         cities:"",
         provinces:"",
       },
-      imageUrl:null,
+      showRegionsSelect:true,
+      selectedStore: null,
       options: [
         { text: 'وضعیت انشار', value: true },
       ],
@@ -198,12 +215,14 @@ export default {
         provinces:Array(),
         cities:Array(),
         Regions:Array(),
+        unRegisteredStores:Array(),
       },
       selectedValues:{
         selectedProvince: null,
         selectedCity: null,
         selectedRegion: null,
       },
+      showUnregisteredStoreSelectBox:true
     };
   },
   methods:{
@@ -290,6 +309,7 @@ export default {
 
     //just for test show 
     },
+
     /**
      * search stoes
      */
@@ -323,8 +343,6 @@ export default {
         })
     },
 
-
-
     /**
      * get all provinces
      */
@@ -356,6 +374,7 @@ export default {
         axios
             .post("http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/stores/showFormFilterStore.php", {
                 selectProvinceCities: true,
+                ...that.selectedValues,
                 province_id: province_id
             })
             .then(function(response) {
@@ -392,13 +411,58 @@ export default {
               } else {
                 // show modal error fetching provinceCities
                 that.fetchedData.Regions = Array()
+                //get unregistered stores
+                that.getUnRegisteredStores_ajax();
+
+                //hide region select box
+                that.showRegionsSelect = false
               }
 
           })
           .catch(function(error) {
               console.log(error)
           })
+    },
+    /**
+     * get all unregistered stores
+     */
+    getUnRegisteredStores_ajax() {
+      let that =this;
+        axios
+          .post("http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/stores/getUnRegisteredStores.php", {
+              getAllUnregisteredStores: true,
+              ...that.selectedValues
+          })
+          .then(function(response) {
+              console.log('unregisterd stores')
+              console.log(response.data)
+              if (response.data && response.data.stores.length) {
+                  that.fetchedData.unRegisteredStores = response.data.stores.map(store => {
+                    return {
+                      value:store.id,
+                      text:store.ShopName
+                    }
+                  });
+                  
+              } else {
+                // show modal error fetching provinceCities
+                that.fetchedData.Regions = Array()
+                //dispable selextBox_unregisteredStores
+                that.showUnregisteredStoreSelectBox= false
+              }
+
+          })
+          .catch(function(error) {
+              console.log(error)
+          })
+    },
+
+    getUnregisteredStores(value){
+      this.selectedValues.Regions = value;
+      this.getUnRegisteredStores_ajax();
     }
+
+    
   },
   computed: {
     provinces(){
@@ -439,13 +503,17 @@ export default {
         return this.storeShowComponents.SearchStore;
     },
     validationPasseed(){
-      return (this.titleValidation);
-    },
-    titleValidation() {
       return (
-        this.store.title!=null && this.store.title.length > 3 && this.store.title.length < 30
+        this.ShopNameValidation &&
+        this.phoneValidation &&
+        this.MobilePhoneValidation &&
+        this.ManagerNameValidation &&
+        this.addressValidation &&
+        this.provinceValidation &&
+        this.cityProvinceValidation
       );
     },
+
     ShopNameValidation() {
       return (
         this.store.ShopName!=null && this.store.ShopName.length > 3 && this.store.ShopName.length < 30
@@ -506,7 +574,9 @@ export default {
   components:{
   },
   created() {
-    this.getAllProvinces_ajax()
+    this.getAllProvinces_ajax();
+    this.showUnregisteredStoreSelectBox=true
+    this.showRegionsSelect = true;
   },
 };
 </script>

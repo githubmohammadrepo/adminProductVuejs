@@ -1,172 +1,66 @@
 <template>
   <div>
-    <h5 class="text-center">فرم افزودن فروشگاه جدید</h5>
-    <hr class="w-50">
-    <!-- store title -->
-    <b-form class="form-editCompany pb-3" @submit.stop.prevent>
-      <label for="title">عنوان فروشگاه</label>
-      <b-form-input
-        v-model="store.title"
-        :state="titleValidation"
-        id="title"
-        required
-        type="text"
-      ></b-form-input>
-      <b-form-invalid-feedback :show="!titleValidation">
-        تعداد کارکتر ها نباید کمتر از 3 کارکتر باشد
-      </b-form-invalid-feedback>
-      <b-form-valid-feedback :show="titleValidation">
-        تایید شد
-      </b-form-valid-feedback>
-      <!-- end store title -->
+      <h5 class="text-center mt-3">مرحله ی اول ثبت نام فروشگاه</h5>
 
-      <!-- store ShopName -->
-      <label for="ShopName">نام فروشگاه</label>
-      <b-form-input
-        v-model="store.ShopName"
-        :state="ShopNameValidation"
-        id="ShopName"
-        required
-        type="text"
-      ></b-form-input>
-      <b-form-invalid-feedback :show="!ShopNameValidation">
-        تعداد کارکتر ها نباید کمتر از 3 کارکتر باشد
-      </b-form-invalid-feedback>
-      <b-form-valid-feedback :show="ShopNameValidation">
-        تایید شد
-      </b-form-valid-feedback>
-      <!-- end store ShopName -->
+      <!-- user name -->
+      <b-form class="form-editCompany" @submit.stop.prevent>
+        
+        <label for="userName">نام کاربری</label>
+        <b-form-input
+          v-model="store.userName"
+          :state="userNameValidation"
+          id="userName"
+          required
+          type="text"
+        ></b-form-input>
+        <b-form-invalid-feedback :show="!userNameValidation" >
+          تعداد کارکتر ها نباید کمتر از 3 کارکتر باشد
+        </b-form-invalid-feedback>
+        <b-form-valid-feedback :show="userNameValidation">
+          تایید شد
+        </b-form-valid-feedback>
 
-      <!-- store phone -->
-      <label for="phone">تلفن فروشگاه</label>
-      <b-form-input
-        v-model="store.phone"
-        :state="phoneValidation"
-        id="phone"
-        required
-        type="text"
-      ></b-form-input>
-      <b-form-invalid-feedback :show="!phoneValidation">
-        فقط باید عدد وارد شود
-      </b-form-invalid-feedback>
-      <b-form-valid-feedback :show="phoneValidation">
-        تایید شد
-      </b-form-valid-feedback>
-      <!-- end store phone -->
+      <!-- password -->
+        <label for="password">رمز عبور شرکت</label>
+        <b-form-input
+          v-model="store.password"
+          :state="passwordValidation"
+          id="password"
+          required
+          
+          type="text"
+        ></b-form-input>
+        <b-form-invalid-feedback :show="passwordValidation==false" >
+          تعداد کارکتر ها نباید کمتر از 8 کارکتر باشد
+        </b-form-invalid-feedback>
+        <b-form-valid-feedback :show="passwordValidation==true">
+          تایید شد
+        </b-form-valid-feedback>
 
-      <!-- store MobilePhone -->
-      <label for="MobilePhone">موبایل صاحب فروشگاه</label>
-      <b-form-input
-        v-model="store.MobilePhone"
-        :state="MobilePhoneValidation"
-        id="MobilePhone"
-        required
-        type="text"
-      ></b-form-input>
-      <b-form-invalid-feedback :show="!MobilePhoneValidation">
-        فقط باید عدد وارد شود
-      </b-form-invalid-feedback>
-      <b-form-valid-feedback :show="MobilePhoneValidation">
-        تایید شد
-      </b-form-valid-feedback>
-      <!-- end store MobilePhone -->
+        <!-- retypePassword -->
+        
+        <label for="retypePassword">تکرار رمز عبور شرکت</label>
+        <b-form-input
+          v-model="store.retypePassword"
+          :state="retypePasswordValidation"
+          id="retypePassword"
+          required
+          
+          type="text"
+        ></b-form-input>
+        <b-form-invalid-feedback :show="!retypePasswordValidation">
+         رمز عبورو تکرار رمز عبور باید با هم برابر باشند
+        </b-form-invalid-feedback>
+        <b-form-valid-feedback :show="retypePasswordValidation">
+          تایید شد
+        </b-form-valid-feedback>
 
-      <!-- store ManagerName -->
-      <label for="ManagerName">نام صاحب فروشگاه</label>
-      <b-form-input
-        v-model="store.ManagerName"
-        :state="ManagerNameValidation"
-        id="ManagerName"
-        required
-        type="text"
-      ></b-form-input>
-      <b-form-invalid-feedback :show="!ManagerNameValidation">
-        باید بشتر از 3 کارکتر وارد کنید
-      </b-form-invalid-feedback>
-      <b-form-valid-feedback :show="ManagerNameValidation">
-        تایید شد
-      </b-form-valid-feedback>
-      <!-- end store ManagerName -->
+      </b-form>
 
-      <!-- store address -->
-      <label for="address">آدرس فروشگاه</label>
-      <b-form-input
-        v-model="store.address"
-        :state="addressValidation"
-        id="address"
-        required
-        type="text"
-      ></b-form-input>
-      <b-form-invalid-feedback :show="!addressValidation">
-        باید بیشتر از 3 کارکتر وارد کنید
-      </b-form-invalid-feedback>
-      <b-form-valid-feedback :show="addressValidation">
-        تایید شد
-      </b-form-valid-feedback>
-      <!-- end store address -->
+        <div class="row justify-content-center">
+          <b-button variant="primary m-auto px-4" :disabled="!validationPasseed" @click="saveCompany">مرحله ی بعدی</b-button>
+        </div>
 
-      <!-- start select box select province -->
-      <label for="address">استان فروشگاه</label>
-      <b-form-select
-        v-model="selectedValues.selectedProvince"
-        :options="provinces"
-        @change="getProvinceCities"
-        size="8"
-        class="mb-3"
-        :state="provinceValidation"
-      >
-        <!-- This slot appears above the options from 'options' prop -->
-        <template #first>
-          <b-form-select-option :value="null" disabled
-            >نام استان را انتخاب کنید</b-form-select-option
-          >
-        </template>
-      </b-form-select>
-      <b-form-invalid-feedback :show="!provinceValidation">
-        باید یک استان را انتخاب بکنید
-      </b-form-invalid-feedback>
-      <b-form-valid-feedback :show="provinceValidation">
-        تایید شد
-      </b-form-valid-feedback>
-      <!-- end select box select province -->
-
-      <!-- start select box select provinceCities -->
-      <label for="address">شهر فروشگاه</label>
-       <b-form-select :state="cityProvinceValidation" v-model="selectedValues.selectedCity" :options="cities" @change="getCitySelectedRegions" class="mb-3">
-          <!-- This slot appears above the options from 'options' prop -->
-          <template #first>
-            <b-form-select-option :value="null" disabled
-              >نام شهر را انتخاب کنید</b-form-select-option
-            >
-          </template>
-        </b-form-select>
-      <b-form-invalid-feedback :show="!cityProvinceValidation">
-        باید یک شهر را انتخاب بکنید
-      </b-form-invalid-feedback>
-      <b-form-valid-feedback :show="cityProvinceValidation">
-        تایید شد
-      </b-form-valid-feedback>
-      <!-- end select box select provinceCities -->
-
-      <!-- start select box select region -->
-      <label for="address">شهر فروشگاه</label>
-       <b-form-select v-model="selectedValues.selectedRegion" :options="regions" class="mb-3">
-          <!-- This slot appears above the options from 'options' prop -->
-          <template #first>
-            <b-form-select-option :value="null" disabled
-              >نام منطقه را انتخاب کنید</b-form-select-option
-            >
-          </template>
-        </b-form-select>
-      <!-- end select box select province -->
-    </b-form>
-    <hr class="w-100" />
-
-    <div class="row w-100 justify-content-center pt-3">
-      <b-button variant="primary m-auto px-4" :disabled="!validationPasseed"
-        >ذخیره</b-button
-      >
-    </div>
   </div>
 </template>
 
@@ -175,339 +69,87 @@ import axios from 'axios'
 export default {
   data() {
     return {
-      brand_logo:"",
       // modalShow: true,
       store: {
-        title:"",
-        ShopName:"",
-        phone:"",
-        MobilePhone:"",
-        lant:"",
-        lng:"",
-        ManagerName:"",
-        address:"",
-        regions:"",
-        cities:"",
-        provinces:"",
-      },
-      imageUrl:null,
-      options: [
-        { text: 'وضعیت انشار', value: true },
-      ],
-      fetchedData:{
-        provinces:Array(),
-        cities:Array(),
-        Regions:Array(),
-      },
-      selectedValues:{
-        selectedProvince: null,
-        selectedCity: null,
-        selectedRegion: null,
+        userName: "",
+        password: "",
+        retypePassword: "",
       },
     };
   },
   methods:{
-    saveCompnay(){
+    saveCompany(){
       //if validation passed save informations
-      if (this.validationPasseed) {
-        console.log("update store");
-        let that = this;
-        console.log(that.store);
+      if(this.validationPasseed){
 
-        //prepare data
-        let data = new FormData();
-        data.append('insertOneBrand', true);
-        data.append('brand_name', this.store.brandName);
-        data.append('published', this.store.published);
-        data.append('brand_logo', this.brand_logo);
-        axios
-          .post(
-            "http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/mainBrands/insertNewBrand.php",
-            data,
-           {
-              headers: {
-                'Content-Type': 'multipart/form-data'
-              }
-           }
-          )
-          .then(function (response) {
-            console.log(response);
-            if (response.data && response.data.status == true) {
+      let that= this;
+       axios
+          .post("http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/InsertNewCompany.php", {
+               newCompanyLevelOne:true,
+                userName:that.store.userName,
+                password:that.store.password
+          })
+          .then(function(response){
+            
+            console.log(response)
+            if(response.data && response.data.status==true){
               //show success notification
               that.$store.state.successNotification = {
                 show: true,
-                message: "شرکت با موفقیت برند شد",
-              };
-              //close edit modal
-              that.$store.state.stores.brandEditing = false;
-              //open comfirm smsCode
-            } else {
-              that.$store.state.errorNotification = {
-                show: true,
-                message: "خطا، شرکت برند نشد",
-              };
-            }
-          })
-          .catch(function (error) {
-            that.$store.state.errorNotification = {
-              show: true,
-              message: "خطا، شرکت برند نشد",
-            };
-            console.log(error);
-          });
-      }
-    
-
-    },
-    getProvinceCities(value){
-      //search value
-      let provinceSelected = {};
-      let allProvinces= this.getProvinces;
-      for(let i=0;i<allProvinces.length;i++){
-        if(parseInt(allProvinces[i].id) == value){
-          provinceSelected = allProvinces[i];
-          break;
-        }
-      }
-    
-    //set province_id to selected city
-    //dispatch action get all provinceCities
-    this.getProvinceCities_ajax(value)
-    },
-    getCitySelectedRegions(value){
-       //search value
-      let CitySelected = {};
-      let allCities= this.getCities;
-      for(let i=0;i<allCities.length;i++){
-        if(parseInt(allCities[i].id) == value){
-          CitySelected = allCities[i];
-          break;
-        }
-      }
-    
-    //dispatch action get all provinceCities
-    this.getCityRegions_ajax(value);
-
-    //just for test show 
-    },
-    /**
-     * search stoes
-     */
-    searchStores(){
-      let that = this;
-      axios
-        .post("http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/stores/ShowStoreInfos.php",{
-          ...that.selectedValues,
-          offset:0,
-          count:25,
-          showALlStoreInfos:true
-        })
-        .then(response =>{
-          console.log(response.data)
-          if(response.data && response.data.stores){
-            
-            this.$store.commit('stores/makeSearchAsFiltered',true)
-            //save info in store
-            this.$store.commit('stores/saveFindedStores',response.data.stores)
-            //close filtered store component
-            this.$store.commit('stores/showCompoenetByName','showFindedStores')
-
-            //save searched value province,city,region
-            this.$store.commit('stores/saveSearchedFilters',this.selectedValues)
-          }else{
-            alert('status false')
-          }
-        })
-        .catch(error =>{
-          console.log(error)
-        })
-    },
-
-
-
-    /**
-     * get all provinces
-     */
-    getAllProvinces_ajax() {
-      let that = this;
-        axios
-            .post("http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/stores/showFormFilterStore.php", {
-                selectProvince: true
-            })
-            .then(function(response) {
-                console.log(response.data)
-                if (response.data && response.data.provinces.length) {
-                    that.fetchedData.provinces = response.data.provinces
-                } else {
-                  that.fetchedData.provinces = Array();
-                  //show error fetching provinces
-                }
-
-            })
-            .catch(function(error) {
-                console.log(error)
-            })
-    },
-    /**
-     * get all province cities
-     */
-    getProvinceCities_ajax(province_id) {
-      let that  =this;
-        axios
-            .post("http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/stores/showFormFilterStore.php", {
-                selectProvinceCities: true,
-                province_id: province_id
-            })
-            .then(function(response) {
-                console.log(response.data)
-                if (response.data && response.data.provinceCities && response.data.provinceCities.length) {
-                   that.fetchedData.cities = response.data.provinceCities
-                   
-                } else {
-                  // show modal error fetching provinceCities
-                  that.fetchedData.cities = Array()
-                }
-
-            })
-            .catch(function(error) {
-                console.log(error)
-            })
-    },
-
-    /**
-     * get all regions
-     */
-    getCityRegions_ajax(city_id) {
-      let that =this;
-        axios
-          .post("http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/stores/showFormFilterStore.php", {
-              selectCityRegions: true,
-              cityId: city_id
-          })
-          .then(function(response) {
-              console.log(response.data)
-              if (response.data && response.data.CityRegions && response.data.CityRegions.length) {
-                  that.fetchedData.Regions = response.data.CityRegions
-                  
-              } else {
-                // show modal error fetching provinceCities
-                that.fetchedData.Regions = Array()
+                message: "مرحله ی اول ثبت نام با موفقیت ذخیره شد",
               }
 
+
+              //show level two and save form data
+              this.$store.commit('stores/showAddNewStoreLevel',{key:'levelTwo',value:true,formData:that.company})
+
+              
+            }else{
+              that.$store.state.errorNotification={
+                show: true,
+                message: "خطا !!، اطلاعات شرکت ذخیره نشد"
+              }
+            }
           })
-          .catch(function(error) {
-              console.log(error)
+          .catch(function(error){
+            that.$store.state.errorNotification={
+                show: true,
+                message: "خطا !!، اطلاعات شرکت ذخیره نشد"
+              }
+            console.log(error)
           })
+      }else{
+
+      }
+
     }
   },
   computed: {
-    provinces(){
-      return this.fetchedData.provinces.map((value,index)=>{
-        return {
-          text:value.name,
-          value:value.id,
-        }
-      })
+    validationPasseed(){
+      return (
+        JSON.parse((this.userNameValidation && this.passwordValidation && this.retypePasswordValidation).toString()) ? true : false
+      );
     },
-    cities(){
-      return this.fetchedData.cities.map((value,index)=>{
-        return {
-          text:value.name,
-          value:value.id
-        }
-      })
+    userNameValidation() {
+      return (
+        JSON.parse((this.store.userName!=null && this.store.userName.length > 3 && this.store.userName.length < 30).toString()) ? true: false
+      );
     },
-    regions(){
-      return this.fetchedData.Regions.map((value,index)=>{
-        return {
-          text:value.title,
-          value:value.id
-        }
-      })
+    passwordValidation() {
+      return (
+        JSON.parse((this.store.password!=null && this.store.password.toString().length > 7 &&  this.store.password.toString().length < 43).toString()) ? true : false
+      );
     },
 
-    getProvinces() {
-        return this.fetchedData.provinces
-    },
-    getCities() {
-        return this.fetchedData.cities
-    },
-    getRegions() {
-        return this.fetchedData.Regions
-    },
-    getStoreSearchObject() {
-        return this.storeShowComponents.SearchStore;
-    },
-    validationPasseed(){
-      return (this.titleValidation);
-    },
-    titleValidation() {
+    retypePasswordValidation() {
       return (
-        this.store.title!=null && this.store.title.length > 3 && this.store.title.length < 30
+        JSON.parse((this.store.retypePassword!=null && this.store.password.toString() ==this.store.retypePassword.toString() ).toString()) ? true : false
       );
     },
-    ShopNameValidation() {
-      return (
-        this.store.ShopName!=null && this.store.ShopName.length > 3 && this.store.ShopName.length < 30
-      );
-    },
-    phoneValidation() {
-      return (
-        this.store.phone!=null && this.store.phone.length > 3 && this.store.phone.length < 13 && !isNaN(Number(this.store.phone))
-      );
-    },
-    MobilePhoneValidation() {
-      return (
-        this.store.MobilePhone!=null && this.store.MobilePhone.length > 3 && this.store.MobilePhone.length < 13 && !isNaN(Number(this.store.MobilePhone))
-      );
-    },
-    ManagerNameValidation() {
-      return (
-        this.store.ManagerName!=null && this.store.ManagerName.length > 3 && this.store.ManagerName.length < 30
-      );
-    },
-    addressValidation() {
-      return (
-        this.store.address!=null && this.store.address.length > 3 && this.store.address.length < 30
-      );
-    },
-    provinceValidation() {
-      return (
-        this.selectedValues.selectedProvince!=null && this.selectedValues.selectedProvince.length >0
-      );
-    },
-    cityProvinceValidation() {
-      return (
-        this.selectedValues.selectedCity!=null && this.selectedValues.selectedCity.length >0
-      );
-    },
-    
-    modalShow:{
-      get(){
-        return this.$store.state.stores.brandEditing
-      },
-      set(newValue){
-        this.$store.state.stores.brandEditing=!this.$store.state.stores.brandEditing;
-      }
-      // return false;
-    }
-  },
-  created() {
-    this.store.published= false;
-    this.store.brandName="";
-    this.brand_logo= null;
-  },
-  updated() {
-     let obj = this.$store.state.stores.editDataObject;
-    console.log('mounted edit object')
-    this.store = obj
-    console.log(this.store)
+
   },
   components:{
-  },
-  created() {
-    this.getAllProvinces_ajax()
-  },
+  }
 };
 </script>
 
