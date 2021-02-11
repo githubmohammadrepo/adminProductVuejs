@@ -101,6 +101,19 @@ trait Helpers {
     return $post;
   }
 
+  protected function remove(string $sql,$strict=false):bool{
+    $result = $this->conn->query($sql);
+    if($result){
+      if($strict==false){
+        return true;
+      }else{
+        $count = mysqli_affected_rows($this->conn);
+        return $count ? true : false;
+      }
+    }else{
+      return false;
+    }
+  }
 
 
   /**

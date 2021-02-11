@@ -163,8 +163,10 @@
     <hr class="w-100" />
 
     <div class="row w-100 justify-content-center pt-3">
-      <b-button variant="primary m-auto px-4" :disabled="!validationPasseed"
-        >ذخیره</b-button
+      <b-button 
+        variant="primary m-auto px-4" 
+        :disabled="!validationPasseed"
+        @click="updateOneStore">آپدیت</b-button
       >
     </div>
   </div>
@@ -190,7 +192,6 @@ export default {
         cities:"",
         provinces:"",
       },
-      imageUrl:null,
       options: [
         { text: 'وضعیت انشار', value: true },
       ],
@@ -207,36 +208,30 @@ export default {
     };
   },
   methods:{
-    saveCompnay(){
+    updateOneStore(){
       //if validation passed save informations
+      let that = this;
       if (this.validationPasseed) {
-        console.log("update store");
-        let that = this;
-        console.log(that.store);
 
-        //prepare data
-        let data = new FormData();
-        data.append('insertOneBrand', true);
-        data.append('brand_name', this.store.brandName);
-        data.append('published', this.store.published);
-        data.append('brand_logo', this.brand_logo);
         axios
-          .post(
-            "http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/mainBrands/insertNewBrand.php",
-            data,
-           {
-              headers: {
-                'Content-Type': 'multipart/form-data'
-              }
-           }
-          )
+          .post("http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/stores/editOneStore.php",{
+            ...that.selectedValues,
+            ...that.store,
+            updateOneStore:true
+          })
           .then(function (response) {
             console.log(response);
             if (response.data && response.data.status == true) {
+              //close edit modal
+              that.$store.commit('stores/showModalOperation',{key:'edit',editing:false});
+
+              //save updatedStore into stats
+              that.$store.commit('stores/saveOneStoreIntoState',response.data.store)
+              
               //show success notification
               that.$store.state.successNotification = {
                 show: true,
-                message: "شرکت با موفقیت برند شد",
+                message: "فروشگاه با موفقیت اپدیت شد",
               };
               //close edit modal
               that.$store.state.stores.brandEditing = false;
@@ -244,14 +239,14 @@ export default {
             } else {
               that.$store.state.errorNotification = {
                 show: true,
-                message: "خطا، شرکت برند نشد",
+                message: "خطا، فروشگاه اپدیت نشد",
               };
             }
           })
           .catch(function (error) {
             that.$store.state.errorNotification = {
               show: true,
-              message: "خطا، شرکت برند نشد",
+              message: "خطا، فروشگاه اپدیت نشد",
             };
             console.log(error);
           });
@@ -315,7 +310,6 @@ export default {
             //save searched value province,city,region
             this.$store.commit('stores/saveSearchedFilters',this.selectedValues)
           }else{
-            alert('status false')
           }
         })
         .catch(error =>{
@@ -503,9 +497,18 @@ export default {
     }
   },
   created() {
+    this.getAllProvinces_ajax()
+
   },
   updated() {
-     let obj = this.$store.state.stores.editDataObject;
+
+
+    
+  },
+  components:{
+  },
+  mounted() {
+    let obj = this.$store.state.stores.editDataObject;
     this.store = obj
     console.log('editing store object')
     console.log(obj)
@@ -517,14 +520,7 @@ export default {
     //get cityRegions
     this.getCitySelectedRegions(obj.city)
     this.selectedValues.selectedRegion = obj.RegionID
-
-    
-  },
-  components:{
-  },
-  created() {
-    this.getAllProvinces_ajax()
-  },
+  }
 };
 </script>
 

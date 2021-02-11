@@ -1,8 +1,8 @@
 <template>
   <div class="mt-4">
-    <h5 class="text-center">آیا از حذف برند مورد نظر مطمئن هستین؟</h5>
+    <h5 class="text-center">آیا از حذف فروشگاه مورد نظر مطمئن هستین؟</h5>
     <div class="row justify-content-center mt-3 ">
-      <b-button variant="info m-auto px-4" @click="removebrand">حذف برند</b-button>
+      <b-button variant="info m-auto px-4" @click="removeOneStore">حذف برند</b-button>
     </div>
   </div>
 </template>
@@ -16,21 +16,28 @@ export default {
     }
   },
   methods: {
-    removebrand(){
+    removeOneStore(){
       
       let that= this;
        axios
-          .post("http://fishopping.ir//serverHypernetShowUnion/adminProduct/webservices/mainBrands/removeOneBrand.php", {
-            "removeBrand":true,
-            "category_id":that.$store.state.brands.editDataObject.category_id,
+          .post("http://fishopping.ir//serverHypernetShowUnion/adminProduct/webservices/stores/removeOneStore.php", {
+            "removeOneStore":true,
+            "user_id":that.$store.state.stores.editDataObject.user_id,
+            "store_id":that.$store.state.stores.editDataObject.store_id,
           })
           .then(function(response){
             console.log(response)
             if(response.data && response.data.status==true){
+              //close modal remove
+              that.$store.commit('stores/showModalOperation',{key:'remove',editing:false});
+
+              //remove store id from state
+              that.$store.commit('stores/removeOneStoreFromState',that.$store.state.stores.editDataObject.store_id)
+              
               //show success notification
               that.$store.state.successNotification = {
                 show: true,
-                message: "برند با موفقیت حذف شد شد",
+                message: "فروشگاه با موفقیت حذف شد شد",
               }
               //close edit modal
               that.$store.state.brands.brandEditing = false;
@@ -41,14 +48,14 @@ export default {
             }else{
               that.$store.state.errorNotification={
                 show: true,
-                message: "خطا، برند حذف نشد"
+                message: "خطا، فروشگاه حذف نشد"
               }
             }
           })
           .catch(function(error){
             that.$store.state.errorNotification={
                 show: true,
-                message: "خطا، برند حذف نشد"
+                message: "خطا، فروشگاه حذف نشد"
               }
             console.log(error)
           })

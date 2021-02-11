@@ -53,14 +53,12 @@ export default {
 
             } else {
               if(response.data.username){
-                alert("username")
                 //error user name level one
                 that.$store.state.errorNotification = {
                   show: true,
                   message: "نام کاربری تکراری است",
                 };
               }else if(response.data.mobile){
-                alert('mobile')
                 //error mobile dublicate level two
                 console.log('before')
                 console.log(that.$store.state.errorNotification)

@@ -291,7 +291,6 @@ export default {
             //save searched value province,city,region
             this.$store.commit('stores/saveSearchedFilters',this.selectedValues)
           }else{
-            alert('status false')
           }
         })
         .catch(error =>{

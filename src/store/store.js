@@ -9,7 +9,7 @@ const companies = {
             countPerPage: 25,
         },
         items: Array(),
-        storeEditing: true,
+        storeEditing: false,
         editDataObject: {
 
         },
@@ -138,6 +138,24 @@ const companies = {
             state.companyOperation.typeOperation = typeOperation
         },
 
+        saveOneStoreIntoState(state, payload) {
+            state.items.map((value) => {
+                if (value.id == payload.id) {
+                    return payload;
+                } else {
+                    return value;
+                }
+            })
+        },
+        removeOneStoreFromState(state, payload) {
+            state.items = state.items.filter(store => {
+                if (store.id == payload) {
+                    return false;
+                } else {
+                    return true;
+                }
+            })
+        },
         /**
          * hide all createNewCompany components
          */

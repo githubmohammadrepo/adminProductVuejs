@@ -82,7 +82,6 @@ export default {
 
     },
     getLatValue(e){
-      alert(e)
     }
   },
   computed: {

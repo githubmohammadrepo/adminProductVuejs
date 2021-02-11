@@ -71,20 +71,16 @@ export default {
     },
     changeCountPaginationPerPage(value){
       //change store perapge number
-      alert('value: '+value)
       this.$store.commit('stores/changeCountPerPagePagnitionation',value)
 
       //dispatch action StoreSearch a gain
       if(this.searchStore.length){
-        alert('search')
         //dispatch search by input
         this.findStoreBySearchInput(this.searchStore);
       }
       else if(this.filteredSearchValue==true){
-        alert('find byfitler')
         this.$store.dispatch('stores/searchStores')
       }else{
-        alert('getAllStores')
         this.$store.dispatch('stores/getAllStores')
       }
 

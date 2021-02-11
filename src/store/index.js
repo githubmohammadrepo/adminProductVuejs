@@ -9,7 +9,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         errorNotification: {
-            show: true,
+            show: false,
             message: "خطا دراجرای عملیات"
         },
         successNotification: {
