@@ -2,11 +2,12 @@
   <div>
     <h5 class="text-center mt-3">مرحله ی دوم ثبت نام فروشگاه</h5>
 
+      <!-- start select box select province -->
+      {{selectedValues.selectedProvince}}
     <hr class="w-50">
     <!-- store title -->
     <b-form class="form-editCompany pb-3" @submit.stop.prevent>
 
-      <!-- start select box select province -->
       <label for="address">استان فروشگاه</label>
       <b-form-select
         v-model="selectedValues.selectedProvince"
@@ -226,8 +227,8 @@ export default {
       //if validation passed save informations
       if (this.validationPasseed) {
         //save infos goto level three
-        this.$store.commit('stores/showAddNewStoreLevel',{key:'levelTwo',value:false,formData:{},cancelInsert:true})
-        this.$store.commit('stores/showAddNewStoreLevel',{key:'levelThree',value:true,formData:{...this.selectedValues,selectedStore:this.selectedStore,...this.store}})
+        this.$store.commit('stores/showAddNewStoreLevel',{key:'levelTwo',value:false,formData:{...this.selectedValues,selectedStore:this.selectedStore,...this.store}})
+        this.$store.commit('stores/showAddNewStoreLevel',{key:'levelThree',value:true,formData:{},cancelInsert:true})
         
       }
     
@@ -310,10 +311,12 @@ export default {
             .then(function(response) {
                 console.log(response.data)
                 if (response.data && response.data.provinces.length) {
-                    that.fetchedData.provinces = response.data.provinces
+                  that.fetchedData.provinces = response.data.provinces
+                  // that.selectedValues.selectedProvince = this.$store.getters['stores/getFormDataInserNewStoreLevels'].selectedProvince
                 } else {
                   that.fetchedData.provinces = Array();
                   //show error fetching provinces
+
                 }
 
             })
@@ -336,7 +339,7 @@ export default {
                 console.log(response.data)
                 if (response.data && response.data.provinceCities && response.data.provinceCities.length) {
                    that.fetchedData.cities = response.data.provinceCities
-                   
+                   that.selectedValues.selectedCity = this.$store.getters['stores/getFormDataInserNewStoreLevels'].selectedCity
                 } else {
                   // show modal error fetching provinceCities
                   that.fetchedData.cities = Array()
@@ -530,12 +533,40 @@ export default {
     this.store = obj
     console.log(this.store)
   },
-  components:{
-  },
   created() {
     this.getAllProvinces_ajax();
     this.showUnregisteredStoreSelectBox=true
     this.showRegionsSelect = true;
+
+    //get all adata
+    this.store.ShopName = this.$store.getters['stores/getFormDataInserNewStoreLevels'].ShopName
+    this.store.phone = this.$store.getters['stores/getFormDataInserNewStoreLevels'].phone
+    this.store.MobilePhone = this.$store.getters['stores/getFormDataInserNewStoreLevels'].ShopName
+    this.store.ManagerName = this.$store.getters['stores/getFormDataInserNewStoreLevels'].ManagerName
+    this.store.address = this.$store.getters['stores/getFormDataInserNewStoreLevels'].address
+    this.selectedValues.selectedProvince = this.$store.getters['stores/getFormDataInserNewStoreLevels'].selectedProvince
+
+    if(this.selectedValues.selectedProvince){
+      //get ajax all cities
+      this.getProvinceCities(this.selectedValues.selectedProvince)
+    }
+    this.selectedValues.selectedCity = this.$store.getters['stores/getFormDataInserNewStoreLevels'].selectedCity
+    if(this.selectedValues.selectedCity){
+      //get ajax all cities
+      this.getCitySelectedRegions(this.selectedValues.selectedCity)
+    }
+
+    this.selectedValues.selectedRegion = this.$store.getters['stores/getFormDataInserNewStoreLevels'].selectedRegion
+    if(this.selectedValues.selectedRegion){
+      //get ajax all regions
+      this.getUnregisteredStores(this.selectedValues.selectedRegion)
+    }
+
+    this.selectedValues.address = this.$store.getters['stores/getFormDataInserNewStoreLevels'].address
+    this.selectedStore = this.$store.getters['stores/getFormDataInserNewStoreLevels'].selectedStore
+
+  },
+  components:{
   },
 };
 </script>

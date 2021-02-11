@@ -75,8 +75,8 @@ export default {
       
       if(this.latValidation && this.lngValidation){  
         setTimeout(() => {
-          this.$store.commit('stores/showAddNewStoreLevel',{key:'levelThree',value:false,formData:{...this.Geolocation}})
-          this.$store.commit('stores/showAddNewStoreLevel',{key:'finalLevel',value:true,formData:{},cancelInsert:true})
+          this.$store.commit('stores/showAddNewStoreLevel',{key:'levelThree',value:false,formData:{},cancelInsert:true})
+          this.$store.commit('stores/showAddNewStoreLevel',{key:'finalLevel',value:true,formData:{...this.Geolocation}})
         }, 700);
       }
 
@@ -124,8 +124,9 @@ export default {
       
       //Add Custom Marker
       var icon = createIcon('http://192.168.1.35:8080/img/store/map/marker-48.png',48,48);
-    
-      var marker = AddMarker(map,[this.Geolocation.lng,this.Geolocation.lat],icon,true);
+      let lng = document.getElementById("lngStoreLocation").value;
+      let lat = document.getElementById("latStoreLocation").value;
+      var marker = AddMarker(map,[,lng,lat],icon,true);
 
       function onDragEnd() 
       {
@@ -171,8 +172,10 @@ export default {
 
 <style lang="scss">
   .mapboxgl-canvas{
-    position:relative !important;
-    width:100%;
-    height:300px;
-  }
+        position:relative !important;
+        width:100%;
+        height:300px;
+      }
+
+      
 </style>

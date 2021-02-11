@@ -83,7 +83,7 @@ export default {
       if(this.validationPasseed){
         //save info and go to level two
         this.$store.commit('stores/showAddNewStoreLevel',{key:'levelOne',value:false,formData:{...this.store}})
-        this.$store.commit('stores/showAddNewStoreLevel',{key:'levelTwo',value:true,formData:{}})
+        this.$store.commit('stores/showAddNewStoreLevel',{key:'levelTwo',value:true,formData:{},cancelInsert:true})
 
       }else{
 
@@ -114,6 +114,12 @@ export default {
       );
     },
 
+  },
+  created(){
+
+    this.store.userName = this.$store.getters['stores/getFormDataInserNewStoreLevels'].userName
+    this.store.password = this.$store.getters['stores/getFormDataInserNewStoreLevels'].password
+    this.store.retypePassword = this.$store.getters['stores/getFormDataInserNewStoreLevels'].retypePassword
   },
   components:{
   }

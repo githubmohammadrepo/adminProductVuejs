@@ -1,6 +1,6 @@
 <template>
   <div id="errorNofication">
-    <b-modal v-model="successNoticationShow"  id="bv-modal-successNotification" hide-footer>
+    <b-modal v-model="successNoticationShow"  id="bv-modal-successNotification"  z-index="99999999" hide-footer>
       <div class="d-block text-center">
         <h6 class="text-success">{{message}}</h6>
       </div>
@@ -60,5 +60,8 @@ import confirmSms from '@/components/brands/confirmSms.vue';
 <style lang="scss" scoped>
   .text-ligthGreen {
     color: lightseagreen !important;
+  }
+  #bv-modal-successNotification___BV_modal_outer_{
+    z-index:99999999!important;
   }
 </style>

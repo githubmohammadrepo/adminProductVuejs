@@ -1,5 +1,6 @@
 <template>
   <div>
+    <NavbarAddNewStoreLevels />
     <addNewStoreLevelOne v-if="showLevelOne" />
     <addNewStoreLevelTwo v-if="showLevelTwo" />
     <addNewStoreLevelThree v-if="showLevelThree" />
@@ -13,7 +14,7 @@ import addNewStoreLevelOne from '@/components/stores/operations/addNewStoreLevel
 import addNewStoreLevelTwo from '@/components/stores/operations/addNewStoreLevels/AddNewStoreLevelTwo.vue';
 import addNewStoreLevelThree from '@/components/stores/operations/addNewStoreLevels/AddNewStoreLevelThree.vue';
 import AddNewStoreFinalLevel from '@/components/stores/operations/addNewStoreLevels/AddNewStoreFinalLevel.vue';
-
+import NavbarAddNewStoreLevels from '@/components/stores/operations/addNewStoreLevels/navbarLevels.vue'
 export default {
   data() {
     return {
@@ -62,7 +63,8 @@ export default {
     addNewStoreLevelOne,
     addNewStoreLevelTwo,
     addNewStoreLevelThree,
-    AddNewStoreFinalLevel
+    AddNewStoreFinalLevel,
+    NavbarAddNewStoreLevels
   }
 }
 </script>

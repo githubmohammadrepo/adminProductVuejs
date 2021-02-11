@@ -1,0 +1,8 @@
+#bv-modal-ErrorNotification {
+    z-index: 999999999999 !important;
+}
+
+body {
+    background-color: red;
+    ;
+}

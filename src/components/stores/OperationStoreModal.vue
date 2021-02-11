@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-modal v-model="modalShow" size="lg">
+    <b-modal v-model="modalShow" size="lg" id="OperationStoreModal" z-index="12">
       <!-- edit one Store -->
       <EditOneStore v-if="editOperation" />
       <!-- delete on Store -->
@@ -68,4 +68,5 @@
     float: right;
     text-align: right;
   }
+  
 </style>

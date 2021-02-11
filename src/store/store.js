@@ -9,7 +9,7 @@ const companies = {
             countPerPage: 25,
         },
         items: Array(),
-        storeEditing: false,
+        storeEditing: true,
         editDataObject: {
 
         },
@@ -45,7 +45,7 @@ const companies = {
                     userName: null,
                     password: null
                 },
-                show: false
+                show: true,
             },
             levelTwo: {
                 formData: {
@@ -63,7 +63,7 @@ const companies = {
                 formData: {
 
                 },
-                show: true,
+                show: false,
             }
         }
 
@@ -90,7 +90,6 @@ const companies = {
 
         },
         saveFindedStores(state, payload) {
-            console.log(payload)
             state.items = payload;
         },
         showCompoenetByName(state, payload = null) {
@@ -184,12 +183,6 @@ const companies = {
         searchStores({ state, commit }) {
             let that = this;
 
-            console.log({
-                ...state.storeShowComponents.SearchStore,
-                offset: parseInt(state.paginationObject.currentPage) * (parseInt(state.paginationObject.countPerPage)),
-                count: state.paginationObject.countPerPage,
-                showALlStoreInfos: true,
-            })
             axios
                 .post("http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/stores/ShowStoreInfos.php", {
                     ...state.storeShowComponents.SearchStore,
@@ -198,7 +191,6 @@ const companies = {
                     showALlStoreInfos: true,
                 })
                 .then(response => {
-                    console.log(response.data)
                     if (response.data && response.data.stores) {
 
                         commit('stores/makeSearchAsFiltered', true)
@@ -209,16 +201,13 @@ const companies = {
                         commit('showCompoenetByName', 'showFindedStores')
                         commit('computePagesPaginations', response.data.count)
 
-                    } else {
-                        alert('status false')
-                    }
+                    } else {}
                 })
                 .catch(error => {
                     console.log(error)
                 })
         },
         getAllStores({ state, commit }) {
-            alert('countPerPage' + state.paginationObject.countPerPage)
             let that = this;
             axios
                 .post("http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/stores/ShowStoreInfos.php", {
@@ -227,26 +216,38 @@ const companies = {
                     getAllStoreWhoutFitler: true,
                 })
                 .then(response => {
-                    console.log(response.data)
                     if (response.data && response.data.stores) {
                         commit('computePagesPaginations', response.data.count)
                             //save info in store
                         commit('saveFindedStores', response.data.stores)
                             //close filtered store component
                         commit('showCompoenetByName', 'showFindedStores')
-                    } else {
-                        alert('status false')
-                    }
+                    } else {}
                 })
                 .catch(error => {
                     console.log(error)
                 })
-            alert('End_countPerPage' + state.paginationObject.countPerPage)
         }
 
     },
     getters: {
+        getFormDataInserNewStoreLevels(state) {
+            return {
+                // formData level one
+                ...state.addNewStoreShowLevels.levelOne.formData,
 
+                // formData level two
+                ...state.addNewStoreShowLevels.levelTwo.formData,
+
+                //formData level three
+                ...state.addNewStoreShowLevels.levelThree.formData,
+
+                //formData findal level
+                ...state.addNewStoreShowLevels.finalLevel.formData,
+
+
+            }
+        }
     }
 }
 

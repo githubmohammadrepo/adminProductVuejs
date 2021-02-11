@@ -23,7 +23,7 @@
       <!-- start lng -->
       <label for="lngStoreLocation" class="mt-1">عرض جغرافیایی</label>
       <b-form-input
-        v-model="Geolocation.lng"
+        v-model="Geolocation.lat"
         required
         type="text"
         id="lngStoreLocation"
@@ -75,9 +75,9 @@ export default {
       
       if(this.latValidation && this.lngValidation){  
         setTimeout(() => {
-          this.$store.commit('stores/showAddNewStoreLevel',{key:'levelThree',value:false,formData:{...this.Geolocation}})
-          this.$store.commit('stores/showAddNewStoreLevel',{key:'finalLevel',value:true,formData:{},cancelInsert:true})
-        }, 700);
+          this.$store.commit('stores/showAddNewStoreLevel',{key:'levelThree',value:false,formData:{},cancelInsert:true})
+        this.$store.commit('stores/showAddNewStoreLevel',{key:'finalLevel',value:true,formData:{...this.Geolocation}})
+        }, 2700);
       }
 
     },
@@ -99,9 +99,7 @@ export default {
      //create map id map
       // let mapDiv = document.createElement('div')
       // mapDiv.setAttribute('id', 'map'
-        var that = this;
-        //vuejs 
-        
+
      //add map script
       let mapScript = document.createElement('script')
       mapScript.setAttribute('src', 'http://192.168.1.35:8080/js/store/map.js')
@@ -111,11 +109,12 @@ export default {
       //using map script
       var myVar = setInterval(()=>{
         if(document.getElementById('map')){
+
                 //add map styles
-        let link = document.createElement('link')
-        link.setAttribute('href', 'http://192.168.1.35:8080/css/store/map.css')
-        link.setAttribute('rel', 'stylesheet')
-        document.head.appendChild(link)
+      let link = document.createElement('link')
+      link.setAttribute('href', 'http://192.168.1.35:8080/css/store/map.css')
+      link.setAttribute('rel', 'stylesheet')
+      document.head.appendChild(link)
           //add script
         var map = initMap('map');
       
@@ -124,8 +123,7 @@ export default {
       
       //Add Custom Marker
       var icon = createIcon('http://192.168.1.35:8080/img/store/map/marker-48.png',48,48);
-    
-      var marker = AddMarker(map,[this.Geolocation.lng,this.Geolocation.lat],icon,true);
+      var marker = AddMarker(map,[51.39178988, 35.70056027],icon,true);
 
       function onDragEnd() 
       {
@@ -146,33 +144,20 @@ export default {
       }
 
 
-   
     },
-    created() {
-      this.Geolocation.lat = this.$store.getters['stores/getFormDataInserNewStoreLevels'].lat
-      if(this.Geolocation.lat){
-
-      }else{
-        this.Geolocation.lat= 35.70056027
-      }
-
-
-      this.Geolocation.lng = this.$store.getters['stores/getFormDataInserNewStoreLevels'].lng
-      if(this.Geolocation.lng){
-
-      }else{
-        this.Geolocation.lng = 51.39178988;
-      }
-    },
-
+  created() {
+    
+  },
 }
 </script>
 
 
 <style lang="scss">
   .mapboxgl-canvas{
-    position:relative !important;
-    width:100%;
-    height:300px;
-  }
+        position:relative !important;
+        width:100%;
+        height:300px;
+      }
+
+      
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div id="errorNofication">
 
-    <b-modal  v-model="errorNoticationShow" id="bv-modal-ErrorNotification" hide-footer>
+    <b-modal  v-model="errorNoticationShow" id="bv-modal-ErrorNotification" z-index="99999999" hide-footer>
       <template #modal-header-close >
         <button type="button" aria-label="Close" class="close ml-0">×</button>
       </template>
@@ -51,7 +51,10 @@ export default {
 
     direction:ltr;
   }
-    .text-pink{
-      color:orangered;
-    }
+  .text-pink{
+    color:orangered;
+  }
+  #bv-modal-ErrorNotification___BV_modal_outer_{
+    z-index:99999999999999999!important;
+  }
 </style>
