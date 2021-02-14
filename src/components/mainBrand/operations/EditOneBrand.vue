@@ -99,9 +99,7 @@ export default {
     updateBrand() {
       //if validation passed save informations
       if (this.validationPasseed) {
-        console.log("update company");
         let that = this;
-        console.log(that.company);
 
         //prepare data
         let data = new FormData();
@@ -123,7 +121,6 @@ export default {
            }
           )
           .then(function (response) {
-            console.log(response);
             if (response.data && response.data.status == true) {
               //show success notification
               that.$store.state.successNotification = {
@@ -214,15 +211,11 @@ export default {
   },
   created() {
     let obj = this.$store.state.brands.editDataObject;
-    console.log("created edit object");
-    console.log(obj);
     this.company = obj;
   },
   updated() {
     let obj = this.$store.state.brands.editDataObject;
-    console.log("mounted edit object");
     this.company = obj;
-    console.log(this.company);
   },
   components: {},
 };

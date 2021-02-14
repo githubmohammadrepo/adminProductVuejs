@@ -26,14 +26,7 @@ export default {
   methods:{
     saveCompany(){
       let that = this;
-      console.log('prepared data from level three')
-      console.log({"verifyCompany":true,
-        "user_id":that.user_id,
-        "code":"#&#(&#^(#&@!$7423974hfiehfe#$@!aife",
-        "price":that.priceRegisterCompany,
-        "brand_name":that.$store.state.companies.AddNewCompany.levelThree.brand_name,
-        "brand_id":isNaN(that.$store.state.companies.AddNewCompany.levelThree.brand_id) ? 0 : that.$store.state.companies.AddNewCompany.levelThree.brand_id
-        })
+      
         
       let brandSelectedId = this.$store.state.companies.AddNewCompany.levelThree.brandSelectedId
       axios
@@ -45,8 +38,7 @@ export default {
         "brand_name":that.$store.state.companies.AddNewCompany.levelThree.brand_name,
         "brand_id":isNaN(that.$store.state.companies.AddNewCompany.levelThree.brand_id) ? 0 : that.$store.state.companies.AddNewCompany.levelThree.brand_id
       }).then(response => {
-        console.log('verify brand')
-        console.log(response.data)
+        
         if(response.data && response.data.status==true){
           that.saveCompanyCompleted=true;
           
@@ -74,8 +66,6 @@ export default {
             getRegisterCompanyPrice:true
           })
           .then(function(response){
-            console.log('get price resposne')
-            console.log(response)
             if(response.data && response.data.status==true){
               that.priceRegisterCompany = response.data.price
             }else{

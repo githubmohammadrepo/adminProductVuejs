@@ -142,16 +142,13 @@ export default {
       //if validation passed save informations
       if(this.validationPasseed){
 
-        console.log('update company')
       let that= this;
-      console.log(that.company)
        axios
           .post("http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/updateCompany.php", {
               insertFakeUpdateConpany:true,
               ...that.company
           })
           .then(function(response){
-            console.log(response)
             if(response.data && response.data.status==true){
               //show success notification
               that.$store.state.successNotification = {
@@ -229,15 +226,11 @@ export default {
   },
   created() {
     let obj = this.$store.state.companies.editDataObject;
-    console.log('created edit object')
-    console.log(obj)
     this.company = obj
   },
   updated() {
      let obj = this.$store.state.companies.editDataObject;
-    console.log('mounted edit object')
     this.company = obj
-    console.log(this.company)
   },
   components:{
   }

@@ -36,7 +36,6 @@
     computed: {
       modalShow: {
         get() {
-          console.log(this.$store.state.brands.brandEditing)
           return this.$store.state.brands.brandEditing;
         },
         set(newValue) {

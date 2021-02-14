@@ -25,7 +25,6 @@ export default {
             "category_id":that.$store.state.brands.editDataObject.category_id,
           })
           .then(function(response){
-            console.log(response)
             if(response.data && response.data.status==true){
               //show success notification
               that.$store.state.successNotification = {

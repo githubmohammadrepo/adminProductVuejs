@@ -19,7 +19,6 @@ export default {
     removeCompany(){
       
       let that= this;
-      console.log(that.company)
       
        axios
           .post("http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/removeOneCompany.php", {
@@ -28,7 +27,6 @@ export default {
             "user_id":that.$store.state.companies.editDataObject.user_id
           })
           .then(function(response){
-            console.log(response)
             if(response.data && response.data.status==true){
               //show success notification
               that.$store.state.successNotification = {

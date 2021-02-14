@@ -53,8 +53,7 @@ const companies = {
     mutations: {
         ...mixinMutations(),
         hideAllOperations(state) {
-            console.log('company operation')
-            console.log(state.companyOperation)
+
             for (const key in state.companyOperation) {
                 if (Object.hasOwnProperty.call(state.companyOperation, key)) {
                     state.companyOperation[key] = false;
@@ -121,7 +120,6 @@ const companies = {
                     typeAction: "select"
                 })
                 .then(function(response) {
-                    console.log(response.data.companies)
                     if (response.data.companies && response.data.companies.length) {
                         response.data.companies.forEach(function(value, index) {
                             let newObject = {};

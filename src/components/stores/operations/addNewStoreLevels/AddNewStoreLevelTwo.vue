@@ -279,7 +279,6 @@ export default {
           showALlStoreInfos:true
         })
         .then(response =>{
-          console.log(response.data)
           if(response.data && response.data.stores){
             
             this.$store.commit('stores/makeSearchAsFiltered',true)
@@ -308,7 +307,6 @@ export default {
                 selectProvince: true
             })
             .then(function(response) {
-                console.log(response.data)
                 if (response.data && response.data.provinces.length) {
                   that.fetchedData.provinces = response.data.provinces
                   // that.selectedValues.selectedProvince = this.$store.getters['stores/getFormDataInserNewStoreLevels'].selectedProvince
@@ -335,7 +333,6 @@ export default {
                 province_id: province_id
             })
             .then(function(response) {
-                console.log(response.data)
                 if (response.data && response.data.provinceCities && response.data.provinceCities.length) {
                    that.fetchedData.cities = response.data.provinceCities
                    that.selectedValues.selectedCity = this.$store.getters['stores/getFormDataInserNewStoreLevels'].selectedCity
@@ -361,7 +358,6 @@ export default {
               cityId: city_id
           })
           .then(function(response) {
-              console.log(response.data)
               if (response.data && response.data.CityRegions && response.data.CityRegions.length) {
                 that.showRegionsSelect = true
                   
@@ -393,8 +389,6 @@ export default {
               ...that.selectedValues
           })
           .then(function(response) {
-              console.log('unregisterd stores')
-              console.log(response.data)
               if (response.data && response.data.stores.length) {
                 that.showUnregisteredStoreSelectBox= true
 
@@ -528,9 +522,7 @@ export default {
   },
   updated() {
      let obj = this.$store.state.stores.editDataObject;
-    console.log('mounted edit object')
     this.store = obj
-    console.log(this.store)
   },
   created() {
     this.getAllProvinces_ajax();

@@ -137,7 +137,6 @@ const brands = {
                     search: context.state.search
                 })
                 .then(function(response) {
-                    console.log(response.data)
                     if (response.data.brands && response.data.brands.length) {
                         response.data.brands.forEach(function(value, index) {
                             let newObject = {};

@@ -171,7 +171,6 @@ export default {
       for(let i =0;i<this.company.brands.length;i++){
         if(this.company.brands[i].category_name.toString().trim()==this.company.brandName.toString().trim()){
           this.company.brand_id = this.company.brands[i].category_id
-          console.log(this.company.brands[i])
           break;
         }
       };
@@ -182,22 +181,18 @@ export default {
     getAllBrands(){
       //if validation passed save informations
       let that= this;
-      console.log(that.company)
       that.loadingBrands=true;
        axios
           .get("http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/getAllBrands.php",{
              responseType: 'json', // default
           })
           .then(function(response){
-            console.log(response)
             that.loadingBrands=false;
 
             if(response.data && response.data.status==true){
               //show success notification
               //close edit modal
               that.company.brands = response.data.brands;
-              console.log('brands')
-              console.log(that.company.brands)
               //open comfirm smsCode
             }else{
               that.$store.state.errorNotification={
@@ -218,8 +213,6 @@ export default {
 
     },
     saveCompany(){
-      console.log('company')
-      console.log(this.company)
       let that = this;
       axios
         .post("http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/InsertNewCompany.php",{  

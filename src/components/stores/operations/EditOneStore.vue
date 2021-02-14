@@ -298,7 +298,6 @@ export default {
           showALlStoreInfos:true
         })
         .then(response =>{
-          console.log(response.data)
           if(response.data && response.data.stores){
             
             this.$store.commit('stores/makeSearchAsFiltered',true)
@@ -329,7 +328,6 @@ export default {
                 selectProvince: true
             })
             .then(function(response) {
-                console.log(response.data)
                 if (response.data && response.data.provinces.length) {
                     that.fetchedData.provinces = response.data.provinces
                 } else {
@@ -357,7 +355,6 @@ export default {
                 province_id: province_id
             })
             .then(function(response) {
-                console.log(response.data)
                 if (response.data && response.data.provinceCities && response.data.provinceCities.length) {
                    that.fetchedData.cities = response.data.provinceCities
                    
@@ -383,7 +380,6 @@ export default {
               cityId: city_id
           })
           .then(function(response) {
-              console.log(response.data)
               if (response.data && response.data.CityRegions && response.data.CityRegions.length) {
                   that.fetchedData.Regions = response.data.CityRegions
                   
@@ -510,8 +506,6 @@ export default {
   mounted() {
     let obj = this.$store.state.stores.editDataObject;
     this.store = obj
-    console.log('editing store object')
-    console.log(obj)
     this.selectedValues.selectedProvince= obj.province
     //get provinceCities
     this.getProvinceCities(obj.province)

@@ -46,7 +46,6 @@ import axios from 'axios'
               
           })
           .then(function(response){
-            console.log(response)
             if(response.data && response.data.status==true){
               //show success notification
               that.$store.state.successNotification = {

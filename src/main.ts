@@ -10,10 +10,13 @@ import store from './store'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import Vuex from 'vuex'
+import 'bootstrap-icons-vue';
 import { BootstrapIconsPlugin } from 'bootstrap-icons-vue';
+import { BootstrapVue, IconsPlugin  } from 'bootstrap-vue'
+
 Vue.config.productionTip = false
 
-Vue.use(VueAxios, axios,Vuex,BootstrapIconsPlugin)
+Vue.use(VueAxios, axios,Vuex,BootstrapIconsPlugin,BootstrapVue,IconsPlugin)
 
 new Vue({
   router,

@@ -26,7 +26,6 @@ export default {
             "store_id":that.$store.state.stores.editDataObject.store_id,
           })
           .then(function(response){
-            console.log(response)
             if(response.data && response.data.status==true){
               //close modal remove
               that.$store.commit('stores/showModalOperation',{key:'remove',editing:false});

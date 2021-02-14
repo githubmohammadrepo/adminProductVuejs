@@ -102,7 +102,6 @@ export default {
                 searchStoreBySearchInput: true,
             })
             .then(response => {
-                console.log(response.data)
                 if (response.data && response.data.stores) {
                     that.$store.commit('stores/computePagesPaginations', response.data.count)
                         //save info in store

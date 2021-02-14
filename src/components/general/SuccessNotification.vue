@@ -44,7 +44,6 @@ import confirmSms from '@/components/brands/confirmSms.vue';
       },
       successBodyContent(){
         let bodyContent = this.$store.state.successNotification.bodyContent
-        console.log(bodyContent)
         return bodyContent;
       },
       shwoConfirmSms(){

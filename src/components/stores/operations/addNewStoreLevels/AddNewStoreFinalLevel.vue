@@ -32,7 +32,6 @@ export default {
             insertNewStore: true
         })
         .then(response => {
-          console.log(response.data)
             if (response.data && response.data.status) {
               that.$store.state.successNotification = {
                 show: true,
@@ -60,15 +59,11 @@ export default {
                 };
               }else if(response.data.mobile){
                 //error mobile dublicate level two
-                console.log('before')
-                console.log(that.$store.state.errorNotification)
                 that.$store.state.errorNotification = {
                   show: true,
                   message: "شماره موبایل تکراری است",
                 };
 
-                console.log('before')
-                console.log(that.$store.state.errorNotification )
               }else{
 
                 that.$store.state.errorNotification = {
