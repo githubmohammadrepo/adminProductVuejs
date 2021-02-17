@@ -32,7 +32,7 @@ export default {
     computed: {
       pages:{
         get(){
-          return this.$store.state.products.paginationObject.pages;
+          return parseInt(this.$store.state.products.paginationObject.pages);
         },
         set(newValue){
           this.$store.state.products.paginationObject.pages = newValue;
@@ -40,7 +40,7 @@ export default {
       },
       currentPage:{
         get(){
-          return this.$store.state.products.paginationObject.currentPage;
+          return parseInt(this.$store.state.products.paginationObject.currentPage);
         },
         set(newValue){
           this.show(newValue)

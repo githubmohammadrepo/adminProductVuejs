@@ -5,15 +5,16 @@ const companies = {
         paginationObject: {
             show: false,
             pages: 25,
-            currentPage: 0,
+            currentPage: 1,
             countPerPage: 25,
         },
         items: Array(),
-        productEditing: false,
+        productEditing: true,
         editDataObject: {},
         productOperation: {
             show: {
                 show: false,
+                addNew: false,
                 categoryInfo: {},
                 products: {},
                 subCategoryies: {},
@@ -28,11 +29,11 @@ const companies = {
             },
             edit: {
                 show: false,
-
+                editProduct: {}
             },
             remove: {
                 show: false,
-
+                removeProduct: {}
             },
             add: {
                 show: false,
@@ -54,6 +55,7 @@ const companies = {
             countPerPage: 25,
             products: Array(),
             errors: false,
+            loading: false
         },
         categoriesSubCategorisPagination: {
             pages: 25,
@@ -61,21 +63,56 @@ const companies = {
             countPerPage: 25,
             categories: Array(),
             errors: false,
+        },
+        //searching base on category_nmae
+        searchingBaseOnCategoryName: {
+            searching: false,
+            searchInput: '',
+            selectedSearchType: '',
+        },
+        mainBrandEditing: {},
+        BrandProductOperation: false,
+        brandProductNavigations: {
+            showBrandProducts: true,
+            showSubBrands: false
+        },
+        BrandProductEditingFromInfos: {},
+        BrandModalProductOperations: {
+            show: false
         }
-
-
-
 
     }),
     mutations: {
+        saveEditProduct(state, payload) {
+            //saerch product
+            let product = state.categoriesProductPaginations.products.map(product => {
+                    if (product.product_id == payload) {
+                        return product;
+                    }
+                })
+                //save prouct
+            state.productOperation.edit.editProduct = null;
+            state.productOperation.edit.editProduct = product[0];
+        },
+        saveRemoveProduct(state, payload) {
+            //saerch product
+            let product = state.categoriesProductPaginations.products.filter(product => {
+                    if (product.product_id == payload) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                })
+                //save prouct
+            state.productOperation.remove.removeProduct = null;
+            state.productOperation.remove.removeProduct = product[0];
+        },
         // clear category products
         clearCategoryProducts(state) {
-            alert('clear categoryProducts')
             state.categoriesProductPaginations.products = Array()
         },
         // clear category products
         clearCategorySubCategories(state) {
-            alert('clear subCategiries')
             state.categoriesSubCategorisPagination.categories = Array()
         },
         //payload fromat = {key:'',value:true/false}
@@ -103,8 +140,6 @@ const companies = {
             if (category && category.length) {
 
                 state.productOperation.show.categoryInfo = category;
-                console.log('saveCategory categoryInfo')
-                console.log(state.productOperation.show.categoryInfo)
             }
         },
         saveSubCategoryInfoShowByCategoryId(state, payload) {
@@ -116,16 +151,12 @@ const companies = {
                 }
             });
             state.productOperation.show.categoryInfos = category;
-            console.log('saveSubCategory categoryInfo')
-            console.log(state.productOperation.show.categoryInfos)
         },
         /**
          * change show product details section hide all and show one
          * format payload=> {key:'',value:''}
-         * @param {*} state 
-         * @param {*} payload 
          */
-        ChangeShowProductDetails(state, payload) {
+        ChangeShowProductDetails(state, payload = null) {
             //hide all
             state.productOperation.show.showProductDetails.products.show = false;
             state.productOperation.show.showProductDetails.subCategories.show = false;
@@ -135,10 +166,38 @@ const companies = {
 
         },
 
+        hideAllProductOperations(state, payload) {
+            state.productOperation.show.addNew = false;
+            state.productOperation.edit.show = false;
+            state.productOperation.remove.show = false;
+            if (payload == 'show') {
+                state.productOperation[payload].addNew = true;
+            } else {
+                if (payload) {
+                    state.productOperation[payload].show = true;
+                } else {
+                    //do not any thing
+                }
+            }
+            state.productEditing = true;
+        },
+
+        /**
+         * save main brand editing
+         */
+        saveMainBrandEditing(state, payload) {
+            state.mainBrandEditing = payload;
+
+            console.log('mainBrandEditing')
+            console.log(state.mainBrandEditing)
+        }
+
     },
     actions: {
         // گرفتن تمام دسته بندی های اصلی
         getAllCategoryProducts({ commit, dispatch, getters, rootGetters, rootState, state }) {
+            state.items = []
+
             axios
                 .post("http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/products/categoryProducts/getAllMainCategories.php", {
                     offset: state.paginationObject.currentPage,
@@ -167,48 +226,48 @@ const companies = {
                 })
         },
         // گرفتن محصولات یک دسته بندی
-        getCategoriesProduct({ commit, dispatch, getters, rootGetters, rootState, state }, payload) {
+        getCategoriesProduct({ commit, dispatch, getters, rootGetters, rootState, state }, payload = null) {
+            state.searchingBaseOnCategoryName.searching = false
+            state.categoriesProductPaginations.loading = true
             commit('clearCategoryProducts')
 
             //save category infos
+            let category_id;
+            if (payload) {
+                commit('saveCategoryInfoShowByCategoryId', payload)
+                category_id = payload
+            } else {
+                category_id = state.productOperation.show.categoryInfo[0].category_id
+            }
 
-            commit('saveCategoryInfoShowByCategoryId', payload)
-            console.log(state.productOperation.show.categoryInfo)
-            let category_id = payload
-            console.log({
-                "getAllCategoryProducts": true,
-                "offset": 0,
-                "count": 25,
-                "category_id": category_id
-            })
             axios
                 .post("http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/products/categoryProducts/getAllProducts.php", {
                     "getAllCategoryProducts": true,
-                    "offset": 0,
-                    "count": 25,
+                    "offset": (state.categoriesProductPaginations.currentPage - 1) * state.categoriesProductPaginations.countPerPage,
+                    "count": state.categoriesProductPaginations.countPerPage,
                     "category_id": category_id
                 })
                 .then(response => {
-                    console.log(response.data)
+                    state.categoriesProductPaginations.loading = false
+
                     if (response.data && response.data.status) {
-                        alert(Math.ceil(response.data.count / state.categoriesProductPaginations.countPerPage))
                         state.categoriesProductPaginations.pages = Math.ceil(response.data.count / state.categoriesProductPaginations.countPerPage)
                         state.categoriesProductPaginations.products = response.data.products
                     } else {
                         //show error product not exist
-
-
                     }
-
                 })
                 .catch(error => {
-
                     //show error
+                    state.categoriesProductPaginations.loading = false
+
                     console.log(error)
                 })
         },
         //گرفتن تمام زیر دسته بندی ها
         getAllSubCategories({ commit, dispatch, getters, rootGetters, rootState, state }, payload) {
+            state.categoriesSubCategorisPagination.categories = []
+
             commit('clearCategorySubCategories')
 
             let that = this;
@@ -218,13 +277,7 @@ const companies = {
             } else {
                 category_id = state.productOperation.show.categoryInfo[0].category_id
             }
-            console.log('subcategory')
-            console.log({
-                "offset": (state.categoriesSubCategorisPagination.currentPage - 1) * state.categoriesSubCategorisPagination.countPerPage,
-                "count": state.categoriesSubCategorisPagination.countPerPage,
-                "category_id": category_id,
-                "getAllSubCategories": true
-            });
+
             axios
                 .post("http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/products/categoryProducts/getAllSubCategories.php", {
                     "offset": (state.categoriesSubCategorisPagination.currentPage - 1) * state.categoriesSubCategorisPagination.countPerPage,
@@ -233,21 +286,96 @@ const companies = {
                     "getAllSubCategories": true
                 })
                 .then(response => {
-                    console.log(response.data)
                     if (response.data && response.data.status) {
                         state.categoriesSubCategorisPagination.pages = Math.ceil(response.data.count / state.categoriesSubCategorisPagination.countPerPage)
                         state.categoriesSubCategorisPagination.categories = response.data.categories;
-                        console.log(state.categoriesSubCategorisPagination.categories)
                     } else {
                         //show error subCategories not exist
                     }
-
                 })
                 .catch(error => {
-
                     //show error
                     console.log(error)
                 })
+        },
+        //جستجوکردن محصولات بر اساس نام دسته بندی
+        SearchingProducts({ commit, dispatch, getters, rootGetters, rootState, state }, payload) {
+            state.searchingBaseOnCategoryName.searching = true
+            if (state.searchingBaseOnCategoryName.searchInput.lenth < 2) {
+                return false;
+            }
+            state.categoriesProductPaginations.loading = true;
+            let that = this;
+
+            axios
+                .post("http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/products/categoryProducts/Searching.php", {
+                    "offset": (state.categoriesProductPaginations.currentPage - 1) * state.categoriesProductPaginations.countPerPage,
+                    "count": state.categoriesProductPaginations.countPerPage,
+                    "searchProductCategory": true,
+                    "search": state.searchingBaseOnCategoryName.searchInput.toString(),
+                    "typeSearch": state.searchingBaseOnCategoryName.selectedSearchType.toString()
+                })
+                .then(response => {
+                    state.categoriesProductPaginations.loading = false;
+                    if (response.data && response.data.status) {
+                        //set new data to products state object
+                        state.categoriesProductPaginations.products = response.data.products
+                        state.categoriesProductPaginations.pages = Math.ceil(response.data.count / state.categoriesProductPaginations.countPerPage)
+
+                    } else {
+                        //error
+                        state.categoriesProductPaginations.products = Array()
+                    }
+                })
+                .catch(error => {
+                    state.categoriesProductPaginations.loading = false;
+
+                    state.categoriesProductPaginations.products = Array()
+                    console.log(error)
+                })
+        },
+        //حذف یک محصول
+        RmoveOneProduct({ commit, dispatch, getters, rootGetters, rootState, state }, payload) {
+            let that = this;
+            //prepare data
+            let product_id = payload
+            let data = new FormData();
+            data.append("productId", product_id)
+            data.append("removeOneProduct", true)
+
+            axios
+                .post(
+                    "http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/products/categoryProducts/removeOneProduct.php",
+                    data, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    }
+                )
+                .then(function(response) {
+                    if (response.data && response.data.status == true) {
+                        //show success notification
+                        rootState.successNotification = {
+                            show: true,
+                            message: "محصول با موفقیت حذف شد",
+                        };
+                        //close edit modal
+                        rootState.brands.brandEditing = false;
+                        //open comfirm smsCode
+                    } else {
+                        rootState.errorNotification = {
+                            show: true,
+                            message: "خطا، محصول حذف نشد",
+                        };
+                    }
+                })
+                .catch(function(error) {
+                    rootState.errorNotification = {
+                        show: true,
+                        message: "خطا، محصول حذف نشد",
+                    };
+                    console.log(error);
+                });
         }
 
     },

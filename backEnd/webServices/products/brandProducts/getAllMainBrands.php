@@ -25,8 +25,8 @@ class GetAllCategoryProducts
    * @return array
    */
   protected function getAllCategoriesCount(int $offset,int $count):int{
-    $sql = "SELECT COUNT(*) as count FROM `pish_hikashop_category`  WHERE category_type = 'product' AND category_parent_id = 2
-    ORDER BY `pish_hikashop_category`.`category_id` ASC LIMIT $offset,$count";
+    $sql = "SELECT COUNT(*) as count FROM `pish_hikashop_category`  WHERE category_type = 'manufacturer' AND category_parent_id = 10
+    ORDER BY `pish_hikashop_category`.`category_id` ASC";
     $Categories = $this->select($sql);
     if(count($Categories)){
       return $Categories[0]['count'];
@@ -53,15 +53,15 @@ class GetAllCategoryProducts
       (
         SELECT  *
         FROM `pish_hikashop_category`
-        WHERE category_type = 'product' 
-        AND category_parent_id IN(1,2)
+        WHERE category_type = 'manufacturer' 
+        AND category_parent_id IN(1,10)
         ORDER BY `pish_hikashop_category`.`category_id` ASC LIMIT $offset,$count
       ) AS new
       LEFT JOIN pish_hikashop_category
       ON new.category_parent_id = pish_hikashop_category.category_id
     )as finalCategory
     LEFT JOIN pish_hikashop_product
-    ON finalCategory.category_id = pish_hikashop_product.product_parent_id
+    ON finalCategory.category_id = pish_hikashop_product.product_manufacturer_id
     GROUP BY finalCategory.category_id
     ";
     $Categories = $this->select($sql);

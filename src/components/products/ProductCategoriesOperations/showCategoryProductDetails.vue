@@ -2,83 +2,100 @@
   <div>
     <b-row>
       <b-col class="mt-2">
-        <h5 class="text-center pb-0 pt-2">نمایش محصولات دسته بندی {{category_name}}</h5>
-        <hr class="w-25 mt-0 pt-0 bg-info">
+        <h5 class="text-center pb-0 pt-2">
+          نمایش محصولات دسته بندی {{ category_name }}
+        </h5>
+        <hr class="w-25 mt-0 pt-0 bg-info" />
       </b-col>
     </b-row>
 
     <ProductNavigation />
+    <div v-if="loading">
+      <font-awesome-icon icon="spinner" pulse ></font-awesome-icon>
+    </div>
+    <div v-else>
+      <div v-if="items.length">
+      <b-table
+        :sticky-header="stickyHeader"
+        :no-border-collapse="noCollapse"
+        responsive
+        :items="items"
+        :fields="fields"
+      >
+        <template #cell(operation)="data">
+          <div class="min-width-250px">
+            
+            <b-button
+              class="m-0 bg-danger mx-1"
+              @click="showRemoveProducts(data.value.product_id)"
+              >حذف</b-button
+            >
+            <b-button
+              class="m-0 bg-info mx-1"
+              @click="ShowEditProducts(data.value.product_id)"
+              >ویرایش</b-button
+            >
+          </div>
+        </template>
 
-    <div v-if="items.length">
-    <b-table
-      :sticky-header="stickyHeader"
-      :no-border-collapse="noCollapse"
-      responsive
-      :items="items"
-      :fields="fields"
-    >
-      <template #cell(operation)="data">
-        <div class="min-width-250px">
-            <b-button class="m-0 bg-primary mx-1" @click="ShowCategoryProducts(data.value.category_id)" >نمایش محصولات</b-button>
-            <b-button class="m-0 bg-danger mx-1" @click="ShowCategoryProducts(data.value.category_id)" >حذف</b-button>
-            <b-button  class="m-0 bg-info mx-1" @click="ShowCategoryProducts(data.value.category_id)" >ویرایش</b-button>
+        <!-- We are using utility class `text-nowrap` to help illustrate horizontal scrolling -->
+        <template #head(category_id)="scope">
+          <div class="text-nowrap p-0 m-0">Row ID</div>
+        </template>
+
+        <template #head()="scope">
+          <div class="text-nowrap">
+            {{ scope.label }}
+          </div>
+        </template>
+
+        <template #cell(product_name)="data">
+          <div class="min-width-140px">
+            {{ data.value }}
+          </div>
+        </template>
+        <template #cell(file_path)="data">
+          <div>
+            <b-img :src="'https://fishopping.ir/images/com_hikashop/upload/thumbnails/200x200f/'+data.value" fluid ></b-img>
+          </div>
+        </template>
+      </b-table>
+
+      <!-- pagination section -->
+      <div class="row justify-content-center">
+        <div class="mt-3">
+          <b-pagination-nav
+            v-model="currentPage"
+            :number-of-pages="pages"
+            base-url="#"
+            last-number
+            @input="changeCurrentPage"
+          ></b-pagination-nav>
         </div>
-
-      </template>
-
-      <!-- We are using utility class `text-nowrap` to help illustrate horizontal scrolling -->
-      <template #head(category_id)="scope">
-        <div class="text-nowrap p-0 m-0">Row ID</div>
-      </template>
-
-      <template #head()="scope">
-        <div class="text-nowrap">
-          {{ scope.label }}
-        </div>
-      </template>
-
-      <template #cell(product_name)="data">
-        <div class="min-width-140px">
-          {{data.value}}
-        </div>
-      </template>
-
-    </b-table>
-
-    <!-- pagination section -->
-    <div class="row justify-content-center">
-      <div class="mt-3">
-        <b-pagination-nav
-          v-model="currentPage"
-          :number-of-pages="pages"
-          base-url="#"
-          last-number
-          @input= "changeCurrentPage"
-        ></b-pagination-nav>
       </div>
     </div>
-    </div>
     <div v-else class="p-3">
-      
       <h6 class="text-danger font-weight-bold">هیچ محصولی پیدا نشد</h6>
     </div>
+    </div>
 
-  {{products}}
+    <!-- add modal operation product category -->
+    <ProductCategoryModaOperations />
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import ShowProductPagination from '@/components/products/ShowProductPagination.vue';
-import ProductNavigation from '@/components/products/ProductCategoriesOperations/ProductNavigation.vue';
-
+import ShowProductPagination from "@/components/products/ShowProductPagination.vue";
+import ProductNavigation from "@/components/products/ProductCategoriesOperations/ProductNavigation.vue";
+import ProductCategoryModaOperations from '@/components/products/ProductCategoriesOperations/ProductCategoryModaOperations.vue'
 export default {
   data() {
     return {
-
       getAllBrandOffset: 0,
       stickyHeader: true,
-      noCollapse: false,    
+      noCollapse: false,
+      searching:false,
       fields: [
         {
           key: "operation",
@@ -92,7 +109,7 @@ export default {
         { key: "product_description", label: "توضیحات محصول" },
         { key: "product_name", label: "نام محصول" },
         { key: "brand_name", label: "نام برند" },
-        { key: "store_name", label: "نام فروشگاه" },
+        // { key: "store_name", label: "نام فروشگاه" },
         { key: "product_published", label: "وضعیت انتشار" },
         { key: "category_name", label: "نام دسته بندی" },
         { key: "product_msrp", label: "قیمت مصرف کننده" },
@@ -100,28 +117,34 @@ export default {
         { key: "product_package_type ", label: "نوع دسته بندی" },
         { key: "product_number_in_package", label: "" },
         { key: "product_counting_uni", label: "واحد شمارش محصول" },
-
+        { key: "file_path", label: "عکس محصول" },
       ],
     };
   },
-  methods: { 
-    changeCurrentPage(value){
-        this.currentPage = value;
-        this.getCategoriesProduct()
-
-    },
-    ShowCategoryProducts(category_id) {
-      //show component
-      this.$store.state.products.productOperation.show.show=true;
-
-      //save category infos
-      this.$store.commit('products/saveCategoryInfoShowByCategoryId',category_id)
-
-      //console.log category saved
+  methods: {
+    changeCurrentPage(value) {
+      this.currentPage = value;
+      if(this.$store.state.products.searchingBaseOnCategoryName.searching==false){
+        this.$store.dispatch('products/getCategoriesProduct')
+      }else{
+        //searcing procces
+        this.$store.dispatch('products/SearchingProducts')
+      }
       
     },
+    showRemoveProducts(product_id) {
+      //save product infos
+      this.$store.commit('products/saveRemoveProduct',product_id)
+      this.$store.commit('products/hideAllProductOperations','remove')
+    },
+    ShowEditProducts(product_id){
+      //save product info
+      this.$store.commit('products/saveEditProduct',product_id)
+      this.$store.commit('products/hideAllProductOperations','edit')
+
+    },
     //get products of category selected in previous section
-    getCategoriesProduct(){
+    getCategoriesProduct() {
       // let that = this;
       // let category_id = that.$store.getters['products/savedCategoryInfo'][0].category_id
       // axios
@@ -139,91 +162,111 @@ export default {
       //     }else{
       //       //show error product not exist
       //     }
-          
       //   })
       //   .catch(error =>{
       //     //show error
       //     console.log(error)
       //   })
-    }
+    },
   },
   computed: {
-    category_name(){
-      return '('+this.$store.state.products.productOperation.show.categoryInfo[0].category_name+')';
+    category_name() {
+      return (
+        "(" +
+        this.$store.state.products.productOperation.show.categoryInfo[0]
+          .category_name +
+        ")"
+      );
     },
     items() {
-      if(this.products && this.products.length){
-
-        return this.products.map(product =>{
+      if (this.products && this.products.length) {
+        return this.products.map((product) => {
           return {
             ...product,
-            operation:{product_id:product.product_id,product_product_count:product.product_product_count}
-          }
+            operation: {
+              product_id: product.product_id,
+              product_product_count: product.product_product_count,
+            },
+          };
         });
-      }else{
+      } else {
         return Array();
       }
     },
-    pages:{
-      get(){
-        return this.$store.state.products.categoriesProductPaginations.pages
+    pages: {
+      get() {
+        return this.$store.state.products.categoriesProductPaginations.pages;
       },
-      set(newValue){
-        this.$store.state.products.categoriesProductPaginations.pages =newValue
-      }
-    },
-    products:{
-      get(){
-        return this.$store.state.products.categoriesProductPaginations.products
+      set(newValue) {
+        this.$store.state.products.categoriesProductPaginations.pages = newValue;
       },
-      set(newValue){
-        this.$store.state.products.categoriesProductPaginations.products = newValue
-      }
     },
-    currentPage:{
-      get(){
-        return this.$store.state.products.categoriesProductPaginations.currentPage
+    products: {
+      get() {
+        return this.$store.state.products.categoriesProductPaginations.products;
       },
-      set(newValue){
-        this.$store.state.products.categoriesProductPaginations.currentPage = newValue
-      }
-    },
-    countPerPage:{
-      get(){
-        return this.$store.state.products.categoriesProductPaginations.countPerPage
+      set(newValue) {
+        this.$store.state.products.categoriesProductPaginations.products = newValue;
       },
-      set(newValue){
-        this.$store.state.products.categoriesProductPaginations.countPerPage = newValue
-      }
     },
-      
+    currentPage: {
+      get() {
+        return this.$store.state.products.categoriesProductPaginations
+          .currentPage;
+      },
+      set(newValue) {
+        this.$store.state.products.categoriesProductPaginations.currentPage = newValue;
+      },
+    },
+    countPerPage: {
+      get() {
+        return this.$store.state.products.categoriesProductPaginations
+          .countPerPage;
+      },
+      set(newValue) {
+        this.$store.state.products.categoriesProductPaginations.countPerPage = newValue;
+      },
+    },
+    loading: {
+      get() {
+        return this.$store.state.products.categoriesProductPaginations.loading;
+      },
+      set(newValue) {
+        this.$store.state.products.categoriesProductPaginations.loading = newValue;
+      },
+    },
   },
   components: {
     ShowProductPagination,
-    ProductNavigation
-
+    ProductNavigation,
+    ProductCategoryModaOperations
   },
-  created(){
-    this.getCategoriesProduct()
-  }
+  created() {
+    this.getCategoriesProduct();
+  },
 };
 </script>
 
 
 <style lang="scss" scoped>
-.danger{
+.danger {
   background: red !important;
 }
 table tr th {
   display: contents;
 }
-.min-width-250px{
-  min-width:280px !important;  
+.min-width-250px {
+  min-width: 140px !important;
 }
 
-.min-width-140px{
-  min-width:210px;
-  color:rgb(15, 134, 128);
+.min-width-140px {
+  min-width: 210px;
+  color: rgb(15, 134, 128);
 }
-
+.width-150-150 img{
+  background: red;
+  width:150px !important;
+  height:100px !important;
+  overflow: hidden;
+}
 </style>

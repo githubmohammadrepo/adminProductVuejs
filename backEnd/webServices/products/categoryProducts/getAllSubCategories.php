@@ -42,7 +42,25 @@ class GetAllCategoryProducts
    * @return array
    */
   protected function getAllSubCategories(int $offset,int $count,int $category_id):array{
-    $sql = "SELECT *  FROM `pish_hikashop_category`  WHERE category_parent_id =$category_id ORDER BY category_id ASC LIMIT $offset,$count";
+    $sql ="SELECT  finalCategory.*
+      ,COUNT(pish_hikashop_product.product_id) as category_product_count
+      FROM(
+      SELECT  new.*
+            ,pish_hikashop_category.category_name AS category_parent_name
+      FROM 
+      (
+      SELECT  *
+      FROM `pish_hikashop_category`
+      WHERE category_type = 'product' 
+      AND category_parent_id = $category_id
+      ORDER BY `pish_hikashop_category`.`category_id` ASC LIMIT $offset,$count
+      ) AS new
+      LEFT JOIN pish_hikashop_category
+      ON new.category_parent_id = pish_hikashop_category.category_id
+      )as finalCategory
+      LEFT JOIN pish_hikashop_product
+      ON finalCategory.category_id = pish_hikashop_product.product_parent_id
+      GROUP BY finalCategory.category_id";
     $Categories = $this->select($sql);
     if(count($Categories)){
       return $Categories;

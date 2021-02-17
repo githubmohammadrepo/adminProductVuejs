@@ -20,7 +20,6 @@ export default {
   },
   methods: {
     showProductsEvent(){
-      alert('showProductEvent')
       this.$store.commit('products/ChangeShowProductDetails',{key:'products',value:true})
     },
     showSubCategoriesEvent(){

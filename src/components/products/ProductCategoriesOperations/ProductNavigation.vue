@@ -2,7 +2,7 @@
   <div>
     <b-nav tabs align="center" class="bg-dark">
       <b-nav-item  class="order-1 ml-sm-auto bg-dark">
-        <b-button variant="info" class="">افزودن محصول جدید</b-button>
+        <b-button variant="info" class="" @click="showAddNewProduct">افزودن محصول جدید</b-button>
       </b-nav-item>
       <b-nav-item class="order-3 order-md-2 ">
           <b-input-group class="my-auto">
@@ -20,12 +20,12 @@
               </b-form-select>
             </template>
 
-            <b-form-input type="search" v-model="searchInput"  @input="SearchingProducts" placeholder="Enter your name"></b-form-input>
+            <b-form-input type="search" v-model="searchInput"  @keyup.enter="SearchingProducts(searchInput)" placeholder="Enter your name"></b-form-input>
           </b-input-group>
       </b-nav-item>
 
       <b-nav-item class="order-2 order-md-3">
-           <b-form-select v-model="filterNumberRowsProduct" :options="options" class="mb-3 my-auto dir-rtl">
+           <b-form-select v-model="countPerPage" :options="options" class="mb-3 my-auto dir-rtl">
               <!-- This slot appears above the options from 'options' prop -->
               <template #first>
                 <b-form-select-option :value="null" disabled>25</b-form-select-option>
@@ -63,34 +63,14 @@ export default {
   },
   methods: {
   SearchingProducts(value) {
-    let that = this;
-    console.log({"offset":(that.currentPage-1)*that.countPerPage,
-      "count":that.countPerPage,
-      "searchProductCategory":true,
-      "search":that.searchInput.toString(),
-      "typeSearch":that.selectedSearchType.toString()})
-    axios
-    .post("http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/products/categoryProducts/Searching.php",{
-      "offset":(that.currentPage-1)*that.countPerPage,
-      "count":that.countPerPage,
-      "searchProductCategory":true,
-      "search":that.searchInput.toString(),
-      "typeSearch":that.selectedSearchType.toString()
-    })
-    .then(response => {
-        if(response.data && response.data.status){
-          //set new data to products state object
-          that.$store.state.products.categoriesProductPaginations.products = response.data.products
-        }else{
-          //error
-          that.$store.state.products.categoriesProductPaginations.products = Array()
-        }
-    })
-    .catch(error => {
-        that.$store.state.products.categoriesProductPaginations.products = Array()
-      console.log(error)
-    })
+    this.$store.state.products.searchingBaseOnCategoryName.searchInput = value;
+    this.$store.state.products.searchingBaseOnCategoryName.selectedSearchType = this.selectedSearchType;
+    this.$store.dispatch('products/SearchingProducts')
+  },
+  showAddNewProduct(){
+    this.$store.commit('products/hideAllProductOperations','show')
   }
+  
   },
   computed: {
      pages:{
@@ -122,9 +102,18 @@ export default {
         return this.$store.state.products.categoriesProductPaginations.countPerPage
       },
       set(newValue){
+        this.currentPage=1;
         this.$store.state.products.categoriesProductPaginations.countPerPage = newValue
       }
     },
+    loading: {
+      get() {
+        return this.$store.state.products.categoriesProductPaginations.loading;
+      },
+      set(newValue) {
+        this.$store.state.products.categoriesProductPaginations.loading = newValue;
+      },
+    }
   },
   components:{
 

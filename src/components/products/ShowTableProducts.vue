@@ -82,7 +82,7 @@ export default {
         { key: "category_id", label: "ایدی دسته بندی" },
         { key: "category_name", label: "نام دسته بندی" },
         { key: "category_published", label: "وضعیت انتشار" },
-        { key: "category_parent_id", label: "نام دسته بندی پدر" },
+        { key: "category_parent_name", label: "نام دسته بندی پدر" },
         { key: "category_product_count", label: "تعداد محصولات" },
 
       ],
@@ -112,7 +112,10 @@ export default {
       });
     },
   },
-  created() {},
+  created() {
+    this.$store.state.products.paginationObject.currentPage=0
+    console.log(this.$store.state.products.items)
+  },
   components: {
     ShowProductPagination,
 

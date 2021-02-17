@@ -43,13 +43,15 @@ trait Helpers {
       }
     }
   }
+
   /**
-   * select operation on database
+   *  select operation on database
    *
    * @param string $sql
+   * @param boolean $freeResult
    * @return array
    */
-  protected function select(string $sql):array
+  protected function select(string $sql,bool $freeResult = false):array
   {
     $dev_array = Array();
     $result = $this->conn->query($sql);
@@ -58,6 +60,10 @@ trait Helpers {
       if($count){
         while($row= mysqli_fetch_assoc($result)){
           $dev_array[] =$row;
+        }
+
+        if($freeResult==true){
+          mysqli_free_result($result);
         }
       }
     }

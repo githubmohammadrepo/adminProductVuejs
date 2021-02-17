@@ -1,12 +1,14 @@
 <template>
   <div>
-      <ShowTableProducts />
+      <showBrandsProductNavigations v-if="brandProductOperation" />
+      <showAllBrands v-else/>
   </div>
 </template>
 
 
 <script>
-import ShowTableProducts from '@/components/products/ShowTableProducts.vue';
+import showAllBrands from '@/components/products/ProductBrandsOperations/showAllBrands';
+import showBrandsProductNavigations from '@/components/products/ProductBrandsOperations/showBrandsProductNavigations.vue';
 export default {
   data(){
     return {
@@ -17,10 +19,13 @@ export default {
     
   },
   computed: {
-    
+    brandProductOperation(){
+      return this.$store.state.products.BrandProductOperation
+    }
   },
   components:{
-    ShowTableProducts
+    showAllBrands,
+    showBrandsProductNavigations
   }
 }
 </script>

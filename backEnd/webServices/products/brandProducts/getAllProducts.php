@@ -25,7 +25,7 @@ class GetAllCategoryProducts
    * @return array
    */
   protected function getAllProductsCount(int $offset,int $count,int $category_id):int{
-    $sql = "SELECT COUNT(*) as count FROM `pish_hikashop_product` WHERE product_parent_id =$category_id";
+    $sql = "SELECT COUNT(*) as count FROM `pish_hikashop_product` WHERE product_manufacturer_id = $category_id";
     $Categories = $this->select($sql);
     if(count($Categories)){
       return $Categories[0]['count'];
@@ -43,16 +43,18 @@ class GetAllCategoryProducts
    * @return array
    */
   protected function getAllProducts(int $offset,int $count,int $category_id):array{
-    $sql = "SELECT result.*,pish_hikashop_file.file_path ,pish_hikashop_category.category_name as brand_name FROM(SELECT pish_hikashop_product.*,pish_hikashop_category.category_id,pish_hikashop_category.category_name,pish_hikashop_category.category_parent_id
+    $sql = "SELECT newResult.*,pish_hikashop_category.category_id as category_category_id,pish_hikashop_category.category_parent_id as category_category_parent_id FROM (SELECT result.*,pish_hikashop_file.file_path ,pish_hikashop_category.category_name as brand_name FROM(SELECT pish_hikashop_product.*,pish_hikashop_category.category_id,pish_hikashop_category.category_name,pish_hikashop_category.category_parent_id
     FROM pish_hikashop_product
     INNER JOIN pish_hikashop_category
-    ON pish_hikashop_product.product_parent_id = pish_hikashop_category.category_id
+    ON pish_hikashop_product.product_manufacturer_id = pish_hikashop_category.category_id
     WHERE pish_hikashop_category.category_id = $category_id
     ORDER BY pish_hikashop_category.category_id LIMIT $offset,$count) as result
     LEFT JOIN pish_hikashop_file
-  ON result.product_id = pish_hikashop_file.file_ref_id
+      ON result.product_id = pish_hikashop_file.file_ref_id
+    LEFT JOIN pish_hikashop_category
+    ON result.product_manufacturer_id = pish_hikashop_category.category_id)as newResult
 LEFT JOIN pish_hikashop_category
-ON result.product_manufacturer_id = pish_hikashop_category.category_id";
+ON newResult.product_parent_id = pish_hikashop_category.category_id";
     $Categories = $this->select($sql);
     if(count($Categories)){
       return $Categories;

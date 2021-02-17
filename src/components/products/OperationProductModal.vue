@@ -58,7 +58,7 @@
       EditOneStore,
       RemoveOneStore,
       AddOneStore,
-    },
+    }
   };
 </script>
 

@@ -6,7 +6,6 @@
         <hr class="w-25 mt-0 pt-0 bg-info">
       </b-col>
     </b-row>
-  items-length: {{items.length}}
     <div v-if="items.length">
       <b-table
         :sticky-header="stickyHeader"
@@ -60,7 +59,7 @@
     </div>
         
     <div v-else class="p-3">
-      <h6 class="text-danger font-weight-bold">هیچ محصولی پیدا نشد</h6>
+      <h6 class="text-danger font-weight-bold">هیچ <span class="word-thin">زیردسته بندی ای </span>پیدا نشد</h6>
     </div>
 
 
@@ -89,7 +88,7 @@ export default {
         { key: "category_id", label: "ایدی دسته بندی" },
         { key: "category_name", label: "نام دسته بندی" },
         { key: "category_published", label: "وضعیت انتشار" },
-        { key: "category_parent_id", label: "نام دسته بندی پدر" },
+        { key: "category_parent_name", label: "نام دسته بندی پدر" },
         { key: "category_product_count", label: "تعداد محصولات" },
 
       ],
@@ -102,15 +101,15 @@ export default {
 
       //save category infos
       this.$store.commit('products/saveSubCategoryInfoShowByCategoryId',category_id)
-      console.log('subCategoryConsole')
-      console.log(this.$store.state.products.productOperation.show.categoryInfo)
 
       //console.log category saved
       this.$store.dispatch('products/getAllSubCategories',category_id)
       this.$store.dispatch('products/getCategoriesProduct',category_id)
 
-      
     },
+    changeCurrentPage(){
+      
+    }
     // getCategoriesProduct(){
     //   let that = this;
     //   let category_id = that.$store.getters['products/savedCategoryInfo'][0].category_id
@@ -184,12 +183,10 @@ export default {
   },
   created() {
     // this.getCategoriesProduct()
-      this.$store.dispatch('products/getAllSubCategories')
-
+    this.$store.dispatch('products/getAllSubCategories')
   },
   components: {
     ShowProductPagination,
-
   },
 };
 </script>
@@ -198,6 +195,9 @@ export default {
 <style lang="scss" scoped>
 .danger{
   background: red !important;
+}
+.word-thin{
+  word-spacing: -2px;
 }
 table tr th {
   display: contents;

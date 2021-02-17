@@ -22,6 +22,8 @@ export default {
     },
     showBrandProduct(){
       this.$store.commit('products/changeShowProductCategory',{key:'brandProducts',value:true})
+      this.$store.state.products.BrandProductOperation = false;
+
     },
     
   },

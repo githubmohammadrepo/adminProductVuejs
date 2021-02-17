@@ -24,9 +24,8 @@ class GetAllCategoryProducts
    * @param integer $count
    * @return array
    */
-  protected function getAllCategoriesCount(int $offset,int $count):int{
-    $sql = "SELECT COUNT(*) as count FROM `pish_hikashop_category`  WHERE category_type = 'product' AND category_parent_id = 2
-    ORDER BY `pish_hikashop_category`.`category_id` ASC LIMIT $offset,$count";
+  protected function getAllSubCategoriesCount(int $offset,int $count,int $category_id):int{
+    $sql = "SELECT COUNT(*) as count FROM `pish_hikashop_category` WHERE category_parent_id =$category_id ORDER BY category_id ASC";
     $Categories = $this->select($sql);
     if(count($Categories)){
       return $Categories[0]['count'];
@@ -42,28 +41,26 @@ class GetAllCategoryProducts
    * @param integer $count
    * @return array
    */
-  protected function getAllCategories(int $offset,int $count):array{
-    $sql = "
-    SELECT  finalCategory.*
-           ,COUNT(pish_hikashop_product.product_id) as category_product_count
+  protected function getAllSubCategories(int $offset,int $count,int $category_id):array{
+    $sql ="SELECT  finalCategory.*
+    ,COUNT(pish_hikashop_product.product_id) as category_product_count
     FROM(
-      SELECT  new.*
-             ,pish_hikashop_category.category_name AS category_parent_name
-      FROM 
-      (
-        SELECT  *
-        FROM `pish_hikashop_category`
-        WHERE category_type = 'product' 
-        AND category_parent_id IN(1,2)
-        ORDER BY `pish_hikashop_category`.`category_id` ASC LIMIT $offset,$count
-      ) AS new
-      LEFT JOIN pish_hikashop_category
-      ON new.category_parent_id = pish_hikashop_category.category_id
+    SELECT  new.*
+          ,pish_hikashop_category.category_name AS category_parent_name
+    FROM 
+    (
+    SELECT  *
+    FROM `pish_hikashop_category`
+    WHERE category_type = 'manufacturer' 
+    AND category_parent_id = $category_id
+    ORDER BY `pish_hikashop_category`.`category_id` ASC LIMIT $offset,$count
+    ) AS new
+    LEFT JOIN pish_hikashop_category
+    ON new.category_parent_id = pish_hikashop_category.category_id
     )as finalCategory
     LEFT JOIN pish_hikashop_product
-    ON finalCategory.category_id = pish_hikashop_product.product_parent_id
-    GROUP BY finalCategory.category_id
-    ";
+    ON finalCategory.category_id = pish_hikashop_product.product_manufacturer_id
+    GROUP BY finalCategory.category_id";
     $Categories = $this->select($sql);
     if(count($Categories)){
       return $Categories;
@@ -86,16 +83,18 @@ class ShowResult extends GetAllCategoryProducts {
     parent::__construct($conn);
   }
 
-  public function showAllCategories(){
+  public function showAllSubCategories(){
 
     $postedData = $this->postedData();
-    if(isset($postedData['getAllCategories'])){
+    if(isset($postedData['getAllSubCategories'])){
       $offset =(int)$this->getPostRequestField('offset','int',-1);
       $count =(int)$this->getPostRequestField('count','int',-1);  
-      if($offset!=-1 && $count!=-1){
-        $categories = $this->getAllCategories($offset,$count);
+      $category_id =(int)$this->getPostRequestField('category_id','int',-1);  
+
+      if($offset!=-1 && $count!=-1 && $category_id!=-1){
+        $categories = $this->getAllSubCategories($offset,$count,$category_id);
         if(count($categories)){
-          $categoriesCount = $this->getAllCategoriesCount($offset,$count);
+          $categoriesCount = $this->getAllSubCategoriesCount($offset,$count,$category_id);
           $this->resultJsonEncode(['categories'=>$categories,'count'=>$categoriesCount,'status'=>true]);
         }else{
           $this->resultJsonEncode(['categories'=>$categories,'status'=>false]);
@@ -113,4 +112,4 @@ class ShowResult extends GetAllCategoryProducts {
 
 //create init from ShowResult
 $showGetCategoris = new ShowResult($conn);
-$showGetCategoris->showAllCategories();
+$showGetCategoris->showAllSubCategories();
