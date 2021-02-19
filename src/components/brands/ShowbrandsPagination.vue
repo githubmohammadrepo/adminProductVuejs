@@ -1,27 +1,31 @@
 <template>
   <div class="row justify-content-center">
-    <div class="mt-3">
-      <b-pagination-nav
-        v-model="currentPage"
-        :number-of-pages="pages"
-        base-url="#"
-        last-number
-      ></b-pagination-nav>
-    </div>
+    <!-- just for text show modal developing -->
+    <paginate :pages="pages" :value="currentPage" @changed="updateCurrentPage" />
   </div>
 </template>
 
 <script>
+import paginate from '@/components/general/Pagination.vue'
 export default {
     data() {
       return {
+        myName:"mohammad"
       }
     },
     methods: {
       show(newShow){
         //dispatch action
         this.$store.dispatch('companies/getAllCompanies')
-      }
+      },
+      goToTwo(){
+        this.currentPage += 1;
+        this.myName='Heideh'
+      },
+      updateCurrentPage(currentPage){
+        this.currentPage = currentPage;
+      },
+      
     },
     computed: {
       pages:{
@@ -42,5 +46,8 @@ export default {
         }
       }
     },
+    components:{
+      paginate
+    }
   }
 </script>

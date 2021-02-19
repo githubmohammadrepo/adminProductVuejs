@@ -1,6 +1,6 @@
 module.exports = {
     publicPath: process.env.NODE_ENV === 'production' ?
-        '/serverHypernetShowUnion/adminProduct/dist/' : '/',
+        '/dist/' : '/',
     configureWebpack: {
         devServer: {
             headers: { "Access-Control-Allow-Origin": "*" }
