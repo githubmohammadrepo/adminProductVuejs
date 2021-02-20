@@ -52,13 +52,9 @@
         <!-- pagination section -->
         <div class="row justify-content-center">
           <div class="mt-3">
-            <b-pagination-nav
-              v-model="paginationObject.currentPage"
-              :number-of-pages="paginationObject.pages"
-              base-url="#"
-              last-number
-              @input= "changeCurrentPage"
-            ></b-pagination-nav>
+            
+            <paginate :pages="pages" :value="currentPage" @changed="updateCurrentPage" />
+
           </div>
         </div>
       </div>
@@ -74,6 +70,7 @@
 
 <script>
 import axios from "axios";
+import paginate from '@/components/general/Pagination.vue'
 
 export default {
   data() {
@@ -107,10 +104,6 @@ export default {
     };
   },
   methods: {
-    changeCurrentPage(value){
-      this.paginationObject.currentPage = value;
-      this.getAllSubCategories()
-    },
     ShowCategoryProducts(category_id){
       //change saved product editing
        let brandEditing = this.subBrands.filter(brand => {
@@ -161,6 +154,15 @@ export default {
       this.$store.state.products.brandProductNavigations.showSubBrands = false;
       //show porduct
       this.$store.state.products.brandProductNavigations.showBrandProducts =true
+    },
+    updateCurrentPage(currentPage){
+      if(this.currentPage.toString()==currentPage.toString()){
+
+      }else{
+        this.currentPage = currentPage;
+        this.getAllSubCategories()
+      }
+
     }
   },
   computed: {
@@ -174,10 +176,27 @@ export default {
           operation:{category_id:subBrand.category_id,category_product_count:subBrand.category_product_count}
         }
       });
+    },
+    currentPage:{
+      get(){
+        return this.paginationObject.currentPage;
+      },
+      set(value){
+        this.paginationObject.currentPage = value
+      }
+    },
+    pages:{
+      get(){
+        return this.paginationObject.pages;
+      },
+      set(value){
+        this.pagnityObject.pages = value;
+      }
     }
     
   },
   components:{
+      paginate
 
   },
   created(){

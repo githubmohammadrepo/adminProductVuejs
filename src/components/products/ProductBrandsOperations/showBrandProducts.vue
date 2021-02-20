@@ -101,13 +101,8 @@
       <!-- pagination section -->
       <div class="row justify-content-center">
         <div class="mt-3">
-          <b-pagination-nav
-            v-model="paginationObject.currentPage"
-            :number-of-pages="paginationObject.pages"
-            base-url="#"
-            last-number
-            @input="changeCurrentPage"
-          ></b-pagination-nav>
+         <paginate :pages="pages" :value="currentPage" @changed="updateCurrentPage" />
+
         </div>
       </div>
     </div>
@@ -138,6 +133,7 @@ import axios from "axios";
 import addNewProduct from '@/components/products/ProductBrandsOperations/productOperations/AddNewProduct.vue';
 import editOneProduct from '@/components/products/ProductBrandsOperations/productOperations/EditOneProduct.vue';
 import removeOneProduct from '@/components/products/ProductBrandsOperations/productOperations/RemoveOneProduct.vue';
+import paginate from '@/components/general/Pagination.vue'
 
 export default {
   data() {
@@ -208,10 +204,7 @@ export default {
     };
   },
   methods: {
-    changeCurrentPage(value) {
-      this.currentPage = value;
-      this.getCategoriesProduct()
-    },
+
     // remove one product
     showRemoveProducts(product_id){
       this.$store.state.products.BrandProductEditingFromInfos ={}
@@ -343,6 +336,15 @@ export default {
       this.showProductOperations.add.show = true;
       this.$store.state.products.BrandModalProductOperations.show=true
       
+    },
+    updateCurrentPage(currentPage){
+
+      if(this.currentPage.toString()==currentPage.toString()){
+
+      }else{
+        this.currentPage = currentPage;
+        this.getCategoriesProduct()
+      }
     }
     
   },
@@ -365,11 +367,29 @@ export default {
     category_name(){
       return this.$store.state.products.mainBrandEditing.category_name
     },
+   currentPage:{
+      get(){
+        return this.paginationObject.currentPage;
+      },
+      set(value){
+        this.paginationObject.currentPage = value
+      }
+    },
+    pages:{
+      get(){
+        return this.paginationObject.pages;
+      },
+      set(value){
+        this.pagnityObject.pages = value;
+      }
+    }
   },
   components:{
     addNewProduct,
     editOneProduct,
-    removeOneProduct
+    removeOneProduct,
+    paginate
+
   },
   created() {
     this.getCategoriesProduct()

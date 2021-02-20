@@ -64,13 +64,9 @@
       <!-- pagination section -->
       <div class="row justify-content-center">
         <div class="mt-3">
-          <b-pagination-nav
-            v-model="currentPage"
-            :number-of-pages="pages"
-            base-url="#"
-            last-number
-            @input="changeCurrentPage"
-          ></b-pagination-nav>
+         
+         <paginate :pages="pages" :value="currentPage" @changed="updateCurrentPage" />
+
         </div>
       </div>
     </div>
@@ -89,6 +85,8 @@ import axios from "axios";
 import ShowProductPagination from "@/components/products/ShowProductPagination.vue";
 import ProductNavigation from "@/components/products/ProductCategoriesOperations/ProductNavigation.vue";
 import ProductCategoryModaOperations from '@/components/products/ProductCategoriesOperations/ProductCategoryModaOperations.vue'
+import paginate from '@/components/general/Pagination.vue'
+
 export default {
   data() {
     return {
@@ -122,16 +120,19 @@ export default {
     };
   },
   methods: {
-    changeCurrentPage(value) {
-      this.currentPage = value;
-      if(this.$store.state.products.searchingBaseOnCategoryName.searching==false){
-        this.$store.dispatch('products/getCategoriesProduct')
+    updateCurrentPage(currentPage){
+      if(this.currentPage.toString()==currentPage.toString()){
       }else{
-        //searcing procces
-        this.$store.dispatch('products/SearchingProducts')
+        this.currentPage = currentPage;
+        if(this.$store.state.products.searchingBaseOnCategoryName.searching==false){
+          this.$store.dispatch('products/getCategoriesProduct',window.sessionStorage.getItem('subCategory_id'))
+        }else{
+          //searcing procces
+          this.$store.dispatch('products/SearchingProducts')
+        }
       }
-      
     },
+
     showRemoveProducts(product_id) {
       //save product infos
       this.$store.commit('products/saveRemoveProduct',product_id)
@@ -211,8 +212,7 @@ export default {
     },
     currentPage: {
       get() {
-        return this.$store.state.products.categoriesProductPaginations
-          .currentPage;
+        return this.$store.state.products.categoriesProductPaginations.currentPage;
       },
       set(newValue) {
         this.$store.state.products.categoriesProductPaginations.currentPage = newValue;
@@ -239,7 +239,8 @@ export default {
   components: {
     ShowProductPagination,
     ProductNavigation,
-    ProductCategoryModaOperations
+    ProductCategoryModaOperations,
+    paginate
   },
   created() {
     this.getCategoriesProduct();

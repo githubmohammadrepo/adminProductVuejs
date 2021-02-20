@@ -183,10 +183,15 @@ const companies = {
             state.paginationObject.countPerPage = payload;
         },
         saveSearchedFilters(state, payload) {
-            state.storeShowComponents.SearchStore = payload
+            state.storeShowComponents.SearchStore.selectedProvince = payload.selectedProvince,
+                state.storeShowComponents.SearchStore.selectedCity = payload.selectedCity,
+                state.storeShowComponents.SearchStore.selectedRegion = payload.selectedRegion
+                // state.storeShowComponents.SearchStore = payload
         },
         computePagesPaginations(state, payload) {
             state.paginationObject.pages = Math.ceil(payload / state.paginationObject.countPerPage)
+            console.log('pagination vues')
+            console.log(state.paginationObject.pages)
         },
         makeSearchAsFiltered(state, payload) {
             state.storeShowComponents.SearchStore.filtered = payload ? true : false;
@@ -234,6 +239,7 @@ const companies = {
                     getAllStoreWhoutFitler: true,
                 })
                 .then(response => {
+                    console.log(response.data)
                     if (response.data && response.data.stores) {
                         commit('computePagesPaginations', response.data.count)
                             //save info in store

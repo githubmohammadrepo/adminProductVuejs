@@ -5,12 +5,14 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <!--[if IE]><link rel="icon" href="http://fishopping.ir/dist/favicon.ico"><![endif]-->
-  <title>adminproduct</title>
-  <link href="http://fishopping.ir/dist/css/about.779d8774.css" rel="prefetch">
-  <link href="http://fishopping.ir/dist/js/about.ad99186b.js" rel="prefetch">
+  <title>adminproduct</title> 
+   <link href="http://fishopping.ir/dist/css/anti-bootstrap.css" rel="prefetch">
+
+  <link href="http://fishopping.ir/dist/css/about.0e30ba5c.css" rel="prefetch">
+  <link href="http://fishopping.ir/dist/js/about.da162f2a.js" rel="prefetch">
   <link href="http://fishopping.ir/dist/css/app.b5977d91.css" rel="preload" as="style">
   <link href="http://fishopping.ir/dist/css/chunk-vendors.01c183df.css" rel="preload" as="style">
-  <link href="http://fishopping.ir/dist/js/app.899c391c.js" rel="preload" as="script">
+  <link href="http://fishopping.ir/dist/js/app.c4103ab5.js" rel="preload" as="script">
   <link href="http://fishopping.ir/dist/js/chunk-vendors.84175517.js" rel="preload" as="script">
   <link href="http://fishopping.ir/dist/css/chunk-vendors.01c183df.css" rel="stylesheet">
   <link href="http://fishopping.ir/dist/css/app.b5977d91.css" rel="stylesheet">
@@ -27,10 +29,9 @@
   <meta name="msapplication-TileColor" content="#000000">
 </head>
 
-<noscript><strong>We're sorry but adminproduct doesn't work properly without JavaScript enabled. Please enable it
-      to continue.</strong></noscript>
+<noscript><strong>We're sorry but adminproduct doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript>
   <div id="app"></div>
   <script src="http://fishopping.ir/dist/js/chunk-vendors.84175517.js"></script>
-  <script src="http://fishopping.ir/dist/js/app.899c391c.js"></script>
+  <script src="http://fishopping.ir/dist/js/app.c4103ab5.js"></script>
 
 {/source}

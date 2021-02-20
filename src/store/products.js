@@ -9,7 +9,7 @@ const companies = {
             countPerPage: 25,
         },
         items: Array(),
-        productEditing: true,
+        productEditing: false,
         editDataObject: {},
         productOperation: {
             show: {
@@ -239,7 +239,12 @@ const companies = {
             } else {
                 category_id = state.productOperation.show.categoryInfo[0].category_id
             }
-
+            console.log({
+                "getAllCategoryProducts": true,
+                "offset": (state.categoriesProductPaginations.currentPage - 1) * state.categoriesProductPaginations.countPerPage,
+                "count": state.categoriesProductPaginations.countPerPage,
+                "category_id": category_id
+            })
             axios
                 .post("http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/products/categoryProducts/getAllProducts.php", {
                     "getAllCategoryProducts": true,
@@ -248,6 +253,7 @@ const companies = {
                     "category_id": category_id
                 })
                 .then(response => {
+                    console.log(response)
                     state.categoriesProductPaginations.loading = false
 
                     if (response.data && response.data.status) {

@@ -47,13 +47,8 @@
       <!-- pagination section -->
       <div class="row justify-content-center">
         <div class="mt-3">
-          <b-pagination-nav
-            v-model="currentPage"
-            :number-of-pages="pages"
-            base-url="#"
-            last-number
-            @input= "changeCurrentPage"
-          ></b-pagination-nav>
+         <paginate :pages="pages" :value="currentPage" @changed="updateCurrentPage" />
+
         </div>
       </div>
     </div>
@@ -69,6 +64,7 @@
 <script>
 import axios from "axios";
 import ShowProductPagination from '@/components/products/ShowProductPagination.vue';
+import paginate from '@/components/general/Pagination.vue'
 
 export default {
   data() {
@@ -95,6 +91,15 @@ export default {
     };
   },
   methods: {
+    updateCurrentPage(currentPage){
+      if(this.currentPage.toString()==currentPage.toString()){
+
+      }else{
+        this.currentPage = currentPage;
+        this.$store.dispatch('products/getAllCategoryProducts')
+      }
+
+    },
     ShowCategoryProducts(category_id) {
       //show component
       this.$store.state.products.productOperation.show.show=true;
@@ -105,11 +110,10 @@ export default {
       //console.log category saved
       this.$store.dispatch('products/getAllSubCategories',category_id)
       this.$store.dispatch('products/getCategoriesProduct',category_id)
+      window.sessionStorage.setItem('subCategory_id',category_id)
 
     },
-    changeCurrentPage(){
-      
-    }
+
     // getCategoriesProduct(){
     //   let that = this;
     //   let category_id = that.$store.getters['products/savedCategoryInfo'][0].category_id
@@ -187,6 +191,7 @@ export default {
   },
   components: {
     ShowProductPagination,
+    paginate
   },
 };
 </script>

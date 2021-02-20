@@ -116,10 +116,12 @@ export default {
         .post("http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/stores/ShowStoreInfos.php",{
           ...that.selectedValues,
           offset:0,
-          count:25,
+          paginationCount:25,
           showALlStoreInfos:true
         })
         .then(response =>{
+          console.log('fitler')
+          console.log(response.data)
           if(response.data && response.data.stores){
             
             this.$store.commit('stores/makeSearchAsFiltered',true)

@@ -36,10 +36,10 @@ class ShowStoreInfos
     $sql ="";
     if($region_id ==-1){
       //without region_id
-      $sql = "SELECT COUNT(*) as count FROM pish_phocamaps_marker_store WHERE province = '$province_id' AND city = '$city_id'  ORDER BY id ASC limit $offset,$count";
+      $sql = "SELECT COUNT(*) as count FROM pish_phocamaps_marker_store WHERE province = '$province_id' AND city = '$city_id'  ORDER BY id ASC";
     }else{
       //with region_id
-      $sql = "SELECT COUNT(*) as count FROM pish_phocamaps_marker_store WHERE province = '$province_id' AND city = '$city_id' AND RegionID= '$region_id' ORDER BY id ASC limit $offset,$count";
+      $sql = "SELECT COUNT(*) as count FROM pish_phocamaps_marker_store WHERE province = '$province_id' AND city = '$city_id' AND RegionID= '$region_id' ORDER BY id ASC";
     }
 
     $dev_array = $this->select($sql);
@@ -221,7 +221,7 @@ class ShowStoreInfos
    */
   private function getCountStoreSearrchByInput(string $search):int {
     $dev_array = Array();
-    echo $sql= "SELECT COUNT(*) as count FROM pish_phocamaps_marker_store WHERE ShopName like '%$search%'  ORDER BY id ASC";
+    $sql= "SELECT COUNT(*) as count FROM pish_phocamaps_marker_store WHERE ShopName like '%$search%'  ORDER BY id ASC";
     
     $dev_array = $this->select($sql);
     if(count($dev_array)){
@@ -243,7 +243,7 @@ class ShowStoreInfos
    */
   private function getStoreLikeSearchByInput(int $offset,int $count,string $search):array{
     $dev_array = Array();
-    echo $sql= "SELECT new.*,pish_province.id as province_id,pish_province.name as province_name,pish_city.id as city_id,pish_city.name as city_name,pish_region.id as region_id,pish_region.title as region_title FROM (SELECT id,user_id,title,ShopName,phone,MobilePhone,latitude,longitude,ManagerName,Address,RegionID,province,city FROM pish_phocamaps_marker_store WHERE ShopName like '%$search%'  ORDER BY id ASC LIMIT $offset,$count)AS new
+    $sql= "SELECT new.*,pish_province.id as province_id,pish_province.name as province_name,pish_city.id as city_id,pish_city.name as city_name,pish_region.id as region_id,pish_region.title as region_title FROM (SELECT id,user_id,title,ShopName,phone,MobilePhone,latitude,longitude,ManagerName,Address,RegionID,province,city FROM pish_phocamaps_marker_store WHERE ShopName like '%$search%'  ORDER BY id ASC LIMIT $offset,$count)AS new
     LEFT JOIN pish_province ON new.province = pish_province.id
     LEFT JOIN pish_city ON new.city = pish_city.id
     LEFT JOIN pish_region ON new.RegionID = pish_region.id";

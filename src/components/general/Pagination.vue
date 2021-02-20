@@ -8,8 +8,6 @@
       </b-button>
       <!-- end start -->
       
-      
-
       <!-- start continue -->
       <b-button  class="bg-white text-primary" v-show="shows.startContinue">...</b-button>
       <!-- end continue -->
@@ -41,6 +39,7 @@
 </template>
 
 <script>
+
 export default {
   props:{
     pages:{
@@ -76,9 +75,8 @@ export default {
    }
  },
  methods: {
-  showSelf(value){
-
-    
+  showSelf(value,refresh=false){
+ 
     //hide all
     this.hideAll()
     if(this.pageCount<=1){
@@ -173,7 +171,9 @@ export default {
 
     }
     this.currentPage = value;
-    this.OuputCurrentPage(value)
+    if(refresh==false){
+      this.OuputCurrentPage(value)
+    }
 
     if(value>2){
       //show startContinue
@@ -209,6 +209,10 @@ export default {
    },
    pageCount:{
      get(){
+       if(window.sessionStorage.getItem('page')!=this.pages.toString()){
+         window.sessionStorage.setItem('page',this.pages.toString());
+          this.showSelf(this.currentPage)
+       }
        return parseInt(this.pages);
      },
 
@@ -216,7 +220,7 @@ export default {
   
  },
  created() {
-  this.showSelf(1)
+  this.showSelf(this.currentPage)
  },
 }
 </script>

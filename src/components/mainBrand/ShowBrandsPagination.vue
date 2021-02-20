@@ -1,17 +1,15 @@
 <template>
   <div class="row justify-content-center">
     <div class="mt-3">
-      <b-pagination-nav
-        v-model="currentPage"
-        :number-of-pages="pages"
-        base-url="#"
-        last-number
-      ></b-pagination-nav>
+    <paginate :pages="pages" :value="currentPage" @changed="updateCurrentPage" />
+      
     </div>
   </div>
 </template>
 
 <script>
+import paginate from '@/components/general/Pagination.vue'
+
 export default {
     data() {
       return {
@@ -21,7 +19,10 @@ export default {
       show(newShow){
         //dispatch action
         this.$store.dispatch('brands/getAllBrands')
-      }
+      },
+      updateCurrentPage(currentPage){
+        this.currentPage = currentPage;
+      },
     },
     computed: {
       pages:{
@@ -42,5 +43,8 @@ export default {
         }
       }
     },
+    components:{
+      paginate
+    }
   }
 </script>

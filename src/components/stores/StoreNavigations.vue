@@ -68,6 +68,8 @@ export default {
     },
     showFindedStores(){
       this.$store.commit('stores/showCompoenetByName','showFindedStores')
+      this.$store.commit('stores/makeSearchAsFiltered',false)
+      
     },
     changeCountPaginationPerPage(value){
       //change store perapge number
