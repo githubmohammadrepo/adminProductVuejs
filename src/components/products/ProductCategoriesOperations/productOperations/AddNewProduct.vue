@@ -3,6 +3,7 @@
     <h5 class="text-center">افزودن محصول جدید</h5>
 
     <b-form @submit="onSubmit($event)" @reset="onReset" v-if="show">
+      <div v-if="!loading">
       <!-- select product category -->
       <b-form-group
         id="selectProductCategory"
@@ -254,7 +255,15 @@
           <b-button type="reset" class="mx-2" variant="danger">پاک کردن فرم</b-button>
         </b-col>
       </b-row>
+    </div><!-- end content -->
     </b-form>
+
+    <!-- show loading icon unitl response will returned from server -->
+      <div class="loading text-center" v-if="loading">
+        <font-awesome-icon icon="spinner" class="h1" spin />
+        <p class="text-warning">درحال درج اطلاعات...</p>
+      </div>
+      <!-- end show loading icon  -->
   </div>
 </template>
 
@@ -263,6 +272,7 @@ import axios from 'axios'
 export default {
   data() {
     return {
+      loading:false,
       newProductInfos: {
         category:'',
         subCategory:'',
@@ -345,6 +355,7 @@ export default {
         });
     },
     saveNewProduct(){
+      this.loading= true;
       //if validation passed save informations
         let that = this;
         //prepare data
@@ -378,30 +389,30 @@ export default {
            }
           )
           .then(function (response) {
+            that.loading= false;
+
             console.log(response)
             if (response.data && response.data.status == true) {
               //show success notification
-              that.$store.state.successNotification = {
-                show: true,
-                message: "محصول با موفقیت ذخیره شد",
-              };
+              that.$store.state.successNotification.message= "محصول با موفقیت ذخیره شد";
+              that.$store.commit('showSuccess');
               //close edit modal
               that.$store.state.brands.brandEditing = false;
               //open comfirm smsCode
 
               //add new product to view
             } else {
-              that.$store.state.errorNotification = {
-                show: true,
-                message: "خطا، محصول ذخیره نشد",
-              };
+            that.loading= false;
+
+              that.$store.state.errorNotification.message= "خطا، محصول ذخیره نشد";
+              that.$store.commit('showError');
             }
           })
           .catch(function (error) {
-            that.$store.state.errorNotification = {
-              show: true,
-              message: "خطا، محصول ذخیره نشد",
-            };
+            that.loading= false;
+
+            that.$store.state.errorNotification.message= "خطا، محصول ذخیره نشد";
+            that.$store.commit('showError');
             console.log(error);
           });
       }

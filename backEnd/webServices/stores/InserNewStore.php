@@ -269,6 +269,7 @@ class InsertNewCompany
     $status_insert = $this->insert($sql);
     return $status_insert ? true : false;
   }
+  
   private function saveNewStore(
     int $selectedStore,
     int $selectedRegion,

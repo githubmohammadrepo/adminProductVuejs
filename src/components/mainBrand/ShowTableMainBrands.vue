@@ -12,7 +12,6 @@
 
       <!-- fileter count per page -->
       <div class="col-4 mr-auto text-left">
-        {{paginatinCountPerPage}}
         <b-form-select v-model="paginatinCountPerPage" @change="getAllBrandWithNewCount" :options="options"></b-form-select>
       </div>
     </div>

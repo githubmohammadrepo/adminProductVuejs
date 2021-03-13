@@ -1,7 +1,6 @@
 <template>
   <div id="errorNofication">
-
-    <b-modal  v-model="errorNoticationShow" id="bv-modal-ErrorNotification" z-index="99999999" hide-footer>
+    <b-modal  v-model="showModal" id="bv-modal-ErrorNotification" z-index="9999999999999999" hide-footer>
       <template #modal-header-close >
         <button type="button" aria-label="Close" class="close ml-0">×</button>
       </template>
@@ -19,7 +18,7 @@ export default {
   
   data(){
     return {
-
+      showModal:false,
     }
   },
   methods:{
@@ -31,14 +30,24 @@ export default {
     }
   },
   computed: {
-    errorNoticationShow(){
-      return this.$store.state.errorNotification.show
+    errorNoticationShow:{
+      get(){
+        return this.$store.state.errorNotification.show
+      },
+      set(value){
+        this.$store.state.errorNotification.show=value;
+      }
     },
     message(){
       return this.$store.state.errorNotification.message
     },
     title(){
       return this.$store.state.errorNotification.title
+    }
+  },
+  watch: {
+    errorNoticationShow(o,v){
+     this.showModal = true;
     }
   },
 }
@@ -54,7 +63,8 @@ export default {
   .text-pink{
     color:orangered;
   }
-  #bv-modal-ErrorNotification___BV_modal_outer_{
-    z-index:99999999999999999!important;
+   #bv-modal-ErrorNotification___BV_modal_outer_{
+     background:red !important;
+    z-index:99999999!important;
   }
 </style>

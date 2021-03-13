@@ -3,6 +3,7 @@
     <h5 class="text-center">ویرایش محصول</h5>
 
     <b-form @submit="onSubmit($event)" @reset="onReset" v-if="show">
+      <div v-if="!loading">
       <!-- select product category -->
       <b-form-group
         id="selectProductCategory"
@@ -247,6 +248,14 @@
       </div>
         </b-col>
       </b-row>
+      </div><!-- end content-->
+      <!-- show loading icon unitl response will returned from server -->
+      <div class="loading text-center" v-if="loading">
+        <font-awesome-icon icon="spinner" class="h1" spin />
+        <p class="text-warning">درحال انجام عملیات ...</p>
+      </div>
+      <!-- end show loading icon  -->
+
       <hr class="pt-3">
       <b-row class="text-center">
         <b-col>
@@ -263,6 +272,7 @@ import axios from 'axios'
 export default {
   data() {
     return {
+      loading:false,
       newProductInfos: {
         category:'',
         subCategory:'',
@@ -347,6 +357,7 @@ export default {
     saveNewProduct(){
       //if validation passed save informations
         let that = this;
+        that.loading = true;
         //prepare data
         let data = new FormData();
         data.append("product_id",this.newProductInfos.product_id)
@@ -379,24 +390,28 @@ export default {
            }
           )
           .then(function (response) {
+            that.loading = false;
+
+            console.log('response update one product')
+            console.log(response)
             if (response.data && response.data.status == true) {
               //show success notification
-              that.$store.state.successNotification = {
-                show: true,
-                message: "شرکت با موفقیت برند شد",
-              };
+              that.$store.state.successNotification.message= "محصول با موفقیت آپدیت شد"
+              that.$store.commit('showSuccess')
+              
               //close edit modal
               that.$store.state.brands.brandEditing = false;
               //open comfirm smsCode
             } else {
-             
+             that.$store.state.errorNotification.message= "خطا، محصول آپدیت نشد"
+              that.$store.commit('showError');
             }
           })
           .catch(function (error) {
-            that.$store.state.errorNotification = {
-              show: true,
-              message: "خطا، شرکت برند نشد",
-            };
+            that.loading = false;
+
+            that.$store.state.errorNotification.message= "خطا، محصول آپدیت نشد"
+            that.$store.commit('showError');
             console.log(error);
           });
     },

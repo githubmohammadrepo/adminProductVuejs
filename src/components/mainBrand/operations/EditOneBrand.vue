@@ -1,63 +1,69 @@
 <template>
   <div>
-    <!-- brand name -->
+        <!-- brand name -->
     <b-form class="form-editCompany" @submit.stop.prevent>
-      <label for="brandName">نام برند</label>
-      <b-form-input
-        v-model="brandName"
-        :state="brandNameValidation"
-        id="brandName"
-        required
-        type="text"
-      ></b-form-input>
-      <b-form-invalid-feedback :show="!brandNameValidation">
-        تعداد کارکتر ها نباید کمتر از 3 کارکتر باشد
-      </b-form-invalid-feedback>
-      <b-form-valid-feedback :show="brandNameValidation">
-        تایید شد
-      </b-form-valid-feedback>
+      <div class="form" v-if="!loading">
+              <label for="brandName">نام برند</label>
+              <b-form-input
+                v-model="brandName"
+                :state="brandNameValidation"
+                id="brandName"
+                required
+                type="text"
+              ></b-form-input>
+              <b-form-invalid-feedback :show="!brandNameValidation">
+                تعداد کارکتر ها نباید کمتر از 3 کارکتر باشد
+              </b-form-invalid-feedback>
+              <b-form-valid-feedback :show="brandNameValidation">
+                تایید شد
+              </b-form-valid-feedback>
 
-      <!-- userName or brand owenername -->
-      <label for="userName">نام صاحب برند</label>
-      <b-form-input v-model="userName" :disabled="userId" id="userName" type="text"></b-form-input>
+              <!-- userName or brand owenername -->
+              <label for="userName">نام صاحب برند</label>
+              <b-form-input v-model="userName" :disabled="userId" id="userName" type="text"></b-form-input>
 
-      <!-- published brands -->
-      <div class="row w-100 m-auto justify-content-center">
-        <div class="p-0 col d-block py-2">
-          <b-form-checkbox
-            id="checkbox-1"
-            v-model="published"
-            name="checkbox-1"
-            :value="true"
-            :unchecked-value="false"
-          >
-            وضعیت انتشار
-          </b-form-checkbox>
-        </div>
+              <!-- published brands -->
+              <div class="row w-100 m-auto justify-content-center">
+                <div class="p-0 col d-block py-2">
+                  <b-form-checkbox
+                    id="checkbox-1"
+                    v-model="published"
+                    name="checkbox-1"
+                    :value="true"
+                    :unchecked-value="false"
+                  >
+                    وضعیت انتشار
+                  </b-form-checkbox>
+                </div>
+              </div>
+
+              <!-- Styled -->
+              <b-form-file
+                v-model="brand_logo"
+                :state="true"
+                placeholder="Choose a file or drop it here..."
+                drop-placeholder="Drop file here..."
+                accept="image/jpeg, image/png, image/gif"
+                size="sm"
+                class="my-2"
+                @change="onChangeFileUpload"
+              ></b-form-file>
+              
+              <div class="width-200px height-200px">
+                <b-card-text>
+                پیش نمایش عکس
+                </b-card-text>
+                <b-card :img-src="previewImageUrl" rounded="0"  img-alt="Card image" img-top>
+              </b-card>
+              </div>
+
+            <hr class="w-100" />
       </div>
-
-      <!-- Styled -->
-      <b-form-file
-        v-model="brand_logo"
-        :state="true"
-        placeholder="Choose a file or drop it here..."
-        drop-placeholder="Drop file here..."
-        accept="image/jpeg, image/png, image/gif"
-        size="sm"
-        class="my-2"
-        @change="onChangeFileUpload"
-      ></b-form-file>
-      
-      <div class="width-200px height-200px">
-        <b-card-text>
-         پیش نمایش عکس
-        </b-card-text>
-        <b-card :img-src="previewImageUrl" rounded="0"  img-alt="Card image" img-top>
-      </b-card>
+            </b-form>
+      <div class="loading text-center" v-if="loading">
+        <font-awesome-icon icon="spinner" class="h1" spin />
+        <p class="text-warning">درحال درج اطلاعات...</p>
       </div>
-
-    </b-form>
-    <hr class="w-100" />
 
     <div class="row col justify-content-center pt-3">
       <b-button
@@ -67,6 +73,8 @@
         >ذخیره</b-button
       >
     </div>
+
+      
   </div>
 </template>
 
@@ -79,6 +87,7 @@ export default {
       // modalShow: true,
       imageUrl: null,
       data: null,
+      loading:false
     };
   },
   methods: {
@@ -100,7 +109,7 @@ export default {
       //if validation passed save informations
       if (this.validationPasseed) {
         let that = this;
-
+        that.loading = true;
         //prepare data
         let data = new FormData();
         data.append('editOneBrand', true);
@@ -121,27 +130,27 @@ export default {
            }
           )
           .then(function (response) {
+              that.loading = false;
+
             if (response.data && response.data.status == true) {
               //show success notification
-              that.$store.state.successNotification = {
-                show: true,
-                message: "شرکت با موفقیت اپدیت شد",
-              };
+              that.$store.state.successNotification.message= "شرکت با موفقیت اپدیت شد"
+              that.$store.commit('showSuccess')
               //close edit modal
               that.$store.state.brands.brandEditing = false;
               //open comfirm smsCode
             } else {
-              that.$store.errorNotification = {
-                show: true,
-                message: "خطا، شرکت اپدیت نشد",
-              };
+              that.$store.errorNotification.message= "خطا، شرکت اپدیت نشد"
+              that.$store.commit('showError')
+              
             }
           })
           .catch(function (error) {
-            that.$store.errorNotification = {
-              show: true,
-              message: "خطا، شرکت اپدیت نشد",
-            };
+              that.loading = false;
+
+            that.$store.errorNotification.message= "خطا، شرکت اپدیت نشد"
+              that.$store.commit('showError')
+            
             console.log(error);
           });
       } else {

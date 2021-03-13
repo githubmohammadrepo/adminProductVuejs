@@ -18,7 +18,7 @@ class UpdateCompany
     if($user_id=='0'){
       $user_id=null;
     }
-    $sql = "DELETE FROM `pish_phocamaps_marker_company` WHERE user_id = $user_id";
+    $sql = "DELETE FROM `pish_phocamaps_marker_fake` WHERE user_id = $user_id";
     $result = $this->conn->query($sql);
     if($result){
       return true;

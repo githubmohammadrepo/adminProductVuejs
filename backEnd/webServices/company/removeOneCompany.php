@@ -177,22 +177,16 @@ class VerifyCompany
    * @return void
    */
   public function removeCompnayProccess():bool{
-    echo 'removeCompanyProccess';
     $postedData = $this->postedData();
     if(isset($postedData['removeCompnay'])){
-      echo 'isset';
       //prepare data 
       $originalCode = "#&#(&#^(#&@%1!$7423974hfiehfe#$@!aife";
       $user_id = (int)($this->getInput(isset($postedData['user_id']) ? $postedData['user_id'] : -1));
       $code = (string)($this->getInput(isset($postedData['code']) && $postedData['code']==$originalCode ? $postedData['code'] : -1));
-     echo 'before if';
       if($user_id==-1 || $code == -1){
-        var_dump($code==-1);
-        echo 'echo input error';
         return false;
       }
 
-      echo 'input success';
      
       //user exist
       $status_userExist= $this->isUserExist($user_id);
@@ -201,7 +195,7 @@ class VerifyCompany
 
         //remove category
         $status_removeCategory = $this->removeHikashopCategory($user_id);
-
+        
         //remove company
         $satus_removeCompany = $this->removeCompany($user_id);
 
@@ -223,29 +217,26 @@ class VerifyCompany
 
         //validate deletes
         if(
-          // $status_removeCategory==true
-          // &&
-          // $satus_removeCompany==true 
-          // &&
-          // $status_remvoeHikamarket==true 
-          // &&
-          // $status_remvoeUserGroup==true 
-          // &&
-          // $status_removeMemeberShip==true 
-          // &&
-          // $status_removeHikashopUser==true 
-          // &&
-          // $status_removeUser
+          $status_removeCategory==true
+          &&
+          $satus_removeCompany==true 
+          &&
+          $status_remvoeHikamarket==true 
+          &&
+          $status_remvoeUserGroup==true 
+          &&
+          $status_removeMemeberShip==true 
+          &&
+          $status_removeHikashopUser==true 
+          &&
+          $status_removeUser==true
         ){
-          echo 'validation pased';
           return true;
         }else{
-          echo 'validation not passed';
           return false;
         }
 
       }else{
-        echo 'userNotExist';
         return false;
       }
     
@@ -272,12 +263,10 @@ class VerifyCompany
             $this->conn->commit();
             return true;
           }else{
-            echo 'rolledBack';
             $this->conn->rollback();
             return false;
           }
       } catch (mysqli_sql_exception $exception) {
-        echo 'exception mysqli';  
         $this->conn->rollback();
           return false;
       }

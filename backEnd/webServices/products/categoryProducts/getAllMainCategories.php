@@ -54,7 +54,7 @@ class GetAllCategoryProducts
         SELECT  *
         FROM `pish_hikashop_category`
         WHERE category_type = 'product' 
-        AND category_parent_id IN(1,2)
+        AND category_parent_id IN(2)
         ORDER BY `pish_hikashop_category`.`category_id` ASC LIMIT $offset,$count
       ) AS new
       LEFT JOIN pish_hikashop_category

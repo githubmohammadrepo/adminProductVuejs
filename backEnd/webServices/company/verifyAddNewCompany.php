@@ -103,7 +103,7 @@ class VerifyCompany
     $sql = "INSERT INTO pish_phocamaps_marker_company (user_id, title, ShopName, phone, MobilePhone, OwnerName, Fax, Email)
       VALUES ('$myUserId', '$title', '$ShopName', '$phone', '$MobilePhone', '$OwnerName', '$Fax', '$Email')";
     $result = $this->conn->query($sql);
-    if($sql){
+    if($result){
       $count = mysqli_affected_rows($this->conn);
       return $count ? true : false;
     }
@@ -321,15 +321,15 @@ class VerifyCompany
 
       //validate statuses
       if(
-        $status_activeUser==false &&
-        $status_subscriber==false &&
-        $status_companyOperation==false &&
-        $status_hikamarketVendor==false &&
-        $status_insertCategory==false
+        $status_activeUser==true &&
+        $status_subscriber==true &&
+        $status_companyOperation==true &&
+        $status_hikamarketVendor==true &&
+        $status_insertCategory==true
         ){
-          return false;
+          return true;
         }
-        return true;
+        return false;
     }else{
       return false;
     }

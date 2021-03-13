@@ -27,28 +27,32 @@ export default {
             "user_id":that.$store.state.companies.editDataObject.user_id
           })
           .then(function(response){
+            console.log(response.data);
             if(response.data && response.data.status==true){
               //show success notification
-              that.$store.state.successNotification = {
-                show: true,
-                message: "شرکت با موفقیت حذف شد شد",
-              }
+              that.$store.state.successNotification.message= "شرکت با موفقیت حذف شد شد"
+              that.$store.commit('showSuccess');
               that.$store.state.shwoConfirmSms = true;
               //close edit modal
               that.$store.state.companiescompanyEditing = false;
               //open comfirm smsCode
+
+              //remove company from ui ram
+              that.$store.state.companies.items = that.$store.state.companies.items.filter(item=>{
+                if(item.id ==that.$store.state.companies.editDataObject.id){
+                  return false;
+                }else{
+                  return true;
+                }
+              })
             }else{
-              that.$store.state.errorNotification={
-                show: true,
-                message: "خطا، شرکت حذف نشد"
-              }
+              that.$store.state.errorNotification.message= "خطا، شرکت حذف نشد"
+              that.$store.commit('showError')
             }
           })
           .catch(function(error){
-            that.$store.state.errorNotification={
-                show: true,
-                message: "خطا، شرکت حذف نشد"
-              }
+            that.$store.state.errorNotification.message= "خطا، شرکت حذف نشد"
+            that.$store.commit('showError')
             console.log(error)
           })
     }

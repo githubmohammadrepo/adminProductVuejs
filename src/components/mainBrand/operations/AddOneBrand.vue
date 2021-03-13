@@ -2,7 +2,8 @@
   <div>
     <!-- company name -->
     <b-form class="form-editCompany" @submit.stop.prevent>
-      <label for="brandName">نام برند</label>
+      <div v-if="!loading">
+        <label for="brandName">نام برند</label>
       <b-form-input
         v-model="company.brandName"
         :state="brandNameValidation"
@@ -56,8 +57,14 @@
         >
         </b-card>
       </div>
-    </b-form>
     <hr class="w-100" />
+      </div>
+    </b-form>
+
+    <div class="loading text-center" v-if="loading">
+      <font-awesome-icon icon="spinner" class="h1" spin />
+      <p class="text-warning">درحال درج اطلاعات...</p>
+    </div>
 
     <div class="row w-100 justify-content-center pt-3">
       <b-button
@@ -75,6 +82,7 @@ import axios from 'axios'
 export default {
   data() {
     return {
+      loading:false,
       brand_logo:"",
       // modalShow: true,
       company: {
@@ -104,8 +112,9 @@ export default {
     },
     saveCompnay(){
       //if validation passed save informations
+      let that = this;
+      that.loading = true;
       if (this.validationPasseed) {
-        let that = this;
 
         //prepare data
         let data = new FormData();
@@ -124,11 +133,12 @@ export default {
            }
           )
           .then(function (response) {
+            that.loading = false;
             if (response.data && response.data.status == true) {
               //show success notification
               that.$store.state.successNotification = {
                 show: true,
-                message: "شرکت با موفقیت برند شد",
+                message: "برند با موفقیت ذخیره شد",
               };
               //close edit modal
               that.$store.state.brands.brandEditing = false;
@@ -136,14 +146,16 @@ export default {
             } else {
               that.$store.state.errorNotification = {
                 show: true,
-                message: "خطا، شرکت برند نشد",
+                message: "خطا، برند ذخیره نشد",
               };
             }
           })
           .catch(function (error) {
+            that.loading = false;
+
             that.$store.state.errorNotification = {
               show: true,
-              message: "خطا، شرکت برند نشد",
+              message: "خطا، برند ذخیره نشد",
             };
             console.log(error);
           });

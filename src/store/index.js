@@ -20,7 +20,14 @@ export default new Vuex.Store({
         },
         shwoConfirmSms: false
     },
-    mutations: {},
+    mutations: {
+        showError(state) {
+            state.errorNotification.show = !state.errorNotification.show;
+        },
+        showSuccess(state) {
+            state.successNotification.show = !state.successNotification.show;
+        }
+    },
     actions: {},
     modules: {
         companies: companies,

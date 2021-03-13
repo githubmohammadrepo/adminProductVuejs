@@ -35,7 +35,7 @@ export default {
             if (response.data && response.data.status) {
               that.$store.state.successNotification = {
                 show: true,
-                message: "فروشگاه با موفقیت برند شد",
+                message: "فروشگاه با موفقیت ذخیره شد",
               };
               //clear  level one
               this.$store.commit('stores/showAddNewStoreLevel',{key:'levelOne',value:false,formData:{}})
@@ -53,31 +53,23 @@ export default {
             } else {
               if(response.data.username){
                 //error user name level one
-                that.$store.state.errorNotification = {
-                  show: true,
-                  message: "نام کاربری تکراری است",
-                };
+                that.$store.state.errorNotification.message= "نام کاربری تکراری است"
+                that.$store.commit('showError')
               }else if(response.data.mobile){
                 //error mobile dublicate level two
-                that.$store.state.errorNotification = {
-                  show: true,
-                  message: "شماره موبایل تکراری است",
-                };
+                that.$store.state.errorNotification.message= "شماره موبایل تکراری است"
+                that.$store.commit('showError')
 
               }else{
 
-                that.$store.state.errorNotification = {
-                  show: true,
-                  message: "خطا، فروشگاه ذخیره نشد",
-                };
+                that.$store.state.errorNotification.message= "خطا، فروشگاه ذخیره نشد"
+                that.$store.commit('showError')
               }
             }
         })
         .catch(error => {
-            that.$store.state.errorNotification = {
-              show: true,
-              message: "خطا، فروشگاه ذخیره نشد",
-            };
+            that.$store.state.errorNotification.message= "خطا، فروشگاه ذخیره نشد"
+            that.$store.commit('showError')
             console.log(error)
         })
     }

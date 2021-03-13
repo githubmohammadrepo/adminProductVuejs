@@ -1,6 +1,6 @@
 <template>
   <div id="errorNofication">
-    <b-modal v-model="successNoticationShow"  id="bv-modal-successNotification"  z-index="99999999" hide-footer>
+    <b-modal v-model="showModal"  id="bv-modal-successNotification"  z-index="99999999" hide-footer>
       <div class="d-block text-center">
         <h6 class="text-success">{{message}}</h6>
       </div>
@@ -15,6 +15,7 @@ import confirmSms from '@/components/brands/confirmSms.vue';
   export default {
     data() {
       return {
+        showModal:false
       }
     },
     methods: {
@@ -25,11 +26,11 @@ import confirmSms from '@/components/brands/confirmSms.vue';
         $bvModal.hide('bv-modal-successNotification')
       },
       
+      
     },
     computed: {
       successNoticationShow: {
         get() {
-
           return this.$store.state.successNotification.show
         },
         set(newValue) {
@@ -52,7 +53,12 @@ import confirmSms from '@/components/brands/confirmSms.vue';
     },
     components:{
       confirmSms
+    },
+    watch: {
+    successNoticationShow(o,v){
+     this.showModal = true;
     }
+  },
   }
 </script>
 

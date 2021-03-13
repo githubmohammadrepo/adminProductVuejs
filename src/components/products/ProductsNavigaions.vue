@@ -3,7 +3,6 @@
   <b-nav tabs align="center">
     <b-nav-item :active="showProductCategory" @click="showCategoryProduct">دسته بندی ها</b-nav-item>
     <b-nav-item :active="showProductBrand" @click="showBrandProduct">برند ها</b-nav-item>
-    <b-nav-item disabled>Disabled</b-nav-item>
   </b-nav>
 </div>
 </template>

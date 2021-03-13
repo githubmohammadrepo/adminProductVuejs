@@ -227,15 +227,15 @@ const companies = {
         },
         // گرفتن محصولات یک دسته بندی
         getCategoriesProduct({ commit, dispatch, getters, rootGetters, rootState, state }, payload = null) {
-            state.searchingBaseOnCategoryName.searching = false
-            state.categoriesProductPaginations.loading = true
-            commit('clearCategoryProducts')
+            state.searchingBaseOnCategoryName.searching = false;
+            state.categoriesProductPaginations.loading = true;
+            commit('clearCategoryProducts');
 
             //save category infos
             let category_id;
             if (payload) {
-                commit('saveCategoryInfoShowByCategoryId', payload)
-                category_id = payload
+                commit('saveCategoryInfoShowByCategoryId', payload);
+                category_id = payload;
             } else {
                 category_id = state.productOperation.show.categoryInfo[0].category_id
             }
@@ -368,6 +368,16 @@ const companies = {
                         //close edit modal
                         rootState.brands.brandEditing = false;
                         //open comfirm smsCode
+
+                        //remove product from ui
+                        state.categoriesProductPaginations.products = state.categoriesProductPaginations.products.filter(product => {
+                            if (product.product_id == payload) {
+                                return false;
+                            } else {
+                                return true;
+                            }
+                        })
+
                     } else {
                         rootState.errorNotification = {
                             show: true,

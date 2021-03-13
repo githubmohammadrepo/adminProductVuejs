@@ -46,28 +46,23 @@ import axios from 'axios'
               
           })
           .then(function(response){
+            console.log(response)
             if(response.data && response.data.status==true){
               //show success notification
-              that.$store.state.successNotification = {
-                show: true,
-                message: "شرکت با موفقیت اپدیت شد",
-              }
+              that.$store.state.successNotification.message= "شرکت با موفقیت اپدیت شد"
+              that.$store.commit('showSuccess')
               that.$store.state.shwoConfirmSms = false;
               //close edit modal
               that.$store.state.companiescompanyEditing = false;
               //open comfirm smsCode
             }else{
-              that.$store.errorNotification={
-                show: true,
-                message: "خطا، شرکت اپدیت نشد"
-              }
+              that.$store.state.errorNotification.message= "خطا، شرکت اپدیت نشد"
+              that.$store.commit('showError')
             }
           })
           .catch(function(error){
-            that.$store.errorNotification={
-              show: true,
-              message: "خطا، شرکت اپدیت نشد"
-            }
+            that.$store.state.errorNotification.message= "خطا، شرکت اپدیت نشد"
+            that.$store.commit('showError')            
             console.log(error)
           })
         }

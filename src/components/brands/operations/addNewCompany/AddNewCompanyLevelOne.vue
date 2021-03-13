@@ -90,13 +90,12 @@ export default {
                 password:that.company.password
           })
           .then(function(response){
-            
+            console.log(response)
             if(response.data && response.data.status==true){
               //show success notification
-              that.$store.state.successNotification = {
-                show: true,
-                message: "مرحله ی اول ثبت نام با موفقیت ذخیره شد",
-              }
+              that.$store.state.successNotification.message= "مرحله ی اول ثبت نام با موفقیت ذخیره شد"
+              that.showSuccess()
+              
               //close addNewCompany LevelOne
               that.$store.state.companies.AddNewCompany.levelTwo.userId = response.data.user_id
               that.$store.commit('companies/hideAllCreateNewCompnay')
@@ -109,23 +108,26 @@ export default {
               //open addNewCompnay LevelTwo
               
             }else{
-              that.$store.state.errorNotification={
-                show: true,
-                message: "خطا !!، اطلاعات شرکت ذخیره نشد"
-              }
+              that.$store.state.errorNotification.message= "خطا !!، اطلاعات شرکت ذخیره نشد، نام شرکت تکراری است"
+              
+              that.showError()
             }
           })
           .catch(function(error){
-            that.$store.state.errorNotification={
-                show: true,
-                message: "خطا !!، اطلاعات شرکت ذخیره نشد"
-              }
+            that.$store.state.errorNotification.message= "خطا !!، اطلاعات شرکت ذخیره نشد"
+              
             console.log(error)
           })
       }else{
 
       }
 
+    },
+    showError(){
+      this.$store.commit('showError');
+    },
+    showSuccess(){
+      this.$store.commit('showSuccess');
     }
   },
   computed: {

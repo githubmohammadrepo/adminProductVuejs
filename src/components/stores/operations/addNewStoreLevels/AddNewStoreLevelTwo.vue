@@ -290,6 +290,8 @@ export default {
             //save searched value province,city,region
             this.$store.commit('stores/saveSearchedFilters',this.selectedValues)
           }else{
+            that.$store.state.errorNotification.message = 'اطلاعات ذخیره نشد'
+            that.$store.commit('showError')
           }
         })
         .catch(error =>{

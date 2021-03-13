@@ -27,10 +27,8 @@ export default {
           .then(function(response){
             if(response.data && response.data.status==true){
               //show success notification
-              that.$store.state.successNotification = {
-                show: true,
-                message: "برند با موفقیت حذف شد شد",
-              }
+              that.$store.state.successNotification.message= "برند با موفقیت حذف شد شد"
+              that.$store.commit('showSuccess')
               //close edit modal
               that.$store.state.brands.brandEditing = false;
 
@@ -38,17 +36,13 @@ export default {
               that.$store.commit('brands/removeOneCategory',that.$store.state.brands.editDataObject.category_id)
               //open comfirm smsCode
             }else{
-              that.$store.state.errorNotification={
-                show: true,
-                message: "خطا، برند حذف نشد"
-              }
+              that.$store.state.errorNotification.message= "خطا، برند حذف نشد"
+              that.$store.commit('showError')
             }
           })
           .catch(function(error){
-            that.$store.state.errorNotification={
-                show: true,
-                message: "خطا، برند حذف نشد"
-              }
+            that.$store.state.errorNotification.message= "خطا، برند حذف نشد"
+            that.$store.commit('showError')
             console.log(error)
           })
     }

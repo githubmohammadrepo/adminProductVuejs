@@ -191,22 +191,23 @@ export default {
 
             if(response.data && response.data.status==true){
               //show success notification
+              that.$store.state.successNotification.message= "مرحله ی دوم ثبت نام با موفقیت ذخیره شد"
+              that.$store.commit('showSuccess');
+
               //close edit modal
               that.company.brands = response.data.brands;
               //open comfirm smsCode
             }else{
-              that.$store.state.errorNotification={
-                show: true,
-                message: "خطا در گرفتن اطلاعات برند ها"
-              }
+              that.$store.state.errorNotification.message= "خطا در گرفتن اطلاعات برند ها"
+              that.$store.commit('showError');
+              
             }
           })
           .catch(function(error){
             that.loadingBrands=false;
-            that.$store.state.errorNotification={
-                show: true,
-                message: "خطا، شرکت اپدیت نشد"
-              }
+            that.$store.state.errorNotification.message= "خطا، شرکت اپدیت نشد"
+            that.$store.commit('showError');
+              
             console.log(error)
           })
     
@@ -228,6 +229,7 @@ export default {
           "user_id": that.userId,
           user_name: that.userName
         }).then(response => {
+          console.log(response)
           if(response && response.data && response.data.status==true){
             //hide all
             that.$store.commit('companies/hideAllCreateNewCompnay')
@@ -243,10 +245,11 @@ export default {
               message: "مرحله ی دوم ثبت نام با موفقیت ذخیره شد",
             }
           }else{
+            alert('no'+ that.$store.state.errorNotification.show)
             that.$store.state.errorNotification={
-            show: true,
-            message: "خطا !!، اطلاعات شرکت ذخیره نشد"
-          }
+              show: true,
+              message: "خطا !!، اطلاعات شرکت ذخیره نشد"
+            }
           }
         })
         .catch(error=>{
@@ -259,6 +262,9 @@ export default {
     },
     isNumberValidation(inputName){
       return inputName.length ==(String(parseInt(inputName))=="NaN" ? "": String(parseInt(inputName))).length
+    },
+    showError(){
+      this.$store.state.errorNotification.show = !this.$store.state.errorNotification.show;
     }
   },
   computed: {

@@ -94,6 +94,10 @@ class InsertNewCompany
     }
     return false;
   }
+
+  private function insertNewRealCompany(){
+    
+  }
   
   public function insertNewCompanyLevelOne()
   {
