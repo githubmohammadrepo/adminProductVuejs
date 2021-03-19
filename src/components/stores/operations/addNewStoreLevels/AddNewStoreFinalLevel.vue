@@ -24,7 +24,8 @@ export default {
       //get all infos about add new store
       let addNewStoreInfos = this.$store.getters['stores/getFormDataInserNewStoreLevels']
       //ajax request by axios
-
+      console.log('new store infos')
+      console.log(addNewStoreInfos)
       //insert NewStore
       axios
         .post("http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/stores/InserNewStore.php", {
@@ -32,11 +33,12 @@ export default {
             insertNewStore: true
         })
         .then(response => {
+          console.log('response insert new stoer')
+          console.log(response.data)
             if (response.data && response.data.status) {
-              that.$store.state.successNotification = {
-                show: true,
-                message: "فروشگاه با موفقیت ذخیره شد",
-              };
+              //show success notification
+              that.$store.state.successNotification.message= "فروشگاه با موفقیت ذخیره شد"
+              that.$store.commit('showSuccess')	
               //clear  level one
               this.$store.commit('stores/showAddNewStoreLevel',{key:'levelOne',value:false,formData:{}})
 

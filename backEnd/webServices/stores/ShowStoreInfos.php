@@ -15,11 +15,11 @@ class ShowStoreInfos
 {
   use Helpers;
 
-  private $resonsed=false;
+  private $resonsed = false;
   private $conn;
   public function __construct(mysqli $conn)
   {
-      $this->conn = $conn;
+    $this->conn = $conn;
   }
 
   /**
@@ -32,20 +32,21 @@ class ShowStoreInfos
    * @param integer $count
    * @return integer
    */
-  private function getStoreCountint($province_id,int $city_id,int $region_id,int $offset,int $count):int {
-    $sql ="";
-    if($region_id ==-1){
+  private function getStoreCountint($province_id, int $city_id, int $region_id, int $offset, int $count,string $table_name): int
+  {
+    $sql = "";
+    if ($region_id == -1) {
       //without region_id
-      $sql = "SELECT COUNT(*) as count FROM pish_phocamaps_marker_store WHERE province = '$province_id' AND city = '$city_id'  ORDER BY id ASC";
-    }else{
+      $sql = "SELECT COUNT(*) as count FROM $table_name WHERE province = '$province_id' AND city = '$city_id'  ORDER BY id ASC";
+    } else {
       //with region_id
-      $sql = "SELECT COUNT(*) as count FROM pish_phocamaps_marker_store WHERE province = '$province_id' AND city = '$city_id' AND RegionID= '$region_id' ORDER BY id ASC";
+      $sql = "SELECT COUNT(*) as count FROM $table_name WHERE province = '$province_id' AND city = '$city_id' AND RegionID= '$region_id' ORDER BY id ASC";
     }
 
     $dev_array = $this->select($sql);
-    if(count($dev_array)){
+    if (count($dev_array)) {
       return $dev_array[0]['count'];
-    }else{
+    } else {
       return 0;
     }
   }
@@ -58,18 +59,19 @@ class ShowStoreInfos
    * @param integer $region_id
    * @return array
    */
-  private function getAllFilteredStores(int $province_id,int $city_id,int $region_id,int $offset,int $count):array {
-    $dev_array = Array();
-    $sql ="";
-    if($region_id ==-1){
+  private function getAllFilteredStores(int $province_id, int $city_id, int $region_id, int $offset, int $count,string $table_name): array
+  {
+    $dev_array = array();
+    $sql = "";
+    if ($region_id == -1) {
       //without region_id
-      $sql = "SELECT new.*,pish_province.id as province_id,pish_province.name as province_name,pish_city.id as city_id,pish_city.name as city_name,pish_region.id as region_id,pish_region.title as region_title FROM (SELECT id,user_id,title,ShopName,phone,MobilePhone,latitude,longitude,ManagerName,Address,RegionID,province,city FROM pish_phocamaps_marker_store WHERE province = '$province_id' AND city = '$city_id'  ORDER BY id ASC limit $offset,$count)AS new
+      $sql = "SELECT new.*,pish_province.id as province_id,pish_province.name as province_name,pish_city.id as city_id,pish_city.name as city_name,pish_region.id as region_id,pish_region.title as region_title FROM (SELECT id,user_id,title,ShopName,phone,MobilePhone,latitude,longitude,ManagerName,Address,RegionID,province,city FROM $table_name WHERE province = '$province_id' AND city = '$city_id'  ORDER BY id ASC limit $offset,$count)AS new
       LEFT JOIN pish_province ON new.province = pish_province.id
       LEFT JOIN pish_city ON new.city = pish_city.id
       LEFT JOIN pish_region ON new.RegionID = pish_region.id";
-    }else{
+    } else {
       //with region_id
-      $sql = "SELECT new.*,pish_province.id as province_id,pish_province.name as province_name,pish_city.id as city_id,pish_city.name as city_name,pish_region.id as region_id,pish_region.title as region_title FROM (SELECT id,user_id,title,ShopName,phone,MobilePhone,latitude,longitude,ManagerName,Address,RegionID,province,city FROM pish_phocamaps_marker_store WHERE province = '$province_id' AND city = '$city_id' AND RegionID = '$region_id' ORDER BY id ASC limit $offset,$count)AS new
+      $sql = "SELECT new.*,pish_province.id as province_id,pish_province.name as province_name,pish_city.id as city_id,pish_city.name as city_name,pish_region.id as region_id,pish_region.title as region_title FROM (SELECT id,user_id,title,ShopName,phone,MobilePhone,latitude,longitude,ManagerName,Address,RegionID,province,city FROM $table_name WHERE province = '$province_id' AND city = '$city_id' AND RegionID = '$region_id' ORDER BY id ASC limit $offset,$count)AS new
       LEFT JOIN pish_province ON new.province = pish_province.id
       LEFT JOIN pish_city ON new.city = pish_city.id
       LEFT JOIN pish_region ON new.RegionID = pish_region.id";
@@ -80,36 +82,46 @@ class ShowStoreInfos
     return $dev_array;
   }
 
+
+
   /**
    * show all provinces
    *
    * @return array
    */
-  public function showAllStoresByFilter():void{
+  public function showAllStoresByFilter(): void
+  {
     $postedData = $this->postedData();
 
-    if(isset($postedData['showALlStoreInfos'])){
-      $province_id = $this->getPostRequestField('selectedProvince','int',-1);
-      $city_id = $this->getPostRequestField('selectedCity','int',-1);
-      $region_id = $this->getPostRequestField('selectedRegion','int',-1,null);
-      $offset = $this->getPostRequestField('offset','int',-1);
-      $count = $this->getPostRequestField('paginationCount','int',-1);
+    if (isset($postedData['showALlStoreInfos'])) {
+      $province_id = $this->getPostRequestField('selectedProvince', 'int', -1);
+      $city_id = $this->getPostRequestField('selectedCity', 'int', -1);
+      $region_id = $this->getPostRequestField('selectedRegion', 'int', -1, null);
+      $offset = $this->getPostRequestField('offset', 'int', -1);
+      $count = $this->getPostRequestField('paginationCount', 'int', -1);
 
-      if($province_id != -1 && $city_id != -1 && $offset !=-1 && $offset !=-1){
-        $filteredStores = $this->getAllFilteredStores((int)$province_id,(int)$city_id,(int)$region_id,(int)$offset,(int)$count);
-        $storeCount = $this->getStoreCountint((int)$province_id,(int)$city_id,(int)$region_id,(int)$offset,(int)$count);
+      $table_name = $this->getStoreTableName((int)$province_id, (int)$city_id, (int)$region_id);
+      // test showResponse
 
-        $this->resultJsonEncode(['stores'=>$filteredStores,'count'=>$storeCount,'status'=>true]);
-      }else{
-        $this->resultJsonEncode(['status'=>false]);
+      if (strlen($table_name)==0) {
+        $this->resultJsonEncode(['status' => false]);
+        return;
       }
-      
+
+      if ($province_id != -1 && $city_id != -1 && $offset != -1 && $offset != -1) {
+        $filteredStores = $this->getAllFilteredStores((int)$province_id, (int)$city_id, (int)$region_id, (int)$offset, (int)$count,(string) $table_name);
+        $storeCount = $this->getStoreCountint((int)$province_id, (int)$city_id, (int)$region_id, (int)$offset, (int)$count,(string) $table_name);
+
+        $this->resultJsonEncode(['stores' => $filteredStores, 'count' => $storeCount, 'status' => true]);
+      } else {
+        $this->resultJsonEncode(['status' => false]);
+      }
     }
   }
 
 
 
-  
+
 
   /**
    * retun posted request file with type and default value
@@ -119,46 +131,46 @@ class ShowStoreInfos
    * @param [type] $defaultValue
    * @return void
    */
-  private function getPostRequestField(string $name,string $type,$defaultValue,$blackBox=-INF){
+  private function getPostRequestField(string $name, string $type, $defaultValue, $blackBox = -INF)
+  {
     $postedData = $this->postedData();
-    if($blackBox != -INF){
-      if(trim($postedData[$name]) ==$blackBox) {
+    if ($blackBox != -INF) {
+      if (trim($postedData[$name]) == $blackBox) {
         return $defaultValue;
       }
     }
 
-    if($type=='int'){
+    if ($type == 'int') {
       return (int)($this->getInput(isset($postedData[$name]) ? $postedData[$name] : $defaultValue));
-    }else if($type=='string'){
+    } else if ($type == 'string') {
       return (string)($this->getInput(isset($postedData[$name]) ? $postedData[$name] : $defaultValue));
-    }else if($type=='bool'){
+    } else if ($type == 'bool') {
       return (bool)($this->getInput(isset($postedData[$name]) ? $postedData[$name] : $defaultValue));
-    }else{
+    } else {
       return ($this->getInput(isset($postedData[$name]) ? $postedData[$name] : $defaultValue));
     }
-
-    
   }
 
-  
 
-  
-/**
- * start section get all stores without filters
- */
 
- /**
-  * coutn stores without any filters
-  *
-  * @return void
-  */
-  private function getStoreCountWihoutFilter():int{
-    $dev_array = Array();
+
+  /**
+   * start section get all stores without filters
+   */
+
+  /**
+   * coutn stores without any filters
+   *
+   * @return void
+   */
+  private function getStoreCountWihoutFilter(): int
+  {
+    $dev_array = array();
     $sql = "SELECT COUNT(*) as count FROM pish_phocamaps_marker_store  ORDER BY id ASC";
     $dev_array  = $this->select($sql);
-    if(count($dev_array)){
+    if (count($dev_array)) {
       return $dev_array[0]['count'];
-    }else{
+    } else {
       return 0;
     }
   }
@@ -168,8 +180,9 @@ class ShowStoreInfos
    *
    * @return void
    */
-  private function getAllStoresWithoutFitler(int $offset,int $count):array{
-    $dev_array= Array();
+  private function getAllStoresWithoutFitler(int $offset, int $count): array
+  {
+    $dev_array = array();
     $sql = "SELECT new.*,pish_province.id as province_id,pish_province.name as province_name,pish_city.id as city_id,pish_city.name as city_name,pish_region.id as region_id,pish_region.title as region_title FROM (SELECT id,user_id,title,ShopName,phone,MobilePhone,latitude,longitude,ManagerName,Address,RegionID,province,city FROM pish_phocamaps_marker_store  ORDER BY id ASC LIMIT $offset,$count)AS new
     LEFT JOIN pish_province ON new.province = pish_province.id
     LEFT JOIN pish_city ON new.city = pish_city.id
@@ -185,31 +198,32 @@ class ShowStoreInfos
    *
    * @return void
    */
-  public function showALlStoresWithoutFilters(){
+  public function showALlStoresWithoutFilters()
+  {
     $postedData = $this->postedData();
-    if(isset($postedData['getAllStoreWhoutFitler'])){
-      $offset= $this->getPostRequestField('offset','int',-1);
-      $count= $this->getPostRequestField('count','int',-1);
+    if (isset($postedData['getAllStoreWhoutFitler'])) {
+      $offset = $this->getPostRequestField('offset', 'int', -1);
+      $count = $this->getPostRequestField('count', 'int', -1);
 
-      $stores = $this->getAllStoresWithoutFitler((int)$offset,(int)$count);
+      $stores = $this->getAllStoresWithoutFitler((int)$offset, (int)$count);
       $count = $this->getStoreCountWihoutFilter();
 
-      $this->resultJsonEncode(['stores'=>$stores,'count'=>$count,'status'=>true]);
+      $this->resultJsonEncode(['stores' => $stores, 'count' => $count, 'status' => true]);
     }
   }
 
-  
- 
-/**
- * end section get all stores without filters
- */
+
+
+  /**
+   * end section get all stores without filters
+   */
 
 
 
 
- /**
-  * start section search store by search input
-  */
+  /**
+   * start section search store by search input
+   */
 
 
 
@@ -219,20 +233,20 @@ class ShowStoreInfos
    * @param string $search
    * @return integer
    */
-  private function getCountStoreSearrchByInput(string $search):int {
-    $dev_array = Array();
-    $sql= "SELECT COUNT(*) as count FROM pish_phocamaps_marker_store WHERE ShopName like '%$search%'  ORDER BY id ASC";
-    
+  private function getCountStoreSearrchByInput(string $search,string $table_name): int
+  {
+    $dev_array = array();
+    $sql = "SELECT COUNT(*) as count FROM $table_name WHERE ShopName like '%$search%'  ORDER BY id ASC";
+
     $dev_array = $this->select($sql);
-    if(count($dev_array)){
+    if (count($dev_array)) {
       return $dev_array[0]['count'];
-    }else{
+    } else {
       return 0;
     }
-
   }
 
-  
+
   /**
    * get all store like search input by offset and count
    *
@@ -241,13 +255,14 @@ class ShowStoreInfos
    * @param string $search
    * @return array
    */
-  private function getStoreLikeSearchByInput(int $offset,int $count,string $search):array{
-    $dev_array = Array();
-    $sql= "SELECT new.*,pish_province.id as province_id,pish_province.name as province_name,pish_city.id as city_id,pish_city.name as city_name,pish_region.id as region_id,pish_region.title as region_title FROM (SELECT id,user_id,title,ShopName,phone,MobilePhone,latitude,longitude,ManagerName,Address,RegionID,province,city FROM pish_phocamaps_marker_store WHERE ShopName like '%$search%'  ORDER BY id ASC LIMIT $offset,$count)AS new
+  private function getStoreLikeSearchByInput(int $offset, int $count, string $search, string $table_name): array
+  {
+    $dev_array = array();
+    $sql = "SELECT new.*,pish_province.id as province_id,pish_province.name as province_name,pish_city.id as city_id,pish_city.name as city_name,pish_region.id as region_id,pish_region.title as region_title FROM (SELECT id,user_id,title,ShopName,phone,MobilePhone,latitude,longitude,ManagerName,Address,RegionID,province,city FROM $table_name WHERE ShopName like '%$search%'  ORDER BY id ASC LIMIT $offset,$count)AS new
     LEFT JOIN pish_province ON new.province = pish_province.id
     LEFT JOIN pish_city ON new.city = pish_city.id
     LEFT JOIN pish_region ON new.RegionID = pish_region.id";
-    
+
     $dev_array = $this->select($sql);
     return $dev_array;
   }
@@ -256,18 +271,32 @@ class ShowStoreInfos
   public function showSearchStoreByInput()
   {
     $postedData = $this->postedData();
-    if(isset($postedData['searchStoreBySearchInput'])){
-      $offset= $this->getPostRequestField('offset','int',-1);
-      $countPerPage= $this->getPostRequestField('count','int',-1);
-      $search = $this->getPostRequestField('search','string','');
+    if (isset($postedData['searchStoreBySearchInput'])) {
+      $offset = $this->getPostRequestField('offset', 'int', -1);
+      $countPerPage = $this->getPostRequestField('count', 'int', -1);
+      $search = $this->getPostRequestField('search', 'string', '');
+
+      $province_id = $this->getPostRequestField('province_id', 'int', -1);
+      $city_id = $this->getPostRequestField('city_id', 'int', -1);
+      $region_id = $this->getPostRequestField('region_id', 'int', -1);
+
+
+      //get table_name
+      $table_name = $this->getStoreTableName((int)$province_id, (int)$city_id, (int)$region_id);
+      // test showResponse
+
+      if (strlen($table_name)==0) {
+        $this->resultJsonEncode(['stores' => [], 'count' => 0,'status' => false]);
+        return;
+      }
 
       //get search count
-      $count = $this->getCountStoreSearrchByInput((string)$search);
+      $count = $this->getCountStoreSearrchByInput((string)$search,$table_name);
 
       //get stores
-      $stores = $this->getStoreLikeSearchByInput((int)$offset,(int)$countPerPage,(string)$search);
+      $stores = $this->getStoreLikeSearchByInput((int)$offset, (int)$countPerPage, (string)$search,$table_name);
 
-      $this->resultJsonEncode(['stores'=>$stores,'count'=>$count,'status'=>true]);
+      $this->resultJsonEncode(['stores' => $stores, 'count' => $count, 'status' => true]);
     }
   }
 
@@ -284,8 +313,7 @@ class ShowStoreInfos
   {
     $this->showLastResponse();
   }
-
-}//end removeCompnay class
+} //end removeCompnay class
 
 
 //create init from class

@@ -124,14 +124,14 @@ export default {
           console.log(response.data)
           if(response.data && response.data.stores){
             
-            this.$store.commit('stores/makeSearchAsFiltered',true)
+            that.$store.commit('stores/makeSearchAsFiltered',true)
             //save info in store
-            this.$store.commit('stores/saveFindedStores',response.data.stores)
+            that.$store.commit('stores/saveFindedStores',response.data.stores)
             //close filtered store component
-            this.$store.commit('stores/showCompoenetByName','showFindedStores')
+            that.$store.commit('stores/showCompoenetByName','showFindedStores')
 
             //save searched value province,city,region
-            this.$store.commit('stores/saveSearchedFilters',this.selectedValues)
+            that.$store.commit('stores/saveSearchedFilters',that.selectedValues)
           }else{
           }
         })

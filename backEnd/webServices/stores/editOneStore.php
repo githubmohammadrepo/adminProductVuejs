@@ -35,6 +35,7 @@ class InsertNewCompany
    * @return boolean
    */
   private function updateRealNewStore(
+    string $table_name,
     int $selectedStore,
     int $selectedRegion,
     int $selectedProvince,
@@ -54,25 +55,25 @@ class InsertNewCompany
     $sql = "";
     
     if($selectedProvince && $selectedCity && $selectedRegion){
-      $sql = "UPDATE pish_phocamaps_marker_store SET user_id='$this->last_id', RegionID = '$selectedRegion', 
+      $sql = "UPDATE $table_name SET user_id='$this->last_id', RegionID = '$selectedRegion', 
       province = '$selectedProvince',city = '$selectedCity',
       title='$ShopName', ShopName = '$ShopName' , phone = '$phone' ,
       MobilePhone = '$MobilePhone' , OwnerName = '$ManagerName' , Address = '$Address' 
       WHERE id = '$selectedStore'";
     }else if($selectedProvince && $selectedCity){
-      $sql = "UPDATE pish_phocamaps_marker_store SET user_id='$this->last_id', RegionID = '$selectedRegion', 
+      $sql = "UPDATE $table_name SET user_id='$this->last_id', RegionID = '$selectedRegion', 
       province = '$selectedProvince',city = '$selectedCity',
       title='$ShopName', ShopName = '$ShopName' , phone = '$phone' ,
       MobilePhone = '$MobilePhone' , OwnerName = '$ManagerName' , Address = '$Address' 
       WHERE id = '$selectedStore'";
     }else if($selectedProvince){
-      $sql = "UPDATE pish_phocamaps_marker_store SET user_id='$this->last_id', RegionID = '$selectedRegion', 
+      $sql = "UPDATE $table_name SET user_id='$this->last_id', RegionID = '$selectedRegion', 
       province = '$selectedProvince',city = '$selectedCity',
       title='$ShopName', ShopName = '$ShopName' , phone = '$phone' ,
       MobilePhone = '$MobilePhone' , OwnerName = '$ManagerName' , Address = '$Address' 
       WHERE id = '$selectedStore'";
     }else{
-      $sql = "UPDATE pish_phocamaps_marker_store SET user_id='$this->last_id', RegionID = '$selectedRegion', 
+      $sql = "UPDATE $table_name SET user_id='$this->last_id', RegionID = '$selectedRegion', 
       province = '$selectedProvince',city = '$selectedCity',
       title='$ShopName', ShopName = '$ShopName' , phone = '$phone' ,
       MobilePhone = '$MobilePhone' , OwnerName = '$ManagerName' , Address = '$Address' 
@@ -94,8 +95,8 @@ class InsertNewCompany
    * @param integer $sotre_id
    * @return array
    */
-  private function getUpdatedStore(int $sotre_id):array{
-    $sql= "SELECT *  FROM `pish_phocamaps_marker_store` WHERE `id` = $sotre_id limit 1";
+  private function getUpdatedStore(int $sotre_id,string $table_name):array{
+    $sql= "SELECT *  FROM `$table_name` WHERE `id` = $sotre_id limit 1";
     $store= $this->select($sql);
     if(count($store)){
       return $store[0];
@@ -132,8 +133,18 @@ class InsertNewCompany
       ){
         $this->resultJsonEncode(['invalidInput'=>true,'status'=>false]);
       }else{
+
+        // get table_name
+        //get table_name
+        $table_name = (string)$this->getStoreTableName((int)$selectedProvince, (int)$selectedCity, (int)$selectedRegion);
+        // test showResponse
+        if (strlen($table_name)==0) {
+          $this->resultJsonEncode(['updated'=>false,'status'=>false]);
+        }
+
         //update proccess
         $status_updateStore = $this->updateRealNewStore(
+          $table_name,
           $selectedStore,
           $selectedRegion,
           $selectedProvince,
@@ -148,7 +159,7 @@ class InsertNewCompany
         );
         //show properiate response
         if($status_updateStore){
-          $updatedStore= $this->getUpdatedStore($selectedStore);
+          $updatedStore= $this->getUpdatedStore($selectedStore,$table_name);
           $this->resultJsonEncode(['updated'=>true,'store'=>$updatedStore,'status'=>true]);
         }else{
           $this->resultJsonEncode(['updated'=>false,'status'=>false]);

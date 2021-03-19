@@ -37,6 +37,10 @@ const companies = {
                 city_id: null,
                 region_id: null,
                 filtered: false,
+                searchInput: {
+                    status: false,
+                    count: 1
+                }
             }
         },
         addNewStoreShowLevels: {
@@ -90,6 +94,7 @@ const companies = {
 
         },
         saveFindedStores(state, payload) {
+            state.items = [];
             state.items = payload;
         },
         showCompoenetByName(state, payload = null) {
@@ -216,7 +221,7 @@ const companies = {
                 .then(response => {
                     if (response.data && response.data.stores) {
 
-                        commit('stores/makeSearchAsFiltered', true)
+                        commit('makeSearchAsFiltered', true)
 
                         //save info in store
                         commit('saveFindedStores', response.data.stores)

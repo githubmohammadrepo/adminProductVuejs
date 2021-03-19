@@ -78,7 +78,7 @@ class RemoveOneStore
    * @return boolean
    */
   private function pish_users(int $user_id):bool{
-    $sql = "DELETE FROM `pish_users` WHERE user_id = '$user_id'";
+    $sql = "DELETE FROM `pish_users` WHERE id = '$user_id'";
     $status = $this->remove($sql);
     return $status ? true : false;
   }
@@ -89,8 +89,8 @@ class RemoveOneStore
    * @param integer $store_id
    * @return boolean
    */
-  private function pish_phocamaps_marker_store(int $store_id):bool{
-    $sql = "DELETE FROM `pish_phocamaps_marker_store` WHERE id = '$store_id'";
+  private function pish_phocamaps_marker_store(int $store_id,string $table_name):bool{
+    $sql = "DELETE FROM `$table_name` WHERE id = '$store_id'";
     $status = $this->remove($sql);
     return $status ? true : false;
   }
@@ -127,6 +127,8 @@ class RemoveOneStore
       }else{
         return false;
       } 
+    }else{
+      return false;
     }
   }
 
@@ -137,9 +139,9 @@ class RemoveOneStore
    * @param integer $store_id
    * @return boolean
    */
-  private function isStoreIdExist(int $store_id):bool{
-    $sql = "SELECT * FROM pish_phocamaps_marker_store WHERE id = $store_id";
-    $store= $this->select($sql);
+  private function isStoreIdExist(int $store_id,string $table_name):bool{
+    $sql = "SELECT * FROM $table_name WHERE id = $store_id";
+    $store= $this->select($sql,true);
     if(count($store)){
       return true;
     }else{
@@ -153,11 +155,11 @@ class RemoveOneStore
    *
    * @return void
    */
-  private function removeLevelTwo($store_id):bool{
-    $statusStoreExist= $this->isStoreIdExist($store_id);
+  private function removeLevelTwo(int $store_id,string $table_name):bool{
+    $statusStoreExist= $this->isStoreIdExist($store_id,$table_name);
     if($statusStoreExist){
       //remove store
-      $status_remvoe_store = $this->pish_phocamaps_marker_store($store_id);
+      $status_remvoe_store = $this->pish_phocamaps_marker_store($store_id,$table_name);
       if($status_remvoe_store){
         return true;
       }else{
@@ -165,7 +167,7 @@ class RemoveOneStore
       }
     }else{
       //sotre does not exist
-      return true;
+      return false;
     }
   }
 
@@ -179,16 +181,28 @@ class RemoveOneStore
     if(isset($postedData['removeOneStore'])){
       $user_id = (int)($this->getInput(isset($postedData['user_id']) ? $postedData['user_id'] : null));
       $store_id = (int)($this->getInput(isset($postedData['store_id']) ? $postedData['store_id'] : null));
+      $province_id = (int)($this->getInput(isset($postedData['province_id']) ? $postedData['province_id'] : -1));
+      $city_id = (int)($this->getInput(isset($postedData['city_id']) ? $postedData['city_id'] : -1));
+      $region_id = (int)($this->getInput(isset($postedData['region_id']) ? $postedData['region_id'] : -1));
       
+      //get table_name
+      //get table_name
+      $table_name = (string)$this->getStoreTableName((int)$province_id, (int)$city_id, (int)$region_id);
+      // test showResponse
+
+      if (strlen($table_name)==0) {
+        return  false;
+      }
+
       if($user_id==0){
         //user_id does not set
-        return true;
+        return false;
       }else{
           //we have user_id lets remove level one
-          $status_insert_levelOne = $this->removeLevelOne($user_id);
+         $status_insert_levelOne = $this->removeLevelOne($user_id);
           if ($status_insert_levelOne) {
               //insert level two
-              $status_insert_levelTwo = $this->removeLevelTwo($store_id);
+              $status_insert_levelTwo = $this->removeLevelTwo($store_id,$table_name);
               if ($status_insert_levelTwo) {
                   return true;
               } else {
@@ -204,7 +218,7 @@ class RemoveOneStore
   }
 
 
-  public function showResultInsertNewStore(){
+  public function showResultRemoveNewStore(){
     $status = $this->transactionProccess('proccessRemoveOneStore');
     if($status){
       $this->resultJsonEncode(['removed'=>true,'status'=>true]);
@@ -275,5 +289,5 @@ class RemoveOneStore
  * create init from class
  */
 $updateCompany = new RemoveOneStore($conn);
-$updateCompany->showResultInsertNewStore();
+$updateCompany->showResultRemoveNewStore();
 

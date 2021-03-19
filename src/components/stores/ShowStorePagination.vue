@@ -18,9 +18,13 @@ export default {
     methods: {
      
       show(newShow){
-        if(this.$store.state.stores.storeShowComponents.SearchStore.filtered){
+        if(this.$store.state.stores.storeShowComponents.SearchStore.searchInput.status){
+        let count = (this.$store.state.stores.storeShowComponents.SearchStore.searchInput.count);
+
+        }else if(this.$store.state.stores.storeShowComponents.SearchStore.filtered){
+          this.searchStores();
+        
           //get filtered
-          this.searchStores()
         }else{
           //dispatch action
           this.$store.dispatch('stores/getAllStores')
@@ -34,23 +38,21 @@ export default {
       axios
         .post("http://fishopping.ir/serverHypernetShowUnion/adminProduct/webservices/stores/ShowStoreInfos.php",{
           ...that.$store.state.stores.storeShowComponents.SearchStore,
-          offset:that.currentPage,
-          paginationCount:25,
+          offset:((that.currentPage-1)<0 ? 0 : that.currentPage-1)*that.countPerPage,
+          paginationCount:that.countPerPage,
           showALlStoreInfos:true
         })
         .then(response =>{
-          console.log('filter pagination')
-          console.log(response.data)
           if(response.data && response.data.stores){
             
-            this.$store.commit('stores/makeSearchAsFiltered',true)
+            that.$store.commit('stores/makeSearchAsFiltered',true)
             //save info in store
-            this.$store.commit('stores/saveFindedStores',response.data.stores)
+            that.$store.commit('stores/saveFindedStores',response.data.stores)
             //close filtered store component
-            this.$store.commit('stores/showCompoenetByName','showFindedStores')
-            this.pages= response.data.count
+            that.$store.commit('stores/showCompoenetByName','showFindedStores')
+            that.pages= Math.ceil(response.data.count/that.countPerPage)
             //save searched value province,city,region
-            this.$store.commit('stores/saveSearchedFilters',...that.$store.state.stores.storeShowComponents.SearchStore,)
+            that.$store.commit('stores/saveSearchedFilters',...that.$store.state.stores.storeShowComponents.SearchStore,)
           }else{
           }
         })
@@ -73,8 +75,17 @@ export default {
           return this.$store.state.stores.paginationObject.currentPage;
         },
         set(newValue){
-          this.show(newValue)
           this.$store.state.stores.paginationObject.currentPage=newValue
+          this.show(newValue)
+        }
+      },
+      countPerPage:{
+        get(){
+          return this.$store.state.stores.paginationObject.countPerPage;
+        },
+        set(newValue){
+          this.show(newValue)
+          this.$store.state.stores.paginationObject.countPerPage=newValue
         }
       }
     },

@@ -149,7 +149,7 @@
       <!-- end select box select provinceCities -->
 
       <!-- start select box select region -->
-      <label for="address">شهر فروشگاه</label>
+      <label for="address">منطقه فروشگاه</label>
        <b-form-select v-model="selectedValues.selectedRegion" :options="regions" class="mb-3">
           <!-- This slot appears above the options from 'options' prop -->
           <template #first>
@@ -229,25 +229,21 @@ export default {
               that.$store.commit('stores/saveOneStoreIntoState',response.data.store)
               
               //show success notification
-              that.$store.state.successNotification = {
-                show: true,
-                message: "فروشگاه با موفقیت اپدیت شد",
-              };
+              //show success notification
+              that.$store.state.successNotification.message= "فروشگاه با موفقیت آپدیت شد"
+              that.$store.commit('showSuccess')	
               //close edit modal
               that.$store.state.stores.brandEditing = false;
               //open comfirm smsCode
             } else {
-              that.$store.state.errorNotification = {
-                show: true,
-                message: "خطا، فروشگاه اپدیت نشد",
-              };
+              that.$store.state.errorNotification.message= "خطا، فروشگاه آپدیت نشد"
+              that.$store.commit('showError')
+
             }
           })
           .catch(function (error) {
-            that.$store.state.errorNotification = {
-              show: true,
-              message: "خطا، فروشگاه اپدیت نشد",
-            };
+            that.$store.state.errorNotification.message= "خطا، فروشگاه آپدیت نشد"
+              that.$store.commit('showError')
             console.log(error);
           });
       }
@@ -505,7 +501,10 @@ export default {
   },
   mounted() {
     let obj = this.$store.state.stores.editDataObject;
+    
     this.store = obj
+    this.store.address = obj.Address;
+    this.store.ManagerName = obj.ManagerName;
     this.selectedValues.selectedProvince= obj.province
     //get provinceCities
     this.getProvinceCities(obj.province)

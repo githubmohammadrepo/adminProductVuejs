@@ -49,5 +49,41 @@ trait Helpers {
     }
   }
   
+  /**
+   * post curl with array post fields
+   *
+   * @param Array $postFields
+   * @return boolean
+   */
+  private function postCurl(array $postFields, string $url)
+  {
+    $post = $postFields;
+    if (count($post) == 0) {
+      return false;
+    }
+
+    $url = trim($url);
+
+
+
+    $postdata = json_encode($post, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+    $result = curl_exec($ch);
+    $decodedResult = json_decode($result, JSON_UNESCAPED_UNICODE);
+    if ($decodedResult['status'] == 'ok') {
+      return $decodedResult;
+    } else {
+      return false;
+    }
+    curl_close($ch);
+  }
 
 }

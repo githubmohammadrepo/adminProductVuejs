@@ -21,7 +21,7 @@ trait Helpers {
    * @param string $sql
    * @return array
    */
-  protected function select(string $sql):array
+  protected function select(string $sql,$free =false):array
   {
     $dev_array = Array();
     $result = $this->conn->query($sql);
@@ -30,6 +30,10 @@ trait Helpers {
       if($count){
         while($row= mysqli_fetch_assoc($result)){
           $dev_array[] =$row;
+        }
+        if($free==true){
+
+          mysqli_free_result($result);
         }
       }
     }
@@ -88,6 +92,44 @@ trait Helpers {
     return false;
   }
 
+
+  /**
+   * post curl with array post fields
+   *
+   * @param Array $postFields
+   * @return boolean
+   */
+  private function postCurl(array $postFields, string $url)
+  {
+    $post = $postFields;
+    if (count($post) == 0) {
+      return false;
+    }
+
+    $url = trim($url);
+
+
+
+    $postdata = json_encode($post, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+    $result = curl_exec($ch);
+    $decodedResult = json_decode($result, JSON_UNESCAPED_UNICODE);
+    if ($decodedResult['status'] == 'ok') {
+      return $decodedResult;
+    } else {
+      return false;
+    }
+    curl_close($ch);
+  }
+  
   /**
    * return array post requested data to this page
    *
@@ -115,7 +157,37 @@ trait Helpers {
     }
   }
 
+  /**
+   * get store table name base on inputs province,city,region
+   *
+   * @param integer $province
+   * @param integer $city
+   * @param integer $region
+   * @return string
+   */
+  protected function getStoreTableName(int $province=-1,int $city=-1,int $region=-1):string{
+    if($province ==-1 && $city ==-1 && $region ==-1){
+      return '';
+    }
+    //post curl for get table name
+    $curlResponse = $this->postCurl([
+      "province" => $province,
+      "city" => $city,
+      "region" => $region,
+      "exact" => false
+    ], "http://fishopping.ir/serverHypernetShowUnion/helpers/getStoreTableName.php");
 
+    // test showResponse
+
+    // test showResponse
+    $table_name = '';
+    if ($curlResponse['status'] == 'ok') {
+      $table_name = trim($curlResponse['tableName']);
+    } else {
+      return false;
+    }
+    return $table_name;
+  }
   /**
    * section just show output methods
    */

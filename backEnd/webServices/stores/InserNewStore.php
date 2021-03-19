@@ -7,7 +7,6 @@ require_once('./HelperTrait.php');
 class InsertNewCompany
 {
   use Helpers;
-
   private $conn;
   private $regCode;
   private $resonsed = false;
@@ -139,9 +138,9 @@ class InsertNewCompany
    * @param string $mobile
    * @return boolean
    */
-  private function isCompanyMobileExist(string $mobile):bool{
+  private function isCompanyMobileExist(string $mobile,string $table_name):bool{
     $mobile = $this->getInput($mobile);
-    $sql = "SELECT * FROM  pish_phocamaps_marker_store WHERE  MobilePhone = '$mobile'";
+    $sql = "SELECT * FROM  $table_name WHERE  MobilePhone = '$mobile'";
     $result = $this->conn->query($sql);
     if($result){
       if ($result->num_rows > 0) {
@@ -151,10 +150,10 @@ class InsertNewCompany
     return false;
   }
 
-  private function isMobileDublicateForBlockUser(string $brandmobile):bool{
+  private function isMobileDublicateForBlockUser(string $brandmobile,string $table_name):bool{
     $status_reslt = false;
-    $sql = "SELECT title FROM pish_phocamaps_marker_store INNER JOIN pish_users ON pish_phocamaps_marker_store.user_id=pish_users.id 
-    WHERE pish_phocamaps_marker_store.MobilePhone = '$brandmobile' AND pish_phocamaps_marker_store.user_id IS NOT NULL AND pish_users.block= 0";
+    $sql = "SELECT title FROM $table_name INNER JOIN pish_users ON $table_name.user_id=pish_users.id 
+    WHERE $table_name.MobilePhone = '$brandmobile' AND $table_name.user_id IS NOT NULL AND pish_users.block= 0";
     $result = $this->conn->query($sql);
 
     if($result){
@@ -169,6 +168,7 @@ class InsertNewCompany
 
 
   private function insertRealNewStore(
+    string $table_name,
     int $selectedStore,
     int $selectedRegion,
     int $selectedProvince,
@@ -188,16 +188,16 @@ class InsertNewCompany
     $sql= "";
     //prepare data
     if($selectedProvince && $selectedRegion && $selectedCity){
-      $sql = "INSERT INTO pish_phocamaps_marker_store (user_id, RegionID,province,city,title,ShopName, phone, MobilePhone, OwnerName, Address, latitude, longitude)
+      $sql = "INSERT INTO $table_name (user_id, RegionID,province,city,title,ShopName, phone, MobilePhone, OwnerName, Address, latitude, longitude)
       VALUES ('$this->last_id', '$selectedRegion','$selectedProvince','$selectedCity', '$ShopName','$ShopName', '$phone', '$MobilePhone', '$ManagerName', '$Address', '$latitude', '$longitude')";
     }else if($selectedProvince && $selectedCity){
-      $sql = "INSERT INTO pish_phocamaps_marker_store (user_id, province,city,title,ShopName, phone, MobilePhone, OwnerName, Address, latitude, longitude)
+      $sql = "INSERT INTO $table_name (user_id, province,city,title,ShopName, phone, MobilePhone, OwnerName, Address, latitude, longitude)
       VALUES ('$this->last_id', '$selectedProvince','$selectedCity', '$ShopName','$ShopName', '$phone', '$MobilePhone', '$ManagerName', '$Address', '$latitude', '$longitude')";
     }else if($selectedProvince){
-      $sql = "INSERT INTO pish_phocamaps_marker_store (user_id, province,title,ShopName, phone, MobilePhone, OwnerName, Address, latitude, longitude)
+      $sql = "INSERT INTO $table_name (user_id, province,title,ShopName, phone, MobilePhone, OwnerName, Address, latitude, longitude)
       VALUES ('$this->last_id', '$selectedProvince','$ShopName', '$phone', '$MobilePhone', '$ManagerName', '$Address', '$latitude', '$longitude')";
     }else{
-      $sql = "INSERT INTO pish_phocamaps_marker_store (user_id,title,ShopName, phone, MobilePhone, OwnerName, Address, latitude, longitude)
+      $sql = "INSERT INTO $table_name (user_id,title,ShopName, phone, MobilePhone, OwnerName, Address, latitude, longitude)
       VALUES ('$this->last_id','$ShopName','$ShopName', '$phone', '$MobilePhone', '$ManagerName', '$Address', '$latitude', '$longitude')";
     }
     //prepare sql
@@ -210,6 +210,7 @@ class InsertNewCompany
   }
 
   private function updateRealNewStore(
+    string $table_name,
     int $selectedStore,
     int $selectedRegion,
     int $selectedProvince,
@@ -229,25 +230,25 @@ class InsertNewCompany
     $sql = "";
     
     if($selectedProvince && $selectedCity && $selectedRegion){
-      $sql = "UPDATE pish_phocamaps_marker_store SET user_id='$this->last_id', RegionID = '$selectedRegion', 
+      $sql = "UPDATE $table_name SET user_id='$this->last_id', RegionID = '$selectedRegion', 
       province = '$selectedProvince',city = '$selectedCity',
       title='$ShopName', ShopName = '$ShopName' , phone = '$phone' ,
       MobilePhone = '$MobilePhone' , OwnerName = '$ManagerName' , Address = '$Address' 
       , latitude = '$latitude' , longitude = '$longitude' WHERE id = '$selectedStore'";
     }else if($selectedProvince && $selectedCity){
-      $sql = "UPDATE pish_phocamaps_marker_store SET user_id='$this->last_id', RegionID = '$selectedRegion', 
+      $sql = "UPDATE $table_name SET user_id='$this->last_id', RegionID = '$selectedRegion', 
       province = '$selectedProvince',city = '$selectedCity',
       title='$ShopName', ShopName = '$ShopName' , phone = '$phone' ,
       MobilePhone = '$MobilePhone' , OwnerName = '$ManagerName' , Address = '$Address' 
       , latitude = '$latitude' , longitude = '$longitude' WHERE id = '$selectedStore'";
     }else if($selectedProvince){
-      $sql = "UPDATE pish_phocamaps_marker_store SET user_id='$this->last_id', RegionID = '$selectedRegion', 
+      $sql = "UPDATE $table_name SET user_id='$this->last_id', RegionID = '$selectedRegion', 
       province = '$selectedProvince',city = '$selectedCity',
       title='$ShopName', ShopName = '$ShopName' , phone = '$phone' ,
       MobilePhone = '$MobilePhone' , OwnerName = '$ManagerName' , Address = '$Address' 
       , latitude = '$latitude' , longitude = '$longitude' WHERE id = '$selectedStore'";
     }else{
-      $sql = "UPDATE pish_phocamaps_marker_store SET user_id='$this->last_id', RegionID = '$selectedRegion', 
+      $sql = "UPDATE $table_name SET user_id='$this->last_id', RegionID = '$selectedRegion', 
       province = '$selectedProvince',city = '$selectedCity',
       title='$ShopName', ShopName = '$ShopName' , phone = '$phone' ,
       MobilePhone = '$MobilePhone' , OwnerName = '$ManagerName' , Address = '$Address' 
@@ -271,6 +272,7 @@ class InsertNewCompany
   }
   
   private function saveNewStore(
+    string $table_name,
     int $selectedStore,
     int $selectedRegion,
     int $selectedProvince,
@@ -282,7 +284,7 @@ class InsertNewCompany
     string $address,
     string $lat,
     string $lng):bool{
-    if($this->isMobileDublicateForBlockUser($MobilePhone)==false){
+    if($this->isMobileDublicateForBlockUser($MobilePhone,$table_name)==false){
       //remvoe before like company with hikahsop user_id inseted before
       //make user as axtive
       if($this->makeUserActive()){
@@ -292,6 +294,7 @@ class InsertNewCompany
             if($selectedStore==0){
                 //insert real store
                 $inserted_store = $this->insertRealNewStore(
+                $table_name,
                 $selectedStore,
                 $selectedRegion,
                 $selectedProvince,
@@ -312,7 +315,9 @@ class InsertNewCompany
             }else{
               //udpate
 
-              $status_updateStore= $this->updateRealNewStore( $selectedStore,
+              $status_updateStore= $this->updateRealNewStore( 
+              $table_name,
+              $selectedStore,
               $selectedRegion,
               $selectedProvince,
               $selectedCity,
@@ -346,7 +351,7 @@ class InsertNewCompany
     }
   }
 
-  public function insertNewStoreLevelTwo():bool{
+  public function insertNewStoreLevelTwo(string $table_name):bool{
       $postedDatat = $this->postedData();
       //prepare data
 
@@ -366,16 +371,20 @@ class InsertNewCompany
       if($selectedStore==0){
         //insert new store
         //phone exist
-        if($this->isCompanyMobileExist($MobilePhone)){
+        if($this->isCompanyMobileExist($MobilePhone,$table_name)){
 
           $this->resultJsonEncode(['mobile'=>true,'status'=>false]);
           return false;
         }else{
 
           //insert new store
-          if($this->saveNewStore($selectedStore,$selectedRegion,$selectedProvince,$selectedCity,$ShopName,$ManagerName,$phone,$MobilePhone,$address,$lat,$lng)){
-            
-            return true;
+          if($this->saveNewStore($table_name,$selectedStore,$selectedRegion,$selectedProvince,$selectedCity,$ShopName,$ManagerName,$phone,$MobilePhone,$address,$lat,$lng)){
+            $status = Register_pish_user_table($this->conn, (int) $this->last_id, (int) $selectedProvince, (int) $selectedCity, (int) $selectedRegion);
+            if($status){
+              return true;
+            }else{
+              return false;
+            }
 
           }else{
 
@@ -384,7 +393,7 @@ class InsertNewCompany
         }
       }else{
         //upate store informations
-        if($this->saveNewStore($selectedStore,$selectedRegion,$selectedProvince,$selectedCity,$ShopName,$ManagerName,$phone,$MobilePhone,$address,$lat,$lng)){
+        if($this->saveNewStore($table_name,$selectedStore,$selectedRegion,$selectedProvince,$selectedCity,$ShopName,$ManagerName,$phone,$MobilePhone,$address,$lat,$lng)){
           return true;
 
         }else{
@@ -466,20 +475,48 @@ class InsertNewCompany
     }
   }
 
+  
+  
+  private function Register_pish_user_table(mysqli $conn, int $user_id, int $province, int $city = -1, int $region = -1)
+  {
+    //get table_name
+    $table_name = $this->getStoreTableName($province, $city, $region);
+    if (strlen($table_name)) {
+      $query = "INSERT INTO pish_users_table(user_id,table_name) VALUES('$user_id','$table_name')";
+      $status_insert = $this->insert($query, true);
+      return $status_insert ? true : false;
+    } else {
+      return false;
+    }
+  }
 
   /**
    * doing proccess insert new stoer
    */
   protected function proccessInsertNewStore():bool{
 
+    $post = $this->postedData();
+
+    $province_id = (int)(isset($post['selectedProvince']) ? $post['selectedProvince'] : -1);
+    $city_id = (int)(isset($post['selectedCity']) ? $post['selectedCity'] : -1);
+    $region_id = (int)(isset($post['selectedRegion']) ? $post['selectedRegion'] : -1);
+
+    //get table_name
+    $table_name = (string)$this->getStoreTableName((int)$province_id, (int)$city_id, (int)$region_id);
+    // test showResponse
+
+    if (strlen($table_name)==0) {
+      return  false;
+    }
+    
     //insert level one
     $status_insert_levelOne = $this->insertNewStoreLevelOne();
     if($status_insert_levelOne){
       //insert level two
-      $status_insert_levelTwo = $this->insertNewStoreLevelTwo();
+      $status_insert_levelTwo = $this->insertNewStoreLevelTwo($table_name);
 
       if($status_insert_levelTwo){
-        return true; 
+        return true;
       }else{
         return false;
       }
